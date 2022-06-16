@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { program } from "commander";
 import { createFrontend, createPeer, WebXdc, gossip } from "./app";
+import open from "open";
 
 program
   .command("run")
@@ -29,6 +30,8 @@ program
     peer1.listen(3002, () => {
       console.log("Starting peer at 3002");
     });
+
+    open("http://localhost:3000");
   });
 
 program.parse();

@@ -27,14 +27,13 @@ function gossip(apps: expressWs.Application[]): void {
     app.ws("/webxdc", (ws, req) => {
       webSockets.push(ws);
       // when receiving an update from this peer
-      ws.on("message", (buffer) => {
-        if (!(buffer instanceof Buffer)) {
+      ws.on("message", (msg: string) => {
+        if (typeof msg !== "string") {
           console.error(
-            "webxdc: Don't know how to handle unexpected non-Buffer data"
+            "webxdc: Don't know how to handle unexpected non-string data"
           );
           return;
         }
-        const msg = buffer.toString();
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         const update = parsed.update;

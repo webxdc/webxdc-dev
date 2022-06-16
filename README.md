@@ -25,5 +25,5 @@ Then use:
 npm run cli -- run /path/to/xdc
 ```
 
-to run an Webxdc directory. At the time of writing there's no dev UI yet, but
-it starts two peers on ports 3001 and 3002 that talk to each other.
+to run an Webxdc directory. There's a UI on port 3000 that lets you open
+instances in new tabs. You can also add a new instance using this UI.

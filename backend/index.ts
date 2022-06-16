@@ -13,7 +13,7 @@ function createPeer(webxdc: WebXdc): expressWs.Application {
 
   // layer the simulated directory with webxdc tooling in front of it
   app.use(express.static("./build"));
-  // // maxAge is 0 for no caching, so should be live
+  // maxAge is 0 for no caching, so should be live
   app.use(express.static(webxdc.path));
 
   return app;

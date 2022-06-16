@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"npm run build-sim\" \"npm run build-frontend\" \"nodemon -q backend-dist/index.js\"",
     "dev-cli": "npm run build && npm run cli",
     "cli": "node backend-dist/cli.js",
     "build-backend": "npx tsc --project tsconfig-backend.json",

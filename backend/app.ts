@@ -1,5 +1,5 @@
-import express, { Express } from "express";
-import { Server, WebSocket } from "ws";
+import express from "express";
+import { WebSocket } from "ws";
 import expressWs from "express-ws";
 
 export type WebXdc = {
@@ -41,29 +41,6 @@ function distribute(self: WebSocket, webSockets: WebSocket[], update: any) {
     }
     console.log("gossip", update);
     peerWebSocket.send(JSON.stringify(update));
-  });
-}
-
-export function gossip(apps: expressWs.Application[]): void {
-  const webSockets: WebSocket[] = [];
-  apps.forEach((app) => {
-    app.ws("/webxdc", (ws, req) => {
-      webSockets.push(ws);
-      // when receiving an update from this peer
-      ws.on("message", (msg: string) => {
-        if (typeof msg !== "string") {
-          console.error(
-            "webxdc: Don't know how to handle unexpected non-string data"
-          );
-          return;
-        }
-        const parsed = JSON.parse(msg);
-        // XXX should validate parsed
-        const update = parsed.update;
-
-        distribute(ws, webSockets, update);
-      });
-    });
   });
 }
 

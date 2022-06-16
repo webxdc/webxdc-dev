@@ -10,7 +10,7 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-typescript"], // , "babel-preset-solid"],
+            presets: ["@babel/preset-typescript"],
           },
         },
         exclude: /node_modules/,

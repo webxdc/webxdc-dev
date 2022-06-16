@@ -20,6 +20,7 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
+  watch: true,
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "public"),

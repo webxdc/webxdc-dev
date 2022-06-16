@@ -29,4 +29,5 @@
 - clean out localstorage for port numbers? otherwise when peer starts up
   it still can have old cruft. Start in incognito?
 
-- can we have only a single web socket that handles all backends?
+- can we have only a single web socket that handles all frontends? we can
+  use getWss().clients to broadcast to all clients.

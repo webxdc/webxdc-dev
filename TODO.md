@@ -27,4 +27,6 @@
   configurable through CLI)
 
 - clean out localstorage for port numbers? otherwise when peer starts up
-  it still can have old cruft.
+  it still can have old cruft. Start in incognito?
+
+- can we have only a single web socket that handles all backends?

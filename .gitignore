@@ -1,4 +1,5 @@
 node_modules
 dist
-build
+build-sim
+build-frontend
 backend-dist

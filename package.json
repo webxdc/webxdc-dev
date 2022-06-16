@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"npm run build-sim\" \"nodemon -q backend-dist/index.js\"",
-    "build": "npx tsc --project tsconfig-backend.json",
-    "build-sim": "webpack --config webpack.config.js"
+    "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"npm run build-sim\" \"npm run build-frontend\" \"nodemon -q backend-dist/index.js\"",
+    "build-backend": "npx tsc --project tsconfig-backend.json",
+    "build-sim": "webpack --config webpack-sim.config.js",
+    "build-frontend": "webpack --config webpack-frontend.config.js"
   },
   "license": "unlicense",
   "devDependencies": {

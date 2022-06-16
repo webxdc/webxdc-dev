@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   mode: "development",
-  entry: "./sim/webxdc.ts",
+  entry: "./frontend/index.tsx",
   module: {
     rules: [
       {
@@ -10,7 +10,7 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-typescript"], // , "babel-preset-solid"],
+            presets: ["@babel/preset-typescript", "babel-preset-solid"],
           },
         },
         exclude: /node_modules/,
@@ -21,7 +21,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "webxdc.js",
-    path: path.resolve(__dirname, "build"),
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "build-frontend"),
   },
 };

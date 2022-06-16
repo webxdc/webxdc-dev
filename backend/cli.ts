@@ -3,6 +3,8 @@ import { program } from "commander";
 import { createFrontend, createPeer, WebXdc, gossip } from "./app";
 import open from "open";
 
+program.name("webxdc-dev").description("Tool simulate Webxdc in the browser");
+
 program
   .command("run")
   .argument("<directory>", "directory with Webxdc")

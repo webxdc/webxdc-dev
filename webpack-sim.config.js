@@ -20,7 +20,6 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  watch: true,
   output: {
     filename: "webxdc.js",
     path: path.resolve(__dirname, "build-sim"),

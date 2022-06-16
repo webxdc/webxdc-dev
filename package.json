@@ -4,10 +4,12 @@
   "description": "",
   "scripts": {
     "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"npm run build-sim\" \"npm run build-frontend\" \"nodemon -q backend-dist/index.js\"",
-    "dev-cli": "npx tsc --project tsconfig-backend.json && node backend-dist/cli.js",
+    "dev-cli": "npm run build && npm run cli",
+    "cli": "node backend-dist/cli.js",
     "build-backend": "npx tsc --project tsconfig-backend.json",
     "build-sim": "webpack --config webpack-sim.config.js",
-    "build-frontend": "webpack --config webpack-frontend.config.js"
+    "build-frontend": "webpack --config webpack-frontend.config.js",
+    "build": "npm run build-backend && npm run build-sim && npm run build-frontend"
   },
   "bin": {
     "webxdc-dev": "backend-dist/cli.js"

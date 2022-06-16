@@ -25,3 +25,6 @@
 
 - config file with things such as base port, timing info defaults (also
   configurable through CLI)
+
+- clean out localstorage for port numbers? otherwise when peer starts up
+  it still can have old cruft.

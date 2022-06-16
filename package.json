@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"nodemon -q backend-dist/index.js\"",
+    "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"npm run build-sim\" \"nodemon -q backend-dist/index.js\"",
     "build": "npx tsc --project tsconfig-backend.json",
     "build-sim": "webpack --config webpack.config.js"
   },

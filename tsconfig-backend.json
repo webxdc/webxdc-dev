@@ -4,7 +4,7 @@
   "compilerOptions": {
     "target": "ES2016",
     "module": "commonjs",
-    "outDir": "dist",
+    "outDir": "backend-dist",
     "declaration": true
   }
 }

@@ -1,6 +1,5 @@
 import { WebXdc } from "./webxdc-types";
 
-// XXX this stuff should be compiled in a mode that supports document
 const url = `ws://${document.location.host}/webxdc`;
 const socket = new WebSocket(url);
 

@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { For } from "solid-js";
+import { For, createResource } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 
 type InstanceData = {
@@ -7,10 +7,11 @@ type InstanceData = {
   url: string;
 };
 
-const [instances, setInstances] = createStore<InstanceData[]>([
-  { id: 3001, url: "http://localhost:3001" },
-  { id: 3002, url: "http://localhost:3002" },
-]);
+const [instances, { refetch: refetchInstances }] = createResource<
+  InstanceData[]
+>(async () => {
+  return (await fetch(`/instances`)).json();
+});
 
 const Instance: Component<{ instance: InstanceData }> = (props) => {
   return (
@@ -23,14 +24,20 @@ const Instance: Component<{ instance: InstanceData }> = (props) => {
 };
 
 const App: Component = () => {
+  const handleAddInstance = async () => {
+    await fetch(`/instances`, { method: "POST" });
+    refetchInstances();
+  };
+
   return (
     <>
       <h1>Webxdc-dev</h1>
       <ul>
-        <For each={instances}>
+        <For each={instances()}>
           {(instance) => <Instance instance={instance} />}
         </For>
       </ul>
+      <button onClick={handleAddInstance}>Add Instance</button>
     </>
   );
 };

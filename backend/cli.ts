@@ -15,15 +15,16 @@ program
       name: "My App",
       path: directory,
     };
-    const frontend = createFrontend();
+    const instances = new Instances(webXdc, 3000);
+
+    const peer0 = instances.add();
+    const peer1 = instances.add();
+
+    const frontend = createFrontend(instances);
+
     frontend.listen(3000, () => {
       console.log("Starting frontend");
     });
-
-    const instances = new Instances(webXdc);
-
-    const peer0 = instances.add(3001);
-    const peer1 = instances.add(3002);
 
     peer0.start();
     peer1.start();

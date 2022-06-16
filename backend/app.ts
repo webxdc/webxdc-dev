@@ -19,8 +19,24 @@ function createWsExpress(staticPaths: string[]): expressWs.Instance {
   return wsInstance;
 }
 
-export function createFrontend(): expressWs.Application {
-  return createWsExpress(["./public"]).app;
+export function createFrontend(instances: Instances): expressWs.Application {
+  const app = createWsExpress(["./public"]).app;
+  app.get("/instances", (req, res) => {
+    res.json(
+      Array.from(instances.instances.values()).map((instance) => ({
+        id: instance.port,
+        url: `http://localhost:${instance.port}`,
+      }))
+    );
+  });
+  app.post("/instances", (req, res) => {
+    const instance = instances.add();
+    instance.start();
+    res.json({
+      status: "ok",
+    });
+  });
+  return app;
 }
 
 export function createPeer(webxdc: WebXdc): expressWs.Application {
@@ -62,13 +78,19 @@ export class Instance {
 export class Instances {
   webXdc: WebXdc;
   instances: Map<number, Instance>;
+  basePort: number;
+  currentPort: number;
 
-  constructor(webXdc: WebXdc) {
+  constructor(webXdc: WebXdc, basePort: number) {
     this.webXdc = webXdc;
+    this.basePort = basePort;
+    this.currentPort = basePort;
     this.instances = new Map();
   }
 
-  add(port: number): Instance {
+  add(): Instance {
+    this.currentPort++;
+    const port = this.currentPort;
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }

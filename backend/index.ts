@@ -19,6 +19,10 @@ function createWsExpress(staticPaths: string[]): expressWs.Application {
   return app;
 }
 
+function createFrontend(): expressWs.Application {
+  return createWsExpress(["./public"]);
+}
+
 function createPeer(webxdc: WebXdc): expressWs.Application {
   // layer the simulated directory with webxdc tooling in front of webxdc path
   return createWsExpress(["./build-sim", webxdc.path]);
@@ -64,17 +68,22 @@ const hello: WebXdc = {
 };
 
 function main() {
+  const frontend = createFrontend();
+  frontend.listen(3000, () => {
+    console.log("Starting frontend");
+  });
+
   const helloPeer = createPeer(hello);
   const helloPeer2 = createPeer(hello);
 
   gossip([helloPeer, helloPeer2]);
 
-  helloPeer.listen(3000, () => {
-    console.log("Starting peer");
+  helloPeer.listen(3001, () => {
+    console.log("Starting peer at 3001");
   });
 
-  helloPeer2.listen(3001, () => {
-    console.log("Starting another peer");
+  helloPeer2.listen(3002, () => {
+    console.log("Starting peer at 3002");
   });
 }
 

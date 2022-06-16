@@ -4,7 +4,7 @@ import Comp from "./Comp";
 const App: Component = () => {
   return (
     <>
-      <h1>Hello world!!!!!!!</h1>
+      <h1>Hello world!</h1>
       <Comp />
     </>
   );

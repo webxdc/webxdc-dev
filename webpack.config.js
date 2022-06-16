@@ -22,6 +22,6 @@ module.exports = {
   },
   output: {
     filename: "webxdc.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "build"),
   },
 };

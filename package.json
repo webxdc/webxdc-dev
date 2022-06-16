@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "concurrently \"npx tsc --project tsconfig-backend.json --watch\" \"nodemon -q backend-dist/index.js\"",
-    "build": "npx tsc --project tsconfig-backend.json"
+    "build": "npx tsc --project tsconfig-backend.json",
+    "build-sim": "webpack --config webpack.config.js"
   },
   "license": "MIT",
   "devDependencies": {

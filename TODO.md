@@ -12,6 +12,10 @@
 
 - simulate slow message sending, out of order message sending (with correct serial)
 
-- CLI
+- list of peers in UI
 
-- production build with executable tool
+- add / remove peers in UI
+
+- CLI start with a number of peers (default 2?)
+
+- production build of various resources

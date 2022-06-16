@@ -1,6 +1,5 @@
 import type { Component } from "solid-js";
 import { For, createResource } from "solid-js";
-import { createStore, produce } from "solid-js/store";
 
 type InstanceData = {
   id: number;

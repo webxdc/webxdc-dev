@@ -4,7 +4,8 @@
 
 - webpack auto refreshes browser when changes - webpack dev server?
 
-- content security policy
+- content security policy, disallow anything except local images,
+  and (shared, see below) websocket.
 
 - content security reporting
 

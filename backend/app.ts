@@ -7,29 +7,32 @@ export type WebXdc = {
   path: string;
 };
 
-function createWsExpress(staticPaths: string[]): expressWs.Application {
+function createWsExpress(staticPaths: string[]): expressWs.Instance {
   const expressApp = express();
-  const { app } = expressWs(expressApp);
+  const wsInstance = expressWs(expressApp);
 
   staticPaths.forEach((path) => {
     // maxAge is 0 for no caching, so should be live
-    app.use(express.static(path));
+    wsInstance.app.use(express.static(path));
   });
 
-  return app;
+  return wsInstance;
 }
 
 export function createFrontend(): expressWs.Application {
-  return createWsExpress(["./public"]);
+  return createWsExpress(["./public"]).app;
 }
 
 export function createPeer(webxdc: WebXdc): expressWs.Application {
   // layer the simulated directory with webxdc tooling in front of webxdc path
-  return createWsExpress(["./build-sim", webxdc.path]);
+  return createWsExpress(["./build-sim", webxdc.path]).app;
 }
 
 let serial: number = 0;
 
+// XXX if we only had a single shared web socket server we'd be able
+// to use wss.clients.forEach to distribute. Is expressWs really helping or
+// is it hurting?
 function distribute(self: WebSocket, webSockets: WebSocket[], update: any) {
   serial++;
   update.serial = serial;

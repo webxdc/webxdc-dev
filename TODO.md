@@ -1,5 +1,7 @@
 - mobile display option for XDC applications
 
+- base webpack file that gets extended
+
 - content security policy
 
 - content security reporting

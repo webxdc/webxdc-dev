@@ -7,6 +7,28 @@ export type WebXdc = {
   path: string;
 };
 
+type Instance = {
+  app: expressWs.Application;
+  port: number;
+};
+
+class Instances {
+  webXdc: WebXdc;
+  instances: Map<number, Instance>;
+
+  constructor(webXdc: WebXdc) {
+    this.webXdc = webXdc;
+    this.instances = new Map();
+  }
+
+  start(port: number) {
+    if (this.instances.has(port)) {
+      throw new Error(`Already have Webxdc instance at port: ${port}`);
+    }
+    this.instances.set(port, { app: createPeer(this.webXdc), port: port });
+  }
+}
+
 function createWsExpress(staticPaths: string[]): expressWs.Application {
   const expressApp = express();
   const { app } = expressWs(expressApp);
@@ -30,6 +52,20 @@ export function createPeer(webxdc: WebXdc): expressWs.Application {
 
 let serial: number = 0;
 
+function distribute(self: WebSocket, webSockets: WebSocket[], update: any) {
+  serial++;
+  update.serial = serial;
+  update.max_serial = serial; // XXX this is always the same
+  webSockets.forEach((peerWebSocket) => {
+    if (peerWebSocket === self) {
+      // we shouldn't send to ourselves
+      return;
+    }
+    console.log("gossip", update);
+    peerWebSocket.send(JSON.stringify(update));
+  });
+}
+
 export function gossip(apps: expressWs.Application[]): void {
   const webSockets: WebSocket[] = [];
   apps.forEach((app) => {
@@ -46,17 +82,8 @@ export function gossip(apps: expressWs.Application[]): void {
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         const update = parsed.update;
-        serial++;
-        update.serial = serial;
-        update.max_serial = serial; // XXX this is always the same
-        webSockets.forEach((peerWebSocket) => {
-          if (peerWebSocket === ws) {
-            // we shouldn't send to ourselves
-            return;
-          }
-          console.log("gossip", update);
-          peerWebSocket.send(JSON.stringify(update));
-        });
+
+        distribute(ws, webSockets, update);
       });
     });
   });

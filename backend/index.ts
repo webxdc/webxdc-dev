@@ -7,16 +7,21 @@ type WebXdc = {
   path: string;
 };
 
-function createPeer(webxdc: WebXdc): expressWs.Application {
+function createWsExpress(staticPaths: string[]): expressWs.Application {
   const expressApp = express();
   const { app } = expressWs(expressApp);
 
-  // layer the simulated directory with webxdc tooling in front of it
-  app.use(express.static("./build-sim"));
-  // maxAge is 0 for no caching, so should be live
-  app.use(express.static(webxdc.path));
+  staticPaths.forEach((path) => {
+    // maxAge is 0 for no caching, so should be live
+    app.use(express.static(path));
+  });
 
   return app;
+}
+
+function createPeer(webxdc: WebXdc): expressWs.Application {
+  // layer the simulated directory with webxdc tooling in front of webxdc path
+  return createWsExpress(["./build-sim", webxdc.path]);
 }
 
 let serial: number = 0;

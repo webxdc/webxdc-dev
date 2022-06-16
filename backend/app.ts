@@ -1,33 +1,11 @@
-import express from "express";
-import { WebSocket } from "ws";
+import express, { Express } from "express";
+import { Server, WebSocket } from "ws";
 import expressWs from "express-ws";
 
 export type WebXdc = {
   name: string;
   path: string;
 };
-
-type Instance = {
-  app: expressWs.Application;
-  port: number;
-};
-
-class Instances {
-  webXdc: WebXdc;
-  instances: Map<number, Instance>;
-
-  constructor(webXdc: WebXdc) {
-    this.webXdc = webXdc;
-    this.instances = new Map();
-  }
-
-  start(port: number) {
-    if (this.instances.has(port)) {
-      throw new Error(`Already have Webxdc instance at port: ${port}`);
-    }
-    this.instances.set(port, { app: createPeer(this.webXdc), port: port });
-  }
-}
 
 function createWsExpress(staticPaths: string[]): expressWs.Application {
   const expressApp = express();
@@ -87,4 +65,64 @@ export function gossip(apps: expressWs.Application[]): void {
       });
     });
   });
+}
+
+export class Instance {
+  webSocket: WebSocket | null = null;
+
+  constructor(public app: expressWs.Application, public port: number) {}
+
+  start() {
+    this.app.listen(this.port, () => {
+      console.log(`Starting instance at port ${this.port}`);
+    });
+  }
+}
+
+export class Instances {
+  webXdc: WebXdc;
+  instances: Map<number, Instance>;
+
+  constructor(webXdc: WebXdc) {
+    this.webXdc = webXdc;
+    this.instances = new Map();
+  }
+
+  add(port: number): Instance {
+    if (this.instances.has(port)) {
+      throw new Error(`Already have Webxdc instance at port: ${port}`);
+    }
+    const app = createPeer(this.webXdc);
+    const instance = new Instance(app, port);
+
+    app.ws("/webxdc", (ws, req) => {
+      instance.webSocket = ws;
+      // when receiving an update from this peer
+      ws.on("message", (msg: string) => {
+        if (typeof msg !== "string") {
+          console.error(
+            "webxdc: Don't know how to handle unexpected non-string data"
+          );
+          return;
+        }
+        const parsed = JSON.parse(msg);
+        // XXX should validate parsed
+        const update = parsed.update;
+        distribute(ws, this.getWebSockets(), update);
+      });
+    });
+    this.instances.set(port, instance);
+    return instance;
+  }
+
+  getWebSockets(): WebSocket[] {
+    const result: WebSocket[] = [];
+    for (const instance of this.instances.values()) {
+      if (instance.webSocket == null) {
+        continue;
+      }
+      result.push(instance.webSocket);
+    }
+    return result;
+  }
 }

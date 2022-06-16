@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import { createFrontend, createPeer, WebXdc, gossip } from "./app";
+import { createFrontend, WebXdc, Instances } from "./app";
 import open from "open";
 
 program.name("webxdc-dev").description("Tool simulate Webxdc in the browser");
@@ -20,18 +20,13 @@ program
       console.log("Starting frontend");
     });
 
-    const peer0 = createPeer(webXdc);
-    const peer1 = createPeer(webXdc);
+    const instances = new Instances(webXdc);
 
-    gossip([peer0, peer1]);
+    const peer0 = instances.add(3001);
+    const peer1 = instances.add(3002);
 
-    peer0.listen(3001, () => {
-      console.log("Starting peer at 3001");
-    });
-
-    peer1.listen(3002, () => {
-      console.log("Starting peer at 3002");
-    });
+    peer0.start();
+    peer1.start();
 
     open("http://localhost:3000");
   });

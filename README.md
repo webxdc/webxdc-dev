@@ -13,7 +13,13 @@ application.
 
 ## How to use
 
-For now, you can clone it and run `npm run build`. Then use:
+For now, you can clone this repository and run:
+
+```sh
+npm run build
+```
+
+Then use:
 
 ```sh
 npm run cli -- run /path/to/xdc

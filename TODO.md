@@ -2,6 +2,8 @@
 
 - base webpack file that gets extended
 
+- webpack auto refreshes browser when changes - webpack dev server?
+
 - content security policy
 
 - content security reporting

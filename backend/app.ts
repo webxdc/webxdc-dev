@@ -1,26 +1,22 @@
-import express from "express";
+import express, { Express } from "express";
 import { WebSocket } from "ws";
 import expressWs from "express-ws";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpack from "webpack";
+
+import config from "../webpack.config.js";
+
+const compiler = webpack(config);
 
 export type WebXdc = {
   name: string;
   path: string;
 };
 
-function createWsExpress(staticPaths: string[]): expressWs.Instance {
-  const expressApp = express();
-  const wsInstance = expressWs(expressApp);
-
-  staticPaths.forEach((path) => {
-    // maxAge is 0 for no caching, so should be live
-    wsInstance.app.use(express.static(path));
-  });
-
-  return wsInstance;
-}
-
-export function createFrontend(instances: Instances): expressWs.Application {
-  const app = createWsExpress(["./public"]).app;
+export function createFrontend(instances: Instances): Express {
+  const app = express();
+  // const app = createWsExpress(["./dist"]).app;
+  app.use(webpackDevMiddleware(compiler, { writeToDisk: true }));
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
@@ -40,8 +36,14 @@ export function createFrontend(instances: Instances): expressWs.Application {
 }
 
 export function createPeer(webxdc: WebXdc): expressWs.Application {
+  const expressApp = express();
+  const wsInstance = expressWs(expressApp);
+
   // layer the simulated directory with webxdc tooling in front of webxdc path
-  return createWsExpress(["./build-sim", webxdc.path]).app;
+  wsInstance.app.use(express.static("./dist/webxdc"));
+  wsInstance.app.use(express.static(webxdc.path));
+
+  return wsInstance.app;
 }
 
 let serial: number = 0;

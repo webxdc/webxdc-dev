@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
       # https://www.voorhoede.nl/en/blog/super-fast-npm-install-on-github-actions/
       - name: Cache dependencies
         id: cache

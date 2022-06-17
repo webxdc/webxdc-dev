@@ -15,7 +15,7 @@ const program = createProgram({
     app.use(webpackDevMiddleware(compiler, { writeToDisk: true }));
   },
   injectSim: (app) => {
-    // in dev mode we serve the files from the dist directory directory
+    // in dev mode we serve the files from the dist directory
     app.use(express.static("./dist/webxdc"));
   },
 });

@@ -2,6 +2,23 @@
   "name": "webxdc-dev",
   "version": "0.1.2",
   "description": "A dev tool for Webxdc",
+  "homepage": "https://github.com/webxdc/webxdc-dev#readme",
+  "keywords": [
+    "webxdc",
+    "deltachat"
+  ],
+  "license": "unlicense",
+  "contributors": [
+    {
+      "name": "Webxdc devs",
+      "url": "https://webxdc.org"
+    },
+    {
+      "name": "Martijn Faassen",
+      "email": "faassen@startifact.com",
+      "url": "http://blog.startifact.com"
+    }
+  ],
   "scripts": {
     "dev": "ts-node-dev --project tsconfig-backend.json backend/dev-cli.ts",
     "cli": "node dist/backend/cli.js",
@@ -14,7 +31,6 @@
   "bin": {
     "webxdc-dev": "dist/backend/cli.js"
   },
-  "license": "unlicense",
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.5",

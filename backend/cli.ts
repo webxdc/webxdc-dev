@@ -1,21 +1,10 @@
 #!/usr/bin/env node
-import { Command } from "commander";
-import { run } from "./run";
+import express from "express";
+import { createProgram } from "./program";
 
-function createProgram(): Command {
-  const program = new Command();
-  program.name("webxdc-dev").description("Tool simulate Webxdc in the browser");
-
-  program
-    .command("run")
-    .argument("<directory>", "directory with Webxdc")
-    .description("Run Webxdc from directory")
-    .action((directory) => {
-      run(directory);
-    });
-  return program;
-}
-
-const program = createProgram();
+const program = createProgram((app) => {
+  // in production we serve the static files ourselves
+  app.use(express.static("./dist"));
+});
 
 program.parse();

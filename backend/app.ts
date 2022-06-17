@@ -1,31 +1,24 @@
 import express, { Express } from "express";
 import { WebSocket } from "ws";
 import expressWs from "express-ws";
-import webpackDevMiddleware from "webpack-dev-middleware";
-import webpack from "webpack";
-
-// const config = require("../webpack.config.ts");
-// import config from "../webpack.config.js";
-
-// const compiler = webpack(config);
 
 export type WebXdc = {
   name: string;
   path: string;
 };
 
+export type InjectExpress = (app: Express) => void;
+
 export function createFrontend(
   instances: Instances,
-  devMode: boolean
+  injectExpress: InjectExpress
 ): Express {
   const app = express();
 
-  // app.use(webpackDevMiddleware(compiler, { writeToDisk: true }));
-  // in devMode webpackDevMiddleware serves the static files for us,
-  // but in production we have to do it
-  if (!devMode) {
-    app.use(express.static("./dist"));
-  }
+  // inject how to serve the frontend; this is
+  // different in dev mode and in production
+  injectExpress(app);
+
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({

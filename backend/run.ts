@@ -1,7 +1,8 @@
-import { createFrontend, WebXdc, Instances } from "./app";
+import { Express } from "express";
+import { createFrontend, WebXdc, Instances, InjectExpress } from "./app";
 import open from "open";
 
-export function run(directory: string): void {
+export function run(directory: string, inject: InjectExpress): void {
   console.log("Starting Webxdc project in: ", directory);
   const webXdc: WebXdc = {
     name: "My App",
@@ -12,7 +13,7 @@ export function run(directory: string): void {
   const peer0 = instances.add();
   const peer1 = instances.add();
 
-  const frontend = createFrontend(instances, false);
+  const frontend = createFrontend(instances, inject);
 
   frontend.listen(3000, () => {
     console.log("Starting webxdc-dev frontend");

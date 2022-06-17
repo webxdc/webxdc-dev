@@ -8,7 +8,8 @@
     "build-backend": "tsc --project tsconfig-backend.json",
     "build-frontend": "webpack --config webpack.prod.js",
     "build": "npm run clean && npm run build-backend && npm run build-frontend",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "prepublish": "npm run build"
   },
   "bin": {
     "webxdc-dev": "dist/backend/cli.js"

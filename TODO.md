@@ -16,6 +16,10 @@
 - simulate slow message sending, out of order message sending (with correct
   serial)
 
+- simulate messages that never arrive. For instance is block messages from A to
+  B, but everyone else receives updates correctly. This will reveal problems
+  with collaborative apps before users start noticing them.
+
 - clean out localstorage for port numbers? otherwise when peer starts up
   it still can have old cruft. How does this behave on localhost?
 - Start in incognito? (doesn't seem to be easy)

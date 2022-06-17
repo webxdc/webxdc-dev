@@ -90,6 +90,23 @@ Then use:
 npm run cli -- run /path/to/xdc
 ```
 
+### Making a release
+
+You can create a new npm release automatically by doing the following on the
+`main` branch:
+
+```shell
+npm version patch  # or minor, major, etc
+git push --follow-tags
+```
+
+[`npm version`](https://docs.npmjs.com/cli/v8/commands/npm-version) updates the
+version number automatically. You then need to push using `--follow-tags`
+(**NOT** `--tags``).
+
+The release process is done through a github action defined in
+`.workflows/publish.yml` which publishes to the npm registry automatically.
+
 ## Architecture
 
 This codebase consists of three pieces:

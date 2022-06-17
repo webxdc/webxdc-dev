@@ -6,7 +6,7 @@
     "dev": "ts-node-dev --project tsconfig-backend.json backend/dev-cli.ts",
     "cli": "node dist/backend/cli.js",
     "build-backend": "tsc --project tsconfig-backend.json",
-    "build-frontend": "webpack --config webpack.config.js",
+    "build-frontend": "webpack --config webpack.prod.js",
     "build": "npm run build-backend && npm run build-frontend"
   },
   "bin": {

@@ -1,7 +1,7 @@
 import { createProgram } from "./program";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpack from "webpack";
-import config from "../webpack.config.js";
+import config from "../webpack.dev.js";
 
 const compiler = webpack(config);
 

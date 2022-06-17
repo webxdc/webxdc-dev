@@ -2,15 +2,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-  mode: "development",
   entry: {
     // produce both frontend bundle as well as simulator webxdc bundle
     frontend: "./frontend/index.tsx",
     webxdc: "./sim/webxdc.ts",
-  },
-  devtool: "inline-source-map",
-  devServer: {
-    static: "./dist",
   },
   module: {
     rules: [

@@ -4,19 +4,28 @@ import expressWs from "express-ws";
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpack from "webpack";
 
-import config from "../webpack.config.js";
+// const config = require("../webpack.config.ts");
+// import config from "../webpack.config.js";
 
-const compiler = webpack(config);
+// const compiler = webpack(config);
 
 export type WebXdc = {
   name: string;
   path: string;
 };
 
-export function createFrontend(instances: Instances): Express {
+export function createFrontend(
+  instances: Instances,
+  devMode: boolean
+): Express {
   const app = express();
-  // const app = createWsExpress(["./dist"]).app;
-  app.use(webpackDevMiddleware(compiler, { writeToDisk: true }));
+
+  // app.use(webpackDevMiddleware(compiler, { writeToDisk: true }));
+  // in devMode webpackDevMiddleware serves the static files for us,
+  // but in production we have to do it
+  if (!devMode) {
+    app.use(express.static("./dist"));
+  }
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
@@ -72,7 +81,7 @@ export class Instance {
 
   start() {
     this.app.listen(this.port, () => {
-      console.log(`Starting instance at port ${this.port}`);
+      console.log(`Starting Webxdc instance at port ${this.port}`);
     });
   }
 }

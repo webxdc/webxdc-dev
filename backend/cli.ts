@@ -10,7 +10,7 @@ program
   .argument("<directory>", "directory with Webxdc")
   .description("Run Webxdc from directory")
   .action((directory) => {
-    console.log("Starting Webxdc in: ", directory);
+    console.log("Starting Webxdc project in: ", directory);
     const webXdc: WebXdc = {
       name: "My App",
       path: directory,
@@ -20,10 +20,10 @@ program
     const peer0 = instances.add();
     const peer1 = instances.add();
 
-    const frontend = createFrontend(instances);
+    const frontend = createFrontend(instances, false);
 
     frontend.listen(3000, () => {
-      console.log("Starting frontend");
+      console.log("Starting webxdc-dev frontend");
     });
 
     peer0.start();

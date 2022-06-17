@@ -1,4 +1,3 @@
-import { Express } from "express";
 import { createFrontend, WebXdc, Instances, InjectExpress } from "./app";
 import open from "open";
 

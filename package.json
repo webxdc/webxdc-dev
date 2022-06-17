@@ -1,6 +1,6 @@
 {
   "name": "webxdc-dev",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A dev tool for Webxdc",
   "scripts": {
     "dev": "ts-node-dev --project tsconfig-backend.json backend/dev-cli.ts",

@@ -45,3 +45,5 @@
 - watch mode for webpack
 
 - production build of various resources
+
+- automatic release when using npm version

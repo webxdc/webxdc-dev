@@ -30,7 +30,7 @@ const App: Component = () => {
 
   return (
     <>
-      <h1>Webxdc-dev</h1>
+      <h1>webxdc-dev</h1>
       <ul>
         <For each={instances()}>
           {(instance) => <Instance instance={instance} />}

@@ -2,4 +2,5 @@
 dist
 webpack-frontend.config.js
 webpack-sim.config.js
+webpack-frontend.prod.config.js
 public/bundle.js

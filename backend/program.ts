@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import { run } from "./run";
-import { InjectExpress } from "./app";
+import { Inject } from "./run";
 
-export function createProgram(injectExpress: InjectExpress): Command {
+export function createProgram(inject: Inject): Command {
   const program = new Command();
   program.name("webxdc-dev").description("Tool simulate Webxdc in the browser");
 
@@ -11,7 +11,7 @@ export function createProgram(injectExpress: InjectExpress): Command {
     .argument("<directory>", "directory with Webxdc")
     .description("Run Webxdc from directory")
     .action((directory) => {
-      run(directory, injectExpress);
+      run(directory, inject);
     });
   return program;
 }

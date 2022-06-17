@@ -1,3 +1,4 @@
+import path from "path";
 import express, { Express } from "express";
 import { WebSocket } from "ws";
 import expressWs from "express-ws";
@@ -11,13 +12,13 @@ export type InjectExpress = (app: Express) => void;
 
 export function createFrontend(
   instances: Instances,
-  injectExpress: InjectExpress
+  injectFrontend: InjectExpress
 ): Express {
   const app = express();
 
   // inject how to serve the frontend; this is
   // different in dev mode and in production
-  injectExpress(app);
+  injectFrontend(app);
 
   app.get("/instances", (req, res) => {
     res.json(
@@ -37,12 +38,17 @@ export function createFrontend(
   return app;
 }
 
-export function createPeer(webxdc: WebXdc): expressWs.Application {
+export function createPeer(
+  webxdc: WebXdc,
+  injectSim: InjectExpress
+): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
 
   // layer the simulated directory with webxdc tooling in front of webxdc path
-  wsInstance.app.use(express.static("./dist/webxdc"));
+  // this has to be injected as it differs between dev and production
+  injectSim(wsInstance.app as unknown as Express);
+  // now serve the webxdc project itself
   wsInstance.app.use(express.static(webxdc.path));
 
   return wsInstance.app;
@@ -84,12 +90,14 @@ export class Instances {
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
+  injectSim: InjectExpress;
 
-  constructor(webXdc: WebXdc, basePort: number) {
+  constructor(webXdc: WebXdc, injectSim: InjectExpress, basePort: number) {
     this.webXdc = webXdc;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();
+    this.injectSim = injectSim;
   }
 
   add(): Instance {
@@ -98,7 +106,7 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const app = createPeer(this.webXdc);
+    const app = createPeer(this.webXdc, this.injectSim);
     const instance = new Instance(app, port);
 
     app.ws("/webxdc", (ws, req) => {

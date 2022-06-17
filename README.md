@@ -16,29 +16,46 @@ allows you to simulate multiple users using the same application.
 
 ## Installation
 
-There are two ways to install this package. Globally works with any webxdc
-project:
+There are two ways to install this package.
 
-```sh
+### Global installation
+
+You can install the tool globally. This works with any webxdc project:
+
+```shell
 npm install -g webxdc-dev
 ```
 
-To now run webxdc projects in the dev tool, do the following:
+To now run webxdc projects with the dev tool, do the following:
 
-```sh
+```shell
 webxdc-dev run /path/to/webxdc/project
 ```
 
+### With `package.json`
+
 If your project has a `package.json`, you can also install `webxdc-dev` locally
+as a dev dependency:
+
+```shell
+npm install -D webxdc-dev
+```
+
 and integrate it into a `package.json` `scripts` section to run the current
 project:
 
 ```json
 {
   "scripts": {
-    "webxdc-dev": "npm run webxdc-dev -- run ."
+    "webxdc-dev": "webxdc-dev run ."
   }
 }
+```
+
+You can then run this script using:
+
+```shell
+npm run webxdc-dev
 ```
 
 ## Usage
@@ -55,7 +72,7 @@ changes you need to reload your browser windows to see the effect. When you
 make a backend change, the entire server is restarted and a new browser window
 is opened.
 
-```sh
+```shell
 npm run dev -- run /path/to/xdc
 ```
 
@@ -63,13 +80,13 @@ Production and development mode have differences: in production mode no
 recompilation takes place. Before release, you should test the command-line
 script in production mode. You can do this as follows:
 
-```sh
+```shell
 npm run build
 ```
 
 Then use:
 
-```sh
+```shell
 npm run cli -- run /path/to/xdc
 ```
 

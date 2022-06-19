@@ -6,7 +6,11 @@ export type Inject = {
   injectSim: InjectExpress;
 };
 
-export function run(directory: string, inject: Inject): void {
+export function run(
+  directory: string,
+  start_port: number,
+  inject: Inject
+): void {
   console.log("Starting Webxdc project in: ", directory);
   const webXdc: WebXdc = {
     name: "My App",
@@ -15,19 +19,19 @@ export function run(directory: string, inject: Inject): void {
 
   const { injectFrontend, injectSim } = inject;
 
-  const instances = new Instances(webXdc, injectSim, 3000);
+  const instances = new Instances(webXdc, injectSim, start_port);
 
   const peer0 = instances.add();
   const peer1 = instances.add();
 
   const frontend = createFrontend(instances, injectFrontend);
 
-  frontend.listen(3000, () => {
+  frontend.listen(start_port, () => {
     console.log("Starting webxdc-dev frontend");
   });
 
   peer0.start();
   peer1.start();
 
-  open("http://localhost:3000");
+  open("http://localhost:" + start_port);
 }

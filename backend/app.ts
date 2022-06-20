@@ -77,11 +77,11 @@ export class Instances {
   processor: IProcessor;
 
   constructor(
-    webXdc: WebXdcDescription,
+    webXdcDescription: WebXdcDescription,
     injectSim: InjectExpress,
     basePort: number
   ) {
-    this.webXdcDescription = webXdc;
+    this.webXdcDescription = webXdcDescription;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();

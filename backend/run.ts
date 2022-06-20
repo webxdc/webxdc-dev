@@ -1,4 +1,9 @@
-import { createFrontend, WebXdc, Instances, InjectExpress } from "./app";
+import {
+  createFrontend,
+  WebXdcDescription,
+  Instances,
+  InjectExpress,
+} from "./app";
 import open from "open";
 
 export type Inject = {
@@ -12,7 +17,7 @@ export function run(
   inject: Inject
 ): void {
   console.log("Starting Webxdc project in: ", directory);
-  const webXdc: WebXdc = {
+  const webXdc: WebXdcDescription = {
     name: "My App",
     path: directory,
   };

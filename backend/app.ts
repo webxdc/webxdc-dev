@@ -1,8 +1,9 @@
 import express, { Express } from "express";
-import { WebSocket } from "ws";
 import expressWs from "express-ws";
+import { createProcessor, IProcessor } from "./message";
+import { WebXdc } from "../types/webxdc-types";
 
-export type WebXdc = {
+export type WebXdcDescription = {
   name: string;
   path: string;
 };
@@ -38,7 +39,7 @@ export function createFrontend(
 }
 
 export function createPeer(
-  webxdc: WebXdc,
+  webxdc: WebXdcDescription,
   injectSim: InjectExpress
 ): expressWs.Application {
   const expressApp = express();
@@ -53,25 +54,12 @@ export function createPeer(
   return wsInstance.app;
 }
 
-let serial: number = 0;
-
-// XXX if we only had a single shared web socket server we'd be able
-// to use wss.clients.forEach to distribute. Is expressWs really helping or
-// is it hurting?
-function distribute(self: WebSocket, webSockets: WebSocket[], update: any) {
-  serial++;
-  update.serial = serial;
-  update.max_serial = serial; // XXX this is always the same
-  webSockets.forEach((peerWebSocket) => {
-    console.log("gossip", update);
-    peerWebSocket.send(JSON.stringify(update));
-  });
-}
-
 export class Instance {
-  webSocket: WebSocket | null = null;
-
-  constructor(public app: expressWs.Application, public port: number) {}
+  constructor(
+    public app: expressWs.Application,
+    public port: number,
+    public webXdc: WebXdc
+  ) {}
 
   start() {
     this.app.listen(this.port, () => {
@@ -81,18 +69,24 @@ export class Instance {
 }
 
 export class Instances {
-  webXdc: WebXdc;
+  webXdc: WebXdcDescription;
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
   injectSim: InjectExpress;
+  processor: IProcessor;
 
-  constructor(webXdc: WebXdc, injectSim: InjectExpress, basePort: number) {
+  constructor(
+    webXdc: WebXdcDescription,
+    injectSim: InjectExpress,
+    basePort: number
+  ) {
     this.webXdc = webXdc;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();
     this.injectSim = injectSim;
+    this.processor = createProcessor();
   }
 
   add(): Instance {
@@ -102,10 +96,22 @@ export class Instances {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
     const app = createPeer(this.webXdc, this.injectSim);
-    const instance = new Instance(app, port);
+    const instance = new Instance(
+      app,
+      port,
+      this.processor.createClient(port.toString())
+    );
 
     app.ws("/webxdc", (ws, req) => {
-      instance.webSocket = ws;
+      // XXX we set it with 0 here and that's not correct: we should
+      // somehow know what the client passed along here
+      // I think this requires introducing two message types so
+      // we only set up the update listener when the frontend sends
+      // the request
+      instance.webXdc.setUpdateListener((update) => {
+        console.log("gossip", update);
+        ws.send(JSON.stringify(update));
+      }, 0);
       // when receiving an update from this peer
       ws.on("message", (msg: string) => {
         if (typeof msg !== "string") {
@@ -117,21 +123,10 @@ export class Instances {
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         const update = parsed.update;
-        distribute(ws, this.getWebSockets(), update);
+        instance.webXdc.sendUpdate(update, "update");
       });
     });
     this.instances.set(port, instance);
     return instance;
-  }
-
-  getWebSockets(): WebSocket[] {
-    const result: WebSocket[] = [];
-    for (const instance of this.instances.values()) {
-      if (instance.webSocket == null) {
-        continue;
-      }
-      result.push(instance.webSocket);
-    }
-    return result;
   }
 }

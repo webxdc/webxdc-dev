@@ -5,26 +5,26 @@ import type {
   ReceivedUpdate,
 } from "../types/webxdc-types";
 
-interface IProcessor {
-  createClient(name: string): WebXdc;
+interface IProcessor<T> {
+  createClient(name: string): WebXdc<T>;
 }
 
-class Client implements WebXdc {
-  updateListener: UpdateListener | null = null;
+class Client<T> implements WebXdc<T> {
+  updateListener: UpdateListener<T> | null = null;
   updateSerial: number | null = null;
 
-  constructor(public processor: Processor, public name: string) {}
+  constructor(public processor: Processor<T>, public name: string) {}
 
-  sendUpdate(update: Update, descr: string): void {
+  sendUpdate(update: Update<T>, descr: string): void {
     this.processor.distribute(update, descr);
   }
 
-  setUpdateListener(listener: UpdateListener, serial: number): void {
+  setUpdateListener(listener: UpdateListener<T>, serial: number): void {
     this.updateListener = listener;
     this.updateSerial = serial;
   }
 
-  receiveUpdate(update: ReceivedUpdate) {
+  receiveUpdate(update: ReceivedUpdate<T>) {
     if (this.updateListener == null) {
       throw new Error("Received update but no listener registered");
     }
@@ -40,17 +40,17 @@ class Client implements WebXdc {
   }
 }
 
-class Processor implements IProcessor {
-  clients: Client[] = [];
+class Processor<T> implements IProcessor<T> {
+  clients: Client<T>[] = [];
   currentSerial: number = 0;
 
-  createClient(name: string): WebXdc {
+  createClient(name: string): WebXdc<T> {
     const client = new Client(this, name);
     this.clients.push(client);
     return client;
   }
 
-  distribute(update: Update, desc: string) {
+  distribute(update: Update<T>, desc: string) {
     this.currentSerial++;
     for (const client of this.clients) {
       client.receiveUpdate({
@@ -62,6 +62,6 @@ class Processor implements IProcessor {
   }
 }
 
-export function createProcessor(): IProcessor {
+export function createProcessor<T>(): IProcessor<T> {
   return new Processor();
 }

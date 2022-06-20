@@ -12,30 +12,30 @@ export type JsonValue =
   | JsonObject
   | Array<JsonValue>;
 
-export type Update = {
-  payload: JsonValue;
+export type Update<T> = {
+  payload: T;
   info?: string;
   document?: string;
   summary?: string;
 };
 
-export type ReceivedUpdate = Update & {
+export type ReceivedUpdate<T> = Update<T> & {
   serial: number;
   max_serial: number;
 };
 
-export type UpdateListener = (update: ReceivedUpdate) => void;
+export type UpdateListener<T> = (update: ReceivedUpdate<T>) => void;
 
-export type SendUpdate = (update: Update, descr: string) => void;
+export type SendUpdate<T> = (update: Update<T>, descr: string) => void;
 
-export type SetUpdateListener = (
-  listener: UpdateListener,
+export type SetUpdateListener<T> = (
+  listener: UpdateListener<T>,
   serial: number
 ) => void;
 
-export type WebXdc = {
-  sendUpdate: SendUpdate;
-  setUpdateListener: SetUpdateListener;
+export type WebXdc<T = JsonValue> = {
+  sendUpdate: SendUpdate<T>;
+  setUpdateListener: SetUpdateListener<T>;
   selfAddr: string;
   selfName: string;
 };

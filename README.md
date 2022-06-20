@@ -32,6 +32,13 @@ To now run webxdc projects with the dev tool, do the following:
 webxdc-dev run /path/to/webxdc/project
 ```
 
+By default the dev tool is opened on port 3000 and following. You can change the
+base port number using `--port`, so for instance:
+
+```shell
+webxdc-dev run --port 4000 /path/to/webxdc/project
+```
+
 ### With `package.json`
 
 If your project has a `package.json`, you can also install `webxdc-dev` locally
@@ -101,8 +108,8 @@ git push --follow-tags
 ```
 
 [`npm version`](https://docs.npmjs.com/cli/v8/commands/npm-version) updates the
-version number automatically. You then need to push using `--follow-tags`
-(**NOT** `--tags``).
+version number automatically and also puts the latest date in `CHANGELOG.md`.
+You then need to push using `--follow-tags` (**NOT** `--tags``).
 
 The release process is done through a github action defined in
 `.workflows/publish.yml` which publishes to the npm registry automatically.

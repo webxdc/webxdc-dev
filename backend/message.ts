@@ -12,7 +12,7 @@ interface IProcessor<T> {
 class Client<T> implements WebXdc<T> {
   updateListener: UpdateListener<T> | null = null;
   updateSerial: number | null = null;
-  buffer: ReceivedUpdate<T>[] = [];
+  updates: ReceivedUpdate<T>[] = [];
 
   constructor(public processor: Processor<T>, public name: string) {}
 
@@ -23,13 +23,13 @@ class Client<T> implements WebXdc<T> {
   setUpdateListener(listener: UpdateListener<T>, serial: number): void {
     this.updateListener = listener;
     this.updateSerial = serial;
-    for (const update of this.buffer.slice(serial)) {
-      this.updateListener({ ...update, max_serial: this.buffer.length });
+    for (const update of this.updates.slice(serial)) {
+      this.updateListener({ ...update, max_serial: this.updates.length });
     }
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
-    this.buffer.push(update);
+    this.updates.push(update);
 
     if (this.updateListener == null || this.updateSerial == null) {
       return;

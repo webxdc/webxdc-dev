@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
 import { createProcessor, IProcessor } from "./message";
-import { WebXdc } from "../types/webxdc-types";
+import { JsonValue, WebXdc, ReceivedUpdate } from "../types/webxdc-types";
 
 export type WebXdcDescription = {
   name: string;
@@ -103,15 +103,6 @@ export class Instances {
     );
 
     app.ws("/webxdc", (ws, req) => {
-      // XXX we set it with 0 here and that's not correct: we should
-      // somehow know what the client passed along here
-      // I think this requires introducing two message types so
-      // we only set up the update listener when the frontend sends
-      // the request
-      instance.webXdc.setUpdateListener((update) => {
-        console.log("gossip", update);
-        ws.send(JSON.stringify(update));
-      }, 0);
       // when receiving an update from this peer
       ws.on("message", (msg: string) => {
         if (typeof msg !== "string") {
@@ -122,11 +113,40 @@ export class Instances {
         }
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
-        const update = parsed.update;
-        instance.webXdc.sendUpdate(update, "update");
+        if (isSendUpdateMessage(parsed)) {
+          instance.webXdc.sendUpdate(parsed.update, "update");
+        } else if (isSetUpdateListenerMessage(parsed)) {
+          instance.webXdc.setUpdateListener((update) => {
+            console.log("gossip", update);
+            ws.send(JSON.stringify(update));
+          }, parsed.serial);
+        } else {
+          throw new Error(`Unknown message: ${JSON.stringify(parsed)}`);
+        }
       });
     });
     this.instances.set(port, instance);
     return instance;
   }
+}
+
+type SendUpdateMessage = {
+  type: "sendUpdate";
+  update: ReceivedUpdate<JsonValue>;
+  descr: string;
+};
+
+type SetUpdateListenerMessage = {
+  type: "setUpdateListener";
+  serial: number;
+};
+
+function isSendUpdateMessage(value: any): value is SendUpdateMessage {
+  return value.type === "sendUpdate";
+}
+
+function isSetUpdateListenerMessage(
+  value: any
+): value is SetUpdateListenerMessage {
+  return value.type === "setUpdateListener";
 }

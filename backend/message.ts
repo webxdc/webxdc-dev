@@ -20,7 +20,10 @@ class Client<T> implements WebXdc<T> {
     this.processor.distribute(update, descr);
   }
 
-  setUpdateListener(listener: UpdateListener<T>, serial: number): void {
+  async setUpdateListener(
+    listener: UpdateListener<T>,
+    serial: number
+  ): Promise<void> {
     this.updateListener = listener;
     this.updateSerial = serial;
     this.processor.catchUp(listener, serial);

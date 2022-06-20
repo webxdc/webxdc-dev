@@ -32,7 +32,7 @@ export type SendUpdate<T> = (update: Update<T>, descr: string) => void;
 export type SetUpdateListener<T> = (
   listener: UpdateListener<T>,
   serial: number
-) => void;
+) => Promise<void>;
 
 export type WebXdc<T = JsonValue> = {
   sendUpdate: SendUpdate<T>;

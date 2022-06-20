@@ -3,16 +3,16 @@ import type {
   Update,
   UpdateListener,
   ReceivedUpdate,
+  JsonValue,
 } from "../types/webxdc-types";
 
-interface IProcessor<T> {
+export interface IProcessor<T = JsonValue> {
   createClient(name: string): WebXdc<T>;
 }
 
 class Client<T> implements WebXdc<T> {
   updateListener: UpdateListener<T> | null = null;
   updateSerial: number | null = null;
-  updates: ReceivedUpdate<T>[] = [];
 
   constructor(public processor: Processor<T>, public name: string) {}
 
@@ -23,14 +23,10 @@ class Client<T> implements WebXdc<T> {
   setUpdateListener(listener: UpdateListener<T>, serial: number): void {
     this.updateListener = listener;
     this.updateSerial = serial;
-    for (const update of this.updates.slice(serial)) {
-      this.updateListener({ ...update, max_serial: this.updates.length });
-    }
+    this.processor.catchUp(listener, serial);
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
-    this.updates.push(update);
-
     if (this.updateListener == null || this.updateSerial == null) {
       return;
     }
@@ -53,6 +49,7 @@ class Client<T> implements WebXdc<T> {
 class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
+  updates: ReceivedUpdate<T>[] = [];
 
   createClient(name: string): WebXdc<T> {
     const client = new Client(this, name);
@@ -62,16 +59,28 @@ class Processor<T> implements IProcessor<T> {
 
   distribute(update: Update<T>, desc: string) {
     this.currentSerial++;
+    const receivedUpdate: ReceivedUpdate<T> = {
+      ...update,
+      serial: this.currentSerial,
+      max_serial: this.updates.length + 1,
+    };
+    this.updates.push(receivedUpdate);
     for (const client of this.clients) {
-      client.receiveUpdate({
+      client.receiveUpdate(receivedUpdate);
+    }
+  }
+
+  catchUp(updateListener: UpdateListener<T>, serial: number) {
+    const updates = this.updates;
+    for (const update of updates.slice(serial)) {
+      updateListener({
         ...update,
-        serial: this.currentSerial,
-        max_serial: this.currentSerial,
+        max_serial: updates.length,
       });
     }
   }
 }
 
-export function createProcessor<T>(): IProcessor<T> {
+export function createProcessor<T = JsonValue>(): IProcessor<T> {
   return new Processor();
 }

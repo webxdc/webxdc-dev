@@ -51,7 +51,6 @@ class Processor<T> implements IProcessor<T> {
   }
 
   distribute(update: Update<T>, desc: string) {
-    this.currentSerial++;
     for (const client of this.clients) {
       client.receiveUpdate({
         ...update,
@@ -59,6 +58,7 @@ class Processor<T> implements IProcessor<T> {
         max_serial: this.currentSerial,
       });
     }
+    this.currentSerial++;
   }
 }
 

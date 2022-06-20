@@ -13,7 +13,9 @@ test("distribute to self", () => {
 
   client0.sendUpdate({ payload: "Hello" }, "update");
 
-  expect(client0Heard).toMatchObject([{ payload: "Hello", serial: 1 }]);
+  expect(client0Heard).toMatchObject([
+    { payload: "Hello", serial: 1, max_serial: 1 },
+  ]);
 });
 
 test("distribute to self and other", () => {
@@ -35,12 +37,12 @@ test("distribute to self and other", () => {
   client0.sendUpdate({ payload: "Hello" }, "update");
   client1.sendUpdate({ payload: "Bye" }, "update 2");
   expect(client0Heard).toMatchObject([
-    { payload: "Hello", serial: 1 },
-    { payload: "Bye", serial: 2 },
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    { payload: "Hello", serial: 1 },
-    { payload: "Bye", serial: 2 },
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 });
 
@@ -63,10 +65,12 @@ test("setUpdateListener serial should skip older", () => {
   client0.sendUpdate({ payload: "Hello" }, "update");
   client1.sendUpdate({ payload: "Bye" }, "update 2");
   expect(client0Heard).toMatchObject([
-    { payload: "Hello", serial: 1 },
-    { payload: "Bye", serial: 2 },
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
-  expect(client1Heard).toMatchObject([{ payload: "Bye", serial: 2 }]);
+  expect(client1Heard).toMatchObject([
+    { payload: "Bye", serial: 2, max_serial: 2 },
+  ]);
 });
 
 test("other starts listening later", () => {
@@ -82,8 +86,12 @@ test("other starts listening later", () => {
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
+  client1.sendUpdate({ payload: "Bye" }, "update 2");
 
-  expect(client0Heard).toMatchObject([{ payload: "Hello", serial: 1 }]);
+  expect(client0Heard).toMatchObject([
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
+  ]);
   // we only join later, so we haven't heard a thing yet
   expect(client1Heard).toMatchObject([]);
 
@@ -91,8 +99,14 @@ test("other starts listening later", () => {
     client1Heard.push(update);
   }, 0);
 
-  expect(client0Heard).toMatchObject([{ payload: "Hello", serial: 1 }]);
-  expect(client1Heard).toMatchObject([{ payload: "Hello", serial: 1 }]);
+  expect(client0Heard).toMatchObject([
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
+  ]);
+  expect(client1Heard).toMatchObject([
+    { payload: "Hello", serial: 1, max_serial: 2 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
+  ]);
 });
 
 test("other starts listening later but is partially caught up", () => {
@@ -110,8 +124,8 @@ test("other starts listening later but is partially caught up", () => {
   client0.sendUpdate({ payload: "Hello" }, "update");
   client1.sendUpdate({ payload: "Bye" }, "update 2");
   expect(client0Heard).toMatchObject([
-    { payload: "Hello", serial: 1 },
-    { payload: "Bye", serial: 2 },
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   // we only join later, so we haven't heard a thing yet
   expect(client1Heard).toMatchObject([]);
@@ -122,8 +136,10 @@ test("other starts listening later but is partially caught up", () => {
   }, 1);
 
   expect(client0Heard).toMatchObject([
-    { payload: "Hello", serial: 1 },
-    { payload: "Bye", serial: 2 },
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
-  expect(client1Heard).toMatchObject([{ payload: "Bye", serial: 2 }]);
+  expect(client1Heard).toMatchObject([
+    { payload: "Bye", serial: 2, max_serial: 2 },
+  ]);
 });

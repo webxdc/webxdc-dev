@@ -24,7 +24,7 @@ class Client<T> implements WebXdc<T> {
     this.updateListener = listener;
     this.updateSerial = serial;
     for (const update of this.buffer.slice(serial)) {
-      this.updateListener(update);
+      this.updateListener({ ...update, max_serial: this.buffer.length });
     }
   }
 

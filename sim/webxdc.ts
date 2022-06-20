@@ -1,4 +1,4 @@
-import { WebXdc } from "./webxdc-types";
+import { WebXdc } from "../types/webxdc-types";
 
 const url = `ws://${document.location.host}/webxdc`;
 const socket = new WebSocket(url);

@@ -14,9 +14,9 @@ export type JsonValue =
 
 export type Update = {
   payload: JsonValue;
-  info: string;
-  document: string;
-  summary: string;
+  info?: string;
+  document?: string;
+  summary?: string;
 };
 
 export type ReceivedUpdate = Update & {

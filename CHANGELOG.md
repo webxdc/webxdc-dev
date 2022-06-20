@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.3.1][] - 2022-06-20
+
 ### Fixed
 
 - The build was broken due to the addition of the `types` directory. Unbreak
@@ -52,3 +54,7 @@ release date when you use `npm version` (see `README.md`).
 [0.2.1]: https://github.com/webxdc/webxdc-dev/tree/v0.2.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/webxdc/webxdc-dev/tree/v0.3.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/webxdc/webxdc-dev/tree/v0.3.1

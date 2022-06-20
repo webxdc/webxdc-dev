@@ -12,6 +12,7 @@ interface IProcessor<T> {
 class Client<T> implements WebXdc<T> {
   updateListener: UpdateListener<T> | null = null;
   updateSerial: number | null = null;
+  buffer: ReceivedUpdate<T>[] = [];
 
   constructor(public processor: Processor<T>, public name: string) {}
 
@@ -22,14 +23,16 @@ class Client<T> implements WebXdc<T> {
   setUpdateListener(listener: UpdateListener<T>, serial: number): void {
     this.updateListener = listener;
     this.updateSerial = serial;
+    for (const update of this.buffer.slice(serial)) {
+      this.updateListener(update);
+    }
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
-    if (this.updateListener == null) {
-      throw new Error("Received update but no listener registered");
-    }
-    if (this.updateSerial == null) {
-      throw new Error("Received update but no update serial registered");
+    this.buffer.push(update);
+
+    if (this.updateListener == null || this.updateSerial == null) {
+      return;
     }
     // don't send the update if it's not required
     if (update.serial <= this.updateSerial) {

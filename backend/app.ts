@@ -39,7 +39,7 @@ export function createFrontend(
 }
 
 export function createPeer(
-  webxdc: WebXdcDescription,
+  webXdcDescription: WebXdcDescription,
   injectSim: InjectExpress
 ): expressWs.Application {
   const expressApp = express();
@@ -49,7 +49,7 @@ export function createPeer(
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
   // now serve the webxdc project itself
-  wsInstance.app.use(express.static(webxdc.path));
+  wsInstance.app.use(express.static(webXdcDescription.path));
 
   return wsInstance.app;
 }
@@ -69,7 +69,7 @@ export class Instance {
 }
 
 export class Instances {
-  webXdc: WebXdcDescription;
+  webXdcDescription: WebXdcDescription;
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
@@ -81,7 +81,7 @@ export class Instances {
     injectSim: InjectExpress,
     basePort: number
   ) {
-    this.webXdc = webXdc;
+    this.webXdcDescription = webXdc;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();
@@ -95,7 +95,7 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const app = createPeer(this.webXdc, this.injectSim);
+    const app = createPeer(this.webXdcDescription, this.injectSim);
     const instance = new Instance(
       app,
       port,

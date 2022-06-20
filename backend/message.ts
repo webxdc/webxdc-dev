@@ -28,6 +28,13 @@ class Client<T> implements WebXdc<T> {
     if (this.updateListener == null) {
       throw new Error("Received update but no listener registered");
     }
+    if (this.updateSerial == null) {
+      throw new Error("Received update but no update serial registered");
+    }
+    // don't send the update if it's not required
+    if (update.serial <= this.updateSerial) {
+      return;
+    }
     this.updateListener(update);
   }
 
@@ -51,6 +58,7 @@ class Processor<T> implements IProcessor<T> {
   }
 
   distribute(update: Update<T>, desc: string) {
+    this.currentSerial++;
     for (const client of this.clients) {
       client.receiveUpdate({
         ...update,
@@ -58,7 +66,6 @@ class Processor<T> implements IProcessor<T> {
         max_serial: this.currentSerial,
       });
     }
-    this.currentSerial++;
   }
 }
 

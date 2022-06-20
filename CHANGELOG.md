@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.3.0][] - 2022-06-20
+
 ### Changed
 
 - Better implementation of webxdc: when you reload or reconnect, you get the
@@ -43,3 +45,7 @@ release date when you use `npm version` (see `README.md`).
 
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.2.1...HEAD
 [0.2.1]: https://github.com/webxdc/webxdc-dev/tree/v0.2.1
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/webxdc/webxdc-dev/tree/v0.3.0

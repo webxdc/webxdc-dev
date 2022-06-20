@@ -1,6 +1,7 @@
 import webpackDevMiddleware from "webpack-dev-middleware";
 import webpack from "webpack";
 import express from "express";
+import path from "path";
 import { createProgram } from "./program";
 import config from "../webpack.dev.js";
 
@@ -16,7 +17,7 @@ const program = createProgram({
   },
   injectSim: (app) => {
     // in dev mode we serve the files from the dist directory
-    app.use(express.static("./dist/webxdc"));
+    app.use(express.static(path.resolve(__dirname, "../dist/webxdc")));
   },
 });
 

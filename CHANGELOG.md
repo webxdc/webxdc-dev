@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Fixed
+
+- Make it so that we use an absolute path to find the `dist` directory in
+  development mode so that the path where you start the tool shouldn't matter
+  anymore.
+
 ## [0.2.1][] - 2022-06-20
 
 ### Fixed

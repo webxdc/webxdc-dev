@@ -64,10 +64,6 @@ function distribute(self: WebSocket, webSockets: WebSocket[], update: any) {
   update.serial = serial;
   update.max_serial = serial; // XXX this is always the same
   webSockets.forEach((peerWebSocket) => {
-    if (peerWebSocket === self) {
-      // we shouldn't send to ourselves
-      return;
-    }
     console.log("gossip", update);
     peerWebSocket.send(JSON.stringify(update));
   });

@@ -17,14 +17,14 @@ export function run(
   inject: Inject
 ): void {
   console.log("Starting Webxdc project in: ", directory);
-  const webXdc: WebXdcDescription = {
+  const webXdcDescription: WebXdcDescription = {
     name: "My App",
     path: directory,
   };
 
   const { injectFrontend, injectSim } = inject;
 
-  const instances = new Instances(webXdc, injectSim, start_port);
+  const instances = new Instances(webXdcDescription, injectSim, start_port);
 
   const peer0 = instances.add();
   const peer1 = instances.add();

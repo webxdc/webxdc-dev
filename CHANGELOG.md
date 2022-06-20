@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [0.2.1][] - 2022-06-20
 
+### Fixed
+
+- Use `version-changelog` to maintain changelog as it lets us maintain a manual
+  changelog.
+
 ## [v0.2.0] - 2021-06-20
 
 ### Added
@@ -22,6 +27,5 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 - Better `selfAddr` and `selfName`.
 
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.2.1...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.2.1...HEAD
 [0.2.1]: https://github.com/webxdc/webxdc-dev/tree/v0.2.1

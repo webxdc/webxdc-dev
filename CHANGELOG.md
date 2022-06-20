@@ -2,7 +2,15 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+The `unreleased` heading is updated automatically to the right version and
+release date when you use `npm version` (see `README.md`).
+
 ## [Unreleased]
+
+### Changed
+
+- Better implementation of webxdc: when you reload or reconnect, you get the
+  correct messages.
 
 ### Fixed
 

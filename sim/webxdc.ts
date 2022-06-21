@@ -1,54 +1,63 @@
-import { WebXdc } from "../types/webxdc-types";
+import { JsonValue } from "../types/webxdc-types";
+import {
+  Transport,
+  TransportMessageCallback,
+  TransportConnectCallback,
+  createWebXdc,
+} from "./create";
 
 const url = `ws://${document.location.host}/webxdc`;
-const socket = new WebSocket(url);
 
-let currentMessageEventListener: ((event: Event) => void) | null = null;
-let currentOpenEventListener: (() => void) | null = null;
+type SocketMessageListener = (event: Event) => void;
 
-const webXdc: WebXdc = {
-  sendUpdate: (update, descr) => {
-    socket.send(JSON.stringify({ type: "sendUpdate", update, descr }));
-    console.info("send", { update, descr });
-  },
-  setUpdateListener: (listener, serial = 0): Promise<void> => {
-    // remove old message even listener if necessary
-    if (currentMessageEventListener != null) {
-      socket.removeEventListener("message", currentMessageEventListener);
+class SocketTransport implements Transport {
+  socket: WebSocket;
+  messageListener: SocketMessageListener | null = null;
+
+  constructor(url: string) {
+    this.socket = new WebSocket(url);
+  }
+
+  send(data: JsonValue): void {
+    this.socket.send(JSON.stringify(data));
+  }
+
+  onMessage(callback: TransportMessageCallback): void {
+    if (this.messageListener != null) {
+      this.socket.removeEventListener("message", this.messageListener);
     }
-    // send any updates to the server
-    const eventListener = (event: Event): void => {
-      const receivedUpdate = JSON.parse((event as any).data);
-      console.info("recv", receivedUpdate);
-      listener(receivedUpdate);
+    const listener = (event: Event): void => {
+      callback(JSON.parse((event as any).data));
     };
-    currentMessageEventListener = eventListener;
-    socket.addEventListener("message", eventListener);
+    this.messageListener = listener;
 
-    // remove any current open event listener
-    if (currentOpenEventListener != null) {
-      socket.removeEventListener("open", currentOpenEventListener);
-    }
+    this.socket.addEventListener("message", listener);
+  }
 
-    if (socket.readyState === 0) {
+  onConnect(callback: TransportConnectCallback): void {
+    const readyState = this.socket.readyState;
+    if (readyState === 0) {
       // if the socket is connecting, we send the information
       // as soon as we're open
-      const openEventListener = (): void => {
-        socket.send(JSON.stringify({ type: "setUpdateListener", serial }));
+      const listener = (): void => {
+        callback();
+        // only listen to open once
+        this.socket.removeEventListener("open", listener);
       };
-      currentOpenEventListener = openEventListener;
-      socket.addEventListener("open", openEventListener);
-    } else if (socket.readyState === 1) {
+      this.socket.addEventListener("open", callback);
+    } else if (readyState === 1) {
       // if it's already open, we send the information immediately
-      socket.send(JSON.stringify({ type: "setUpdateListener", serial }));
+      callback();
     } else {
-      throw new Error("Cannot access socket to register setUpdateListener");
+      throw new Error(`SocketTransport: socket not ready: ${readyState}`);
     }
-    // XXX this isn't correct yet
-    return Promise.resolve();
-  },
-  selfAddr: `device@${document.location.port}`,
-  selfName: document.location.port,
-};
+  }
+  address() {
+    return `device@${document.location.port}`;
+  }
+  name() {
+    return document.location.port;
+  }
+}
 
-(window as any).webxdc = webXdc;
+(window as any).webxdc = createWebXdc(new SocketTransport(url));

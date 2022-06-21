@@ -7,8 +7,8 @@ test("distribute to self", () => {
 
   const client0Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -26,12 +26,12 @@ test("distribute to self and other", () => {
   const client0Heard: ReceivedUpdate<string>[] = [];
   const client1Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
-  client1.setUpdateListener((update) => {
-    client1Heard.push(update);
+  client1.setUpdateListenerMulti((updates) => {
+    client1Heard.push(...updates);
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -54,12 +54,12 @@ test("setUpdateListener serial should skip older", () => {
   const client0Heard: ReceivedUpdate<string>[] = [];
   const client1Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
-  client1.setUpdateListener((update) => {
-    client1Heard.push(update);
+  client1.setUpdateListenerMulti((updates) => {
+    client1Heard.push(...updates);
   }, 1);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -81,8 +81,8 @@ test("other starts listening later", () => {
   const client0Heard: ReceivedUpdate<string>[] = [];
   const client1Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -95,8 +95,8 @@ test("other starts listening later", () => {
   // we only join later, so we haven't heard a thing yet
   expect(client1Heard).toMatchObject([]);
 
-  client1.setUpdateListener((update) => {
-    client1Heard.push(update);
+  client1.setUpdateListenerMulti((updates) => {
+    client1Heard.push(...updates);
   }, 0);
 
   expect(client0Heard).toMatchObject([
@@ -116,8 +116,8 @@ test("client is created later and needs to catch up", () => {
   const client0Heard: ReceivedUpdate<string>[] = [];
   const client1Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -132,8 +132,8 @@ test("client is created later and needs to catch up", () => {
   expect(client1Heard).toMatchObject([]);
   const client1 = processor.createClient("3002");
 
-  client1.setUpdateListener((update) => {
-    client1Heard.push(update);
+  client1.setUpdateListenerMulti((updates) => {
+    client1Heard.push(...updates);
   }, 0);
 
   expect(client0Heard).toMatchObject([
@@ -154,8 +154,8 @@ test("other starts listening later but is partially caught up", () => {
   const client0Heard: ReceivedUpdate<string>[] = [];
   const client1Heard: ReceivedUpdate<string>[] = [];
 
-  client0.setUpdateListener((update) => {
-    client0Heard.push(update);
+  client0.setUpdateListenerMulti((updates) => {
+    client0Heard.push(...updates);
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -168,8 +168,8 @@ test("other starts listening later but is partially caught up", () => {
   expect(client1Heard).toMatchObject([]);
 
   // start at 1, as we're already partially caught up
-  client1.setUpdateListener((update) => {
-    client1Heard.push(update);
+  client1.setUpdateListenerMulti((updates) => {
+    client1Heard.push(...updates);
   }, 1);
 
   expect(client0Heard).toMatchObject([

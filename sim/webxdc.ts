@@ -30,16 +30,16 @@ const webXdc: WebXdc = {
       socket.removeEventListener("open", currentOpenEventListener);
     }
 
-    // if the socket is connecting, we send the information
-    // as soon as we're open
     if (socket.readyState === 0) {
+      // if the socket is connecting, we send the information
+      // as soon as we're open
       const openEventListener = (): void => {
         socket.send(JSON.stringify({ type: "setUpdateListener", serial }));
       };
       currentOpenEventListener = openEventListener;
       socket.addEventListener("open", openEventListener);
     } else if (socket.readyState === 1) {
-      // if it's open, we send the information immediately
+      // if it's already open, we send the information immediately
       socket.send(JSON.stringify({ type: "setUpdateListener", serial }));
     } else {
       throw new Error("Cannot access socket to register setUpdateListener");

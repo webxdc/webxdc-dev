@@ -7,6 +7,20 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Fixed
+
+- `setUpdateListener` now correctly resolves the promise once messages
+  have been received.
+
+### Changed
+
+- Backend now sends multiple messages at once to support `setUpdateListener`
+  promise.
+
+- Transport mechanism for webxdc client.
+
+- Tests for webxdc client.
+
 ## [0.3.1][] - 2022-06-20
 
 ### Fixed
@@ -54,7 +68,5 @@ release date when you use `npm version` (see `README.md`).
 [0.2.1]: https://github.com/webxdc/webxdc-dev/tree/v0.2.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/webxdc/webxdc-dev/tree/v0.3.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.1...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.1...HEAD
 [0.3.1]: https://github.com/webxdc/webxdc-dev/tree/v0.3.1

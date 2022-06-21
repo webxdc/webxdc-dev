@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.5.0][] - 2022-06-21
+
 ### Added
 
 - Added the ability to run Webxdc applications on a URL. This means you can
@@ -86,3 +88,7 @@ release date when you use `npm version` (see `README.md`).
 [0.3.1]: https://github.com/webxdc/webxdc-dev/tree/v0.3.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/webxdc/webxdc-dev/tree/v0.4.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/webxdc/webxdc-dev/tree/v0.5.0

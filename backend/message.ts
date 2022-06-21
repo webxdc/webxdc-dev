@@ -1,17 +1,28 @@
 import type {
-  WebXdc,
   Update,
-  UpdateListener,
   ReceivedUpdate,
   JsonValue,
+  SendUpdate,
 } from "../types/webxdc-types";
 
+type UpdateListenerMulti<T> = (updates: ReceivedUpdate<T>[]) => void;
+
+type SetUpdateListenerMulti<T> = (
+  listener: UpdateListenerMulti<T>,
+  serial: number
+) => Promise<void>;
+
+export type WebXdcMulti<T = JsonValue> = {
+  sendUpdate: SendUpdate<T>;
+  setUpdateListenerMulti: SetUpdateListenerMulti<T>;
+};
+
 export interface IProcessor<T = JsonValue> {
-  createClient(name: string): WebXdc<T>;
+  createClient(name: string): WebXdcMulti<T>;
 }
 
-class Client<T> implements WebXdc<T> {
-  updateListener: UpdateListener<T> | null = null;
+class Client<T> implements WebXdcMulti<T> {
+  updateListener: UpdateListenerMulti<T> | null = null;
   updateSerial: number | null = null;
 
   constructor(public processor: Processor<T>, public name: string) {}
@@ -20,13 +31,14 @@ class Client<T> implements WebXdc<T> {
     this.processor.distribute(update, descr);
   }
 
-  async setUpdateListener(
-    listener: UpdateListener<T>,
+  async setUpdateListenerMulti(
+    listener: UpdateListenerMulti<T>,
     serial: number
   ): Promise<void> {
     this.updateListener = listener;
     this.updateSerial = serial;
     this.processor.catchUp(listener, serial);
+    return Promise.resolve();
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
@@ -37,15 +49,7 @@ class Client<T> implements WebXdc<T> {
     if (update.serial <= this.updateSerial) {
       return;
     }
-    this.updateListener(update);
-  }
-
-  get selfAddr() {
-    return this.name;
-  }
-
-  get selfName() {
-    return this.name;
+    this.updateListener([update]);
   }
 }
 
@@ -54,7 +58,7 @@ class Processor<T> implements IProcessor<T> {
   currentSerial: number = 0;
   updates: ReceivedUpdate<T>[] = [];
 
-  createClient(name: string): WebXdc<T> {
+  createClient(name: string): WebXdcMulti<T> {
     const client = new Client(this, name);
     this.clients.push(client);
     return client;
@@ -73,14 +77,13 @@ class Processor<T> implements IProcessor<T> {
     }
   }
 
-  catchUp(updateListener: UpdateListener<T>, serial: number) {
+  catchUp(updateListener: UpdateListenerMulti<T>, serial: number) {
     const updates = this.updates;
-    for (const update of updates.slice(serial)) {
-      updateListener({
-        ...update,
-        max_serial: updates.length,
-      });
-    }
+    updateListener(
+      updates
+        .slice(serial)
+        .map((update) => ({ ...update, max_serial: updates.length }))
+    );
   }
 }
 

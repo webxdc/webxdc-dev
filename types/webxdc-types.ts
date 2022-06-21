@@ -28,7 +28,6 @@ export type UpdateListener<T> = (update: ReceivedUpdate<T>) => void;
 
 export type SendUpdate<T> = (update: Update<T>, descr: string) => void;
 
-// XXX this should resolve a promise
 export type SetUpdateListener<T> = (
   listener: UpdateListener<T>,
   serial: number

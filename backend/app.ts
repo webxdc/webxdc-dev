@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
-import { createProcessor, IProcessor } from "./message";
-import { JsonValue, WebXdc, ReceivedUpdate } from "../types/webxdc-types";
+import { createProcessor, IProcessor, WebXdcMulti } from "./message";
+import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 
 export type WebXdcDescription = {
   name: string;
@@ -58,7 +58,7 @@ export class Instance {
   constructor(
     public app: expressWs.Application,
     public port: number,
-    public webXdc: WebXdc
+    public webXdc: WebXdcMulti
   ) {}
 
   start() {
@@ -116,9 +116,9 @@ export class Instances {
         if (isSendUpdateMessage(parsed)) {
           instance.webXdc.sendUpdate(parsed.update, "update");
         } else if (isSetUpdateListenerMessage(parsed)) {
-          instance.webXdc.setUpdateListener((update) => {
-            console.log("gossip", update);
-            ws.send(JSON.stringify(update));
+          instance.webXdc.setUpdateListenerMulti((updates) => {
+            console.log("gossip", updates);
+            ws.send(JSON.stringify(updates));
           }, parsed.serial);
         } else {
           throw new Error(`Unknown message: ${JSON.stringify(parsed)}`);

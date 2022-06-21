@@ -8,21 +8,21 @@ export function createProgram(inject: Inject): Command {
 
   program
     .command("run")
-    .argument("<directory>", "directory with Webxdc")
+    .argument("<location>", "Webxdc directory or URL to proxy")
     .option(
       "-p, --port <port>",
       "start port for controller, instance ports are incremented by one each",
       "3000"
     )
     .description("Run Webxdc from directory")
-    .action((directory, portString) => {
+    .action((location, portString) => {
       const port = Number(portString.port);
       if (isNaN(port) || port < 0 || port > 65535) {
         throw new Error(
           "provided port is invalid: " + JSON.stringify(portString)
         );
       }
-      run(directory, Number(port), inject);
+      run(location, Number(port), inject);
     });
   return program;
 }

@@ -12,14 +12,14 @@ export type Inject = {
 };
 
 export function run(
-  directory: string,
+  location: string,
   start_port: number,
   inject: Inject
 ): void {
-  console.log("Starting Webxdc project in: ", directory);
+  console.log("Starting Webxdc project in: ", location);
   const webXdcDescription: WebXdcDescription = {
     name: "My App",
-    path: directory,
+    location: location,
   };
 
   const { injectFrontend, injectSim } = inject;

@@ -2,10 +2,11 @@ import express, { Express } from "express";
 import expressWs from "express-ws";
 import { createProcessor, IProcessor, WebXdcMulti } from "./message";
 import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 export type WebXdcDescription = {
   name: string;
-  path: string;
+  location: string;
 };
 
 export type InjectExpress = (app: Express) => void;
@@ -48,9 +49,21 @@ export function createPeer(
   // layer the simulated directory with webxdc tooling in front of webxdc path
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
-  // now serve the webxdc project itself
-  wsInstance.app.use(express.static(webXdcDescription.path));
 
+  const location = webXdcDescription.location;
+  if (location.startsWith("http://")) {
+    // serve webxdc project from URL by proxying
+    wsInstance.app.use(
+      "/",
+      createProxyMiddleware(["**", "!/webxdc.js"], {
+        target: location,
+        ws: false,
+      })
+    );
+  } else {
+    // serve webxdc project from directory
+    wsInstance.app.use(express.static(location));
+  }
   return wsInstance.app;
 }
 

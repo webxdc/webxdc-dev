@@ -32,8 +32,18 @@ To now run webxdc projects with the dev tool, do the following:
 webxdc-dev run /path/to/webxdc/project
 ```
 
-By default the dev tool is opened on port 3000 and following. You can change the
-base port number using `--port`, so for instance:
+When you are developing your webxdc application, you may be using a development
+server like vite or webpack that support hot reloading. You can also run
+`webxdc-dev` against such a server directly. For instance if you have your
+project under development running on `http://localhost:8000`, this is how you
+can run it:
+
+```shell
+webxdc-dev run http://localhost:8000
+```
+
+By default the dev tool is opened on port 3000 and following. You can change
+the base port number using `--port`, so for instance:
 
 ```shell
 webxdc-dev run --port 4000 /path/to/webxdc/project
@@ -55,6 +65,16 @@ project:
 {
   "scripts": {
     "webxdc-dev": "webxdc-dev run ."
+  }
+}
+```
+
+Alternatively if you want to run against the dev server (say on `http://localhost:8000`), you can do;
+
+```json
+{
+  "scripts": {
+    "webxdc-dev": "webxdc-dev run http://localhost:8000"
   }
 }
 ```

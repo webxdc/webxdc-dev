@@ -7,6 +7,18 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- Added the ability to run Webxdc applications on a URL. This means you can
+  start your dev server on, say, `http://localhost:8000` and then use:
+
+  ```shell
+  webxdc-dev run http://localhost:8000
+  ```
+
+  This is handy when you have a development server such as webpack or vite
+  running for your Webxdc project.
+
 ## [0.4.0][] - 2022-06-21
 
 ### Fixed
@@ -72,7 +84,5 @@ release date when you use `npm version` (see `README.md`).
 [0.3.0]: https://github.com/webxdc/webxdc-dev/tree/v0.3.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.3.1...HEAD
 [0.3.1]: https://github.com/webxdc/webxdc-dev/tree/v0.3.1
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/webxdc/webxdc-dev/tree/v0.4.0

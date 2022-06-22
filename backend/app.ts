@@ -31,6 +31,7 @@ export function createFrontend(
     instance.start();
     res.json({
       status: "ok",
+      port: instance.port,
     });
   });
   return app;

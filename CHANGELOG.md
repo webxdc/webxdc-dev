@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- Added the ability to run an `.xdc` file directly with `webxdc-dev run`.
+
 ## [0.5.2][] - 2022-06-22
 
 ### Changed
@@ -118,7 +122,5 @@ release date when you use `npm version` (see `README.md`).
 [0.5.0]: https://github.com/webxdc/webxdc-dev/tree/v0.5.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.1...HEAD
 [0.5.1]: https://github.com/webxdc/webxdc-dev/tree/v0.5.1
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.2...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.2...HEAD
 [0.5.2]: https://github.com/webxdc/webxdc-dev/tree/v0.5.2

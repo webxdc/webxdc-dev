@@ -3,3 +3,6 @@
 # an .nmpignore, npm will use .gitignore by default which is
 # what we don't want. node_modules is automatically ignored.
 # https://docs.npmjs.com/cli/v8/using-npm/developers#keeping-files-out-of-your-package
+
+# we don't want test fixtures
+backend/fixtures

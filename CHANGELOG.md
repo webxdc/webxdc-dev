@@ -7,6 +7,12 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Fixed
+
+- There was a problem of applications breaking when running against a dev
+  server on a URL. The websocket at /webxdc/.socket is now properly filtered
+  out so that the applications start up correctly again.
+
 ## [0.5.0][] - 2022-06-21
 
 ### Added
@@ -88,7 +94,5 @@ release date when you use `npm version` (see `README.md`).
 [0.3.1]: https://github.com/webxdc/webxdc-dev/tree/v0.3.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/webxdc/webxdc-dev/tree/v0.4.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.0...HEAD
 [0.5.0]: https://github.com/webxdc/webxdc-dev/tree/v0.5.0

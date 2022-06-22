@@ -53,9 +53,13 @@ export function createPeer(
   const location = webXdcDescription.location;
   if (location.startsWith("http://")) {
     // serve webxdc project from URL by proxying
+    const filter = (pathname: string) => {
+      // we don't want to filter /webxdc, nor /webxdc/.websocket
+      return !pathname.startsWith("/webxdc");
+    };
     wsInstance.app.use(
       "/",
-      createProxyMiddleware(["**", "!/webxdc.js"], {
+      createProxyMiddleware(filter, {
         target: location,
         ws: false,
       })

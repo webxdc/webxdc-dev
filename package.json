@@ -31,7 +31,7 @@
     "build": "npm run clean && npm run build-backend && npm run build-frontend",
     "clean": "rimraf dist",
     "version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "webxdc-dev": "dist/backend/cli.js"

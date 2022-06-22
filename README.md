@@ -31,33 +31,39 @@ When you start `webxdc-dev`, it opens a browser window with the webxdc-dev UI.
 You can click on webxdc application instances to open them in new tab. You can
 also add new instances.
 
-### With vite, webpack-dev-server, etc
+### Running a directory
 
-When you are developing your webxdc application, you may be using a development
-server like `vite` or `webpack` that supports hot reloading. You can run
-`webxdc-dev` against such a dev server directly. For instance if you have your
-project under development running on `http://localhost:3000`, this is how you
-can run it:
+In case you don't use bundling tooling and have a simple webxdc project where
+you have a directory that is zipped directly into a `.xdc` file, you can run it
+directly:
 
 ```shell
-webxdc-dev run http://localhost:3000
+webxdc-dev run /path/to/webxdc/project
 ```
+
+This may not be convenient or may not even work if you use tools like `vite` or
+`webpack-dev-server` though. For that, see below.
 
 ### Running an .xdc file
 
-You can run an `.xdc` file:
+You can run an `.xdc` file with the following command:
 
 ```shell
 webxdc-dev run /path/to/my.xdc
 ```
 
-### Running a directory
+### With vite, webpack-dev-server, etc
 
-You can also run an directory that contains an webxdc project (the equivalent
-of an unpacked zip file):
+It can be very useful to use a dev server that supports bundling and hot
+reloading, like `vite` or `webpack-dev-server`. In this case your
+project has a `package.json`.
+
+You can run `webxdc-dev` against such a dev server directly. For instance if
+you have your project under development running on `http://localhost:3000`,
+this is how you can run it:
 
 ```shell
-webxdc-dev run /path/to/webxdc/project
+webxdc-dev run http://localhost:3000
 ```
 
 ### Controlling the port number
@@ -121,7 +127,7 @@ This is assuming your `build` command produces a `dist/app.xdc`.
 You can run it like this:
 
 ```shell
-npm run webxdc-dev-dist
+npm run webxdc-dev-xdc
 ```
 
 ### Testing a build directory

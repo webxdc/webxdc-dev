@@ -16,15 +16,21 @@ allows you to simulate multiple users using the same application.
 
 ## Installation
 
-There are two ways to install this package.
-
-### Global installation
-
 You can install the tool globally. This works with any webxdc project:
 
 ```shell
 npm install -g webxdc-dev
 ```
+
+This makes the `webxdc-dev` available on your command line. Alternatively you
+can also install `webxdc-dev` in just your development project as a
+`package.json` script; see below for more information.
+
+## Usage
+
+When you start `webxdc-dev`, it opens a browser window with the webxdc-dev UI.
+You can click on webxdc application instances to open them in new tab. You can
+also add new instances.
 
 To now run webxdc projects with the dev tool, do the following:
 
@@ -33,7 +39,7 @@ webxdc-dev run /path/to/webxdc/project
 ```
 
 When you are developing your webxdc application, you may be using a development
-server like vite or webpack that support hot reloading. You can also run
+server like vite or webpack that supports hot reloading. You can also run
 `webxdc-dev` against such a server directly. For instance if you have your
 project under development running on `http://localhost:8000`, this is how you
 can run it:
@@ -49,7 +55,7 @@ the base port number using `--port`, so for instance:
 webxdc-dev run --port 4000 /path/to/webxdc/project
 ```
 
-### With `package.json`
+## `webxdc` as a `package.json` script
 
 If your project has a `package.json`, you can also install `webxdc-dev` locally
 as a dev dependency:
@@ -58,38 +64,55 @@ as a dev dependency:
 npm install -D webxdc-dev
 ```
 
-and integrate it into a `package.json` `scripts` section to run the current
-project:
+### During development
+
+If your project already has a `dev` or `start` script that starts a local
+development server on port 8000, you can integrate `webxdc-dev` with that as
+follows in the `scripts` section of your `package.json`:
 
 ```json
 {
   "scripts": {
-    "webxdc-dev": "webxdc-dev run ."
+    "webxdc-dev": "concurrently \"npm run dev\" && \"webxdc-dev run http://localhost:8000\""
   }
 }
 ```
 
-Alternatively if you want to run against the dev server (say on `http://localhost:8000`), you can do;
+To run this you also need the `concurrently` dev dependency:
 
-```json
-{
-  "scripts": {
-    "webxdc-dev": "webxdc-dev run http://localhost:8000"
-  }
-}
+```shell
+npm install -D concurrently
 ```
 
-You can then run this script using:
+You can now run the script like this:
 
 ```shell
 npm run webxdc-dev
 ```
 
-## Usage
+### Testing the build
 
-When you `webxdc-dev`, it opens a browser window with the webxdc-dev UI. You
-can click on webxdc application instances to open them in new tab. You can
-also add new instances.
+If you want to test the final build of your package and you have a `build`
+script to produce it in a directory such as `dist`, you can integrate
+it like this:
+
+```json
+{
+  "scripts": {
+    "webxdc-dev-build": "npm run build && webxdc-dev run dist"
+  }
+}
+```
+
+Note that this requires `npm run build` to put a complete set of build
+artifacts in `dist` including required resources; in other words it needs to be
+what you are going to pack into a `.xdc` file.
+
+You can run the script like this:
+
+```shell
+npm run webxdc-dev-build
+```
 
 ## Development
 

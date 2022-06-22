@@ -19,6 +19,9 @@
       "url": "http://blog.startifact.com"
     }
   ],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "ts-node-dev --project tsconfig-backend.json backend/dev-cli.ts",
     "cli": "node dist/backend/cli.js",

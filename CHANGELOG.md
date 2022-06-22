@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the documentation to start with more basic use cases first.
+
 ## [0.6.0][] - 2022-06-22
 
 ### Added
@@ -126,7 +130,5 @@ release date when you use `npm version` (see `README.md`).
 [0.5.1]: https://github.com/webxdc/webxdc-dev/tree/v0.5.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.5.2...HEAD
 [0.5.2]: https://github.com/webxdc/webxdc-dev/tree/v0.5.2
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.6.0...HEAD
 [0.6.0]: https://github.com/webxdc/webxdc-dev/tree/v0.6.0

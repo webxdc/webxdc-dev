@@ -4,6 +4,8 @@ import { createProcessor, IProcessor, WebXdcMulti } from "./message";
 import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
+const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
+
 export type WebXdcDescription = {
   name: string;
   location: string;
@@ -54,8 +56,8 @@ export function createPeer(
   if (location.startsWith("http://")) {
     // serve webxdc project from URL by proxying
     const filter = (pathname: string) => {
-      // we don't want to filter /webxdc, nor /webxdc/.websocket
-      return !pathname.startsWith("/webxdc");
+      // make sure we don't proxy any path to do with the simulator
+      return !SIMULATOR_PATHS.includes(pathname);
     };
     wsInstance.app.use(
       "/",

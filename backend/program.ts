@@ -8,13 +8,18 @@ export function createProgram(inject: Inject): Command {
 
   program
     .command("run")
-    .argument("<location>", "Webxdc directory or URL to proxy")
+    .argument(
+      "<location>",
+      "URL with dev server, path to .xdc file, or path to webxdc dist directory"
+    )
     .option(
       "-p, --port <port>",
-      "start port for controller, instance ports are incremented by one each",
+      "start port for webxdc-dev UI, instance ports are incremented by one each",
       "7000"
     )
-    .description("Run Webxdc from directory")
+    .description(
+      "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
+    )
     .action((location, portString) => {
       const port = Number(portString.port);
       if (isNaN(port) || port < 0 || port > 65535) {
@@ -24,5 +29,6 @@ export function createProgram(inject: Inject): Command {
       }
       run(location, Number(port), inject);
     });
+  program.showHelpAfterError();
   return program;
 }

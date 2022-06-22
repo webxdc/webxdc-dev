@@ -1,42 +1,51 @@
-import {
-  createFrontend,
-  WebXdcDescription,
-  Instances,
-  InjectExpress,
-} from "./app";
+import process from "process";
+import fs from "fs";
+
 import open from "open";
+
+import { createFrontend, Instances, InjectExpress } from "./app";
+import { isXdcFile, unpack, createTempDir } from "./unpack";
 
 export type Inject = {
   injectFrontend: InjectExpress;
   injectSim: InjectExpress;
 };
 
-export function run(
-  location: string,
-  start_port: number,
-  inject: Inject
-): void {
-  console.log("Starting Webxdc project in: ", location);
-  const webXdcDescription: WebXdcDescription = {
-    name: "My App",
-    location: location,
-  };
-
+function actualRun(location: string, basePort: number, inject: Inject): void {
   const { injectFrontend, injectSim } = inject;
 
-  const instances = new Instances(webXdcDescription, injectSim, start_port);
+  const instances = new Instances(location, injectSim, basePort);
 
   const peer0 = instances.add();
   const peer1 = instances.add();
 
   const frontend = createFrontend(instances, injectFrontend);
 
-  frontend.listen(start_port, () => {
+  frontend.listen(basePort, () => {
     console.log("Starting webxdc-dev frontend");
   });
 
   peer0.start();
   peer1.start();
 
-  open("http://localhost:" + start_port);
+  open("http://localhost:" + basePort);
+}
+
+export function run(location: string, basePort: number, inject: Inject) {
+  console.log("Starting webxdc project in: ", location);
+  if (isXdcFile(location)) {
+    const tmpDir = createTempDir();
+    console.log("TEMP DIR", tmpDir);
+    unpack(location, tmpDir);
+    actualRun(tmpDir, basePort, inject);
+
+    for (const signal in ["SIGINT", "SIGTERM"]) {
+      process.on(signal, () => {
+        console.log("clean up");
+        fs.rmSync(tmpDir, { recursive: true });
+      });
+    }
+  } else {
+    actualRun(location, basePort, inject);
+  }
 }

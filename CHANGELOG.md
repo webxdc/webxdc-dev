@@ -11,6 +11,18 @@ release date when you use `npm version` (see `README.md`).
 
 - Improved documentation
 
+- Changed the default port number of webxdc-dev to `7000` as `3000` conflicted
+  with the vite default. We want to avoid any conflicts, so here's a run-down
+  of defaults:
+
+  - vite uses `3000`
+
+  - webpack-dev-server uses `8080`
+
+  - parcel dev server uses `1234`
+
+  So with `7000` we should be safe.
+
 ## [0.5.1][] - 2022-06-22
 
 ### Fixed

@@ -12,7 +12,7 @@ export function createProgram(inject: Inject): Command {
     .option(
       "-p, --port <port>",
       "start port for controller, instance ports are incremented by one each",
-      "3000"
+      "7000"
     )
     .description("Run Webxdc from directory")
     .action((location, portString) => {

@@ -1,9 +1,4 @@
-import {
-  createFrontend,
-  WebXdcDescription,
-  Instances,
-  InjectExpress,
-} from "./app";
+import { createFrontend, Instances, InjectExpress } from "./app";
 import open from "open";
 
 export type Inject = {
@@ -16,15 +11,11 @@ export function run(
   start_port: number,
   inject: Inject
 ): void {
-  console.log("Starting Webxdc project in: ", location);
-  const webXdcDescription: WebXdcDescription = {
-    name: "My App",
-    location: location,
-  };
+  console.log("Starting webxdc project in: ", location);
 
   const { injectFrontend, injectSim } = inject;
 
-  const instances = new Instances(webXdcDescription, injectSim, start_port);
+  const instances = new Instances(location, injectSim, start_port);
 
   const peer0 = instances.add();
   const peer1 = instances.add();

@@ -6,11 +6,6 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
 
-export type WebXdcDescription = {
-  name: string;
-  location: string;
-};
-
 export type InjectExpress = (app: Express) => void;
 
 export function createFrontend(
@@ -42,7 +37,7 @@ export function createFrontend(
 }
 
 export function createPeer(
-  webXdcDescription: WebXdcDescription,
+  location: string,
   injectSim: InjectExpress
 ): expressWs.Application {
   const expressApp = express();
@@ -52,7 +47,6 @@ export function createPeer(
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
 
-  const location = webXdcDescription.location;
   if (location.startsWith("http://")) {
     // serve webxdc project from URL by proxying
     const filter = (pathname: string) => {
@@ -88,19 +82,15 @@ export class Instance {
 }
 
 export class Instances {
-  webXdcDescription: WebXdcDescription;
+  location: string;
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
   injectSim: InjectExpress;
   processor: IProcessor;
 
-  constructor(
-    webXdcDescription: WebXdcDescription,
-    injectSim: InjectExpress,
-    basePort: number
-  ) {
-    this.webXdcDescription = webXdcDescription;
+  constructor(location: string, injectSim: InjectExpress, basePort: number) {
+    this.location = location;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();
@@ -114,7 +104,7 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const app = createPeer(this.webXdcDescription, this.injectSim);
+    const app = createPeer(this.location, this.injectSim);
     const instance = new Instance(
       app,
       port,

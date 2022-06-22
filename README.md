@@ -1,18 +1,13 @@
 # webxdc-dev
 
-webxdc-dev is a development tool for [webxdc](https://webxdc.org). It allows
-you to open multiple independent instances of a webxdc application in different
-browser tabs or windows. The purpose is to help you test and debug webxdc
-projects, including communication between differences instances of the same
-application.
-
-Each webxdc application has a different port number so they don't share
-anything, including `localstorage`.
+webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
+It allows you to open multiple independent instances of a webxdc application in different
+browser tabs or windows. It simulates how your app will run when "shared in a chat" and allows you to test and debug webxdc with very fast turn-around times. Each webxdc browser app instance is connected to a different port number of the webxdc-dev server so that it gets its own isolated state (for example localstorage).
 
 Messages sent using the [Webxdc
 API](https://docs.webxdc.org/spec.html#webxdc-api) `sendUpdate` function are
-automatically distributed to all other instances of the application. This
-allows you to simulate multiple users using the same application.
+automatically received via the `setUpdateListener` callback of other instances.
+This allows you to simulate multiple users using the same application.
 
 ## Installation
 
@@ -22,7 +17,7 @@ You can install the tool globally. This works with any webxdc project:
 npm install -g webxdc-dev
 ```
 
-This makes the `webxdc-dev` available on your command line. Alternatively you
+This makes `webxdc-dev` available on your command line. Alternatively you
 can also install `webxdc-dev` in just your development project as a
 `package.json` script; see below for more information.
 

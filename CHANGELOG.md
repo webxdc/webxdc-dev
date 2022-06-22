@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- Prettier UI.
+
 ### Changed
 
 - Updated the documentation to start with more basic use cases first.

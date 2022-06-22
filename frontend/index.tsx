@@ -1,5 +1,15 @@
 import { render } from "solid-js/web";
+import { HopeProvider, NotificationsProvider } from "@hope-ui/solid";
 
 import App from "./App";
 
-render(() => <App />, document.getElementById("root") as HTMLElement);
+render(
+  () => (
+    <HopeProvider>
+      <NotificationsProvider>
+        <App />
+      </NotificationsProvider>
+    </HopeProvider>
+  ),
+  document.getElementById("root") as HTMLElement
+);

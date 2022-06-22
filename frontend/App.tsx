@@ -1,5 +1,17 @@
 import type { Component } from "solid-js";
 import { For, createResource } from "solid-js";
+import {
+  Box,
+  Button,
+  Heading,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  notificationService,
+} from "@hope-ui/solid";
 
 type InstanceData = {
   id: number;
@@ -14,30 +26,46 @@ const [instances, { refetch: refetchInstances }] = createResource<
 
 const Instance: Component<{ instance: InstanceData }> = (props) => {
   return (
-    <li>
-      <a target="_blank" href={props.instance.url}>
-        {props.instance.id}
-      </a>
-    </li>
+    <Tr>
+      <Td>
+        <a target="_blank" href={props.instance.url}>
+          {props.instance.id}
+        </a>
+      </Td>
+    </Tr>
   );
 };
 
 const App: Component = () => {
   const handleAddInstance = async () => {
-    await fetch(`/instances`, { method: "POST" });
+    const { port } = await (
+      await fetch(`/instances`, { method: "POST" })
+    ).json();
     refetchInstances();
+    notificationService.show({
+      title: `New instance ${port} added`,
+    });
   };
 
   return (
-    <>
-      <h1>webxdc-dev</h1>
-      <ul>
-        <For each={instances()}>
-          {(instance) => <Instance instance={instance} />}
-        </For>
-      </ul>
-      <button onClick={handleAddInstance}>Add Instance</button>
-    </>
+    <Box m="$20" mt="$12">
+      <Heading level="1" size="3xl">
+        webxdc-dev
+      </Heading>
+      <Box m="$8" ml="$1">
+        <Table>
+          <Thead>
+            <Th>Instance</Th>
+          </Thead>
+          <Tbody>
+            <For each={instances()}>
+              {(instance) => <Instance instance={instance} />}
+            </For>
+          </Tbody>
+        </Table>
+      </Box>
+      <Button onClick={handleAddInstance}>Add Instance</Button>
+    </Box>
   );
 };
 

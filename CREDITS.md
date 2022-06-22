@@ -1,7 +1,7 @@
 # Credits
 
-Martijn Faassen
+- Martijn Faassen
 
-Simon Laux
+- Simon Laux
 
 Thank you too to the webxdc developers and Merlinux.

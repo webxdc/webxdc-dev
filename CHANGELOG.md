@@ -7,6 +7,12 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- webxdc instances now use the name `Instance {port number}` instead of just
+  the port number. The address has also been updated to use "instance" instead
+  of "device".
+
 ## [0.7.0][] - 2022-06-23
 
 ### Added
@@ -143,7 +149,5 @@ release date when you use `npm version` (see `README.md`).
 [0.5.2]: https://github.com/webxdc/webxdc-dev/tree/v0.5.2
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.6.0...HEAD
 [0.6.0]: https://github.com/webxdc/webxdc-dev/tree/v0.6.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.7.0...HEAD
 [0.7.0]: https://github.com/webxdc/webxdc-dev/tree/v0.7.0

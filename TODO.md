@@ -11,9 +11,6 @@
 - When an instance opens it flashes with old state. Is it worthwhile to prevent
   the flash by temporaly blanking everything out upon initial load?
 
-- make the display names something like "Instance 3001" instead of 3001 because
-  it is nicer to test scoreboards etc.
-
 ## Simulator
 
 - content security policy, disallow anything except local images,

@@ -64,10 +64,10 @@ class DevServerTransport implements Transport {
   }
 
   address() {
-    return `device@${document.location.port}`;
+    return `instance@${document.location.port}`;
   }
   name() {
-    return document.location.port;
+    return `Instance ${document.location.port}`;
   }
 }
 

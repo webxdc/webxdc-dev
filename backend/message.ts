@@ -5,7 +5,9 @@ import type {
   SendUpdate,
 } from "../types/webxdc-types";
 
-type UpdateListenerMulti = (updates: ReceivedUpdate<JsonValue>[]) => void;
+type UpdateListenerMulti = (
+  updates: [ReceivedUpdate<JsonValue>, string][]
+) => void;
 type ClearListener = () => void;
 
 type Connect = (
@@ -19,16 +21,20 @@ export type WebXdcMulti = {
   sendUpdate: SendUpdate<JsonValue>;
 };
 
+export type UpdateDescr = [ReceivedUpdate<JsonValue>, string];
+
 type UpdateMessage = {
   clientId: string;
   update: ReceivedUpdate<JsonValue>;
   descr: string;
 };
 
-type Message =
+export type Message =
   | (UpdateMessage & { type: "sent" })
   | (UpdateMessage & { type: "received" })
   | { type: "clear"; clientId: string };
+
+type OnMessage = (message: Message) => void;
 
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;
@@ -52,16 +58,16 @@ class Client implements WebXdcMulti {
     clearListener: ClearListener = () => {}
   ): void {
     this.setClearListener(() => {
-      this.processor.messages.push({ type: "clear", clientId: this.id });
+      this.processor.onMessage({ type: "clear", clientId: this.id });
       clearListener();
     });
     this.updateListener = (updates) => {
-      for (const update of updates) {
-        this.processor.messages.push({
+      for (const [update, descr] of updates) {
+        this.processor.onMessage({
           type: "received",
           update: update,
           clientId: this.id,
-          descr: "", // XXX should I pass these along?
+          descr,
         });
       }
       return listener(updates);
@@ -75,7 +81,7 @@ class Client implements WebXdcMulti {
     this.clear();
   }
 
-  receiveUpdate(update: ReceivedUpdate<JsonValue>) {
+  receiveUpdate(update: ReceivedUpdate<JsonValue>, descr: string) {
     if (this.updateListener == null || this.updateSerial == null) {
       return;
     }
@@ -83,7 +89,7 @@ class Client implements WebXdcMulti {
     if (update.serial <= this.updateSerial) {
       return;
     }
-    this.updateListener([update]);
+    this.updateListener([[update, descr]]);
   }
 
   clear() {
@@ -101,9 +107,10 @@ class Client implements WebXdcMulti {
 class Processor implements IProcessor {
   clients: Client[] = [];
   currentSerial: number = 0;
-  updates: ReceivedUpdate<JsonValue>[] = [];
-  messages: Message[] = [];
+  updates: UpdateDescr[] = [];
   clearClientIds: Set<string> = new Set();
+
+  constructor(public onMessage: OnMessage) {}
 
   createClient(id: string): WebXdcMulti {
     const client = new Client(this, id);
@@ -118,15 +125,15 @@ class Processor implements IProcessor {
       serial: this.currentSerial,
       max_serial: this.updates.length + 1,
     };
-    this.updates.push(receivedUpdate);
-    this.messages.push({
+    this.updates.push([receivedUpdate, descr]);
+    this.onMessage({
       type: "sent",
       clientId,
       update: receivedUpdate,
       descr,
     });
     for (const client of this.clients) {
-      client.receiveUpdate(receivedUpdate);
+      client.receiveUpdate(receivedUpdate, descr);
     }
   }
 
@@ -136,7 +143,6 @@ class Processor implements IProcessor {
       client.clear();
     }
     this.updates = [];
-    this.messages = [];
     this.currentSerial = 0;
   }
 
@@ -145,11 +151,11 @@ class Processor implements IProcessor {
     updateListener(
       this.updates
         .slice(serial)
-        .map((update) => ({ ...update, max_serial: maxSerial }))
+        .map(([update, descr]) => [{ ...update, max_serial: maxSerial }, descr])
     );
   }
 }
 
-export function createProcessor(): IProcessor {
-  return new Processor();
+export function createProcessor(onMessage: OnMessage = () => {}): IProcessor {
+  return new Processor(onMessage);
 }

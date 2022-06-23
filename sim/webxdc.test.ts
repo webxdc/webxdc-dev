@@ -31,7 +31,10 @@ class FakeTransport implements Transport {
       this.client.connect(
         (updates) => {
           if (this.messageCallback != null) {
-            this.messageCallback({ type: "updates", updates });
+            this.messageCallback({
+              type: "updates",
+              updates: updates.map(([update]) => update),
+            });
           }
         },
         data.serial,

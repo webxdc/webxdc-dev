@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
+import { WebSocket } from "ws";
 import { createProcessor, IProcessor, WebXdcMulti } from "./message";
 import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 import { createProxyMiddleware } from "http-proxy-middleware";
@@ -32,6 +33,11 @@ export function createFrontend(
     res.json({
       status: "ok",
       port: instance.port,
+    });
+  });
+  app.post("/wipe", (req, res) => {
+    res.json({
+      status: "ok",
     });
   });
   return app;
@@ -69,11 +75,15 @@ export function createPeer(
 }
 
 export class Instance {
+  id: string;
+
   constructor(
     public app: expressWs.Application,
     public port: number,
     public webXdc: WebXdcMulti
-  ) {}
+  ) {
+    this.id = port.toString();
+  }
 
   start() {
     this.app.listen(this.port, () => {
@@ -126,7 +136,7 @@ export class Instances {
         if (isSendUpdateMessage(parsed)) {
           instance.webXdc.sendUpdate(parsed.update, "update");
         } else if (isSetUpdateListenerMessage(parsed)) {
-          instance.webXdc.setUpdateListenerMulti((updates) => {
+          instance.webXdc.connect((updates) => {
             console.log("gossip", updates);
             ws.send(JSON.stringify(updates));
           }, parsed.serial);

@@ -23,7 +23,7 @@ class FakeTransport implements Transport {
       const { update, descr } = data;
       this.client.sendUpdate(update, descr);
     } else if (data.type === "setUpdateListener") {
-      this.client.setUpdateListenerMulti((updates) => {
+      this.client.connect((updates) => {
         if (this.messageCallback != null) {
           this.messageCallback(updates);
         }

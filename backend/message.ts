@@ -6,39 +6,49 @@ import type {
 } from "../types/webxdc-types";
 
 type UpdateListenerMulti<T> = (updates: ReceivedUpdate<T>[]) => void;
+type WipeListener = () => void;
 
-type SetUpdateListenerMulti<T> = (
-  listener: UpdateListenerMulti<T>,
-  serial: number
-) => Promise<void>;
+type Connect<T> = (
+  updateListener: UpdateListenerMulti<T>,
+  serial: number,
+  wipeListener?: WipeListener
+) => void;
 
 export type WebXdcMulti<T = JsonValue> = {
+  connect: Connect<T>;
   sendUpdate: SendUpdate<T>;
-  setUpdateListenerMulti: SetUpdateListenerMulti<T>;
 };
 
 export interface IProcessor<T = JsonValue> {
   createClient(name: string): WebXdcMulti<T>;
+  wipe(): void;
 }
 
 class Client<T> implements WebXdcMulti<T> {
   updateListener: UpdateListenerMulti<T> | null = null;
+  wipeListener: WipeListener | null = null;
   updateSerial: number | null = null;
 
-  constructor(public processor: Processor<T>, public name: string) {}
+  constructor(public processor: Processor<T>, public id: string) {}
 
   sendUpdate(update: Update<T>, descr: string): void {
     this.processor.distribute(update, descr);
   }
 
-  async setUpdateListenerMulti(
+  connect(
     listener: UpdateListenerMulti<T>,
-    serial: number
-  ): Promise<void> {
+    serial: number,
+    wipeListener: WipeListener = () => {}
+  ): void {
+    this.setWipeListener(wipeListener);
     this.updateListener = listener;
     this.updateSerial = serial;
     this.processor.catchUp(listener, serial);
-    return Promise.resolve();
+  }
+
+  setWipeListener(listener: WipeListener): void {
+    this.wipeListener = listener;
+    this.wipe();
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
@@ -51,15 +61,28 @@ class Client<T> implements WebXdcMulti<T> {
     }
     this.updateListener([update]);
   }
+
+  wipe() {
+    if (
+      this.wipeListener == null ||
+      this.processor.wipeClientIds == null ||
+      this.processor.wipeClientIds.has(this.id)
+    ) {
+      return;
+    }
+    this.wipeListener();
+    this.processor.wipeClientIds.add(this.id);
+  }
 }
 
 class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
   updates: ReceivedUpdate<T>[] = [];
+  wipeClientIds: Set<string> | null = null;
 
-  createClient(name: string): WebXdcMulti<T> {
-    const client = new Client(this, name);
+  createClient(id: string): WebXdcMulti<T> {
+    const client = new Client(this, id);
     this.clients.push(client);
     return client;
   }
@@ -75,6 +98,15 @@ class Processor<T> implements IProcessor<T> {
     for (const client of this.clients) {
       client.receiveUpdate(receivedUpdate);
     }
+  }
+
+  wipe() {
+    this.wipeClientIds = new Set();
+    for (const client of this.clients) {
+      client.wipe();
+    }
+    this.updates = [];
+    this.currentSerial = 0;
   }
 
   catchUp(updateListener: UpdateListenerMulti<T>, serial: number) {

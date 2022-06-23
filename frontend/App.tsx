@@ -11,6 +11,7 @@ import {
   Th,
   Td,
   notificationService,
+  Flex,
 } from "@hope-ui/solid";
 
 type InstanceData = {
@@ -47,6 +48,13 @@ const App: Component = () => {
     });
   };
 
+  const handleClearLocalStorage = async () => {
+    await fetch(`/wipe`, { method: "POST" });
+    notificationService.show({
+      title: `Clearing localStorage of instances`,
+    });
+  };
+
   return (
     <Box m="$20" mt="$12">
       <Heading level="1" size="3xl">
@@ -64,7 +72,10 @@ const App: Component = () => {
           </Tbody>
         </Table>
       </Box>
-      <Button onClick={handleAddInstance}>Add Instance</Button>
+      <Flex direction="row" justifyContent="flex-start" gap="$3">
+        <Button onClick={handleAddInstance}>Add Instance</Button>
+        <Button onClick={handleClearLocalStorage}>Clear localStorage</Button>
+      </Flex>
     </Box>
   );
 };

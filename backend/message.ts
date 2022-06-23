@@ -1,9 +1,4 @@
-import type {
-  Update,
-  ReceivedUpdate,
-  JsonValue,
-  SendUpdate,
-} from "../types/webxdc-types";
+import type { Update, ReceivedUpdate, SendUpdate } from "../types/webxdc-types";
 
 type UpdateListenerMulti = (updates: ReceivedUpdate<unknown>[]) => void;
 type ClearListener = () => void;

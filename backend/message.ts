@@ -61,7 +61,7 @@ class Client implements WebXdcMulti {
       this.processor.onMessage({ type: "clear", clientId: this.id });
       clearListener();
     });
-    this.updateListener = (updates) => {
+    const updateListener = (updates: UpdateDescr[]) => {
       for (const [update, descr] of updates) {
         this.processor.onMessage({
           type: "received",
@@ -72,8 +72,9 @@ class Client implements WebXdcMulti {
       }
       return listener(updates);
     };
+    this.updateListener = updateListener;
     this.updateSerial = serial;
-    this.processor.catchUp(listener, serial);
+    this.processor.catchUp(updateListener, serial);
   }
 
   setClearListener(listener: ClearListener): void {

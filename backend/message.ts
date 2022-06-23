@@ -19,6 +19,12 @@ export type WebXdcMulti<T = JsonValue> = {
   sendUpdate: SendUpdate<T>;
 };
 
+type Message<T> = {
+  clientId: string;
+  update: ReceivedUpdate<T>;
+  descr: string;
+};
+
 export interface IProcessor<T = JsonValue> {
   createClient(id: string): WebXdcMulti<T>;
   clear(): void;
@@ -32,7 +38,7 @@ class Client<T> implements WebXdcMulti<T> {
   constructor(public processor: Processor<T>, public id: string) {}
 
   sendUpdate(update: Update<T>, descr: string): void {
-    this.processor.distribute(update, descr);
+    this.processor.distribute(this.id, update, descr);
   }
 
   connect(
@@ -77,7 +83,7 @@ class Client<T> implements WebXdcMulti<T> {
 class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
-  updates: ReceivedUpdate<T>[] = [];
+  messages: Message<T>[] = [];
   clearClientIds: Set<string> = new Set();
 
   createClient(id: string): WebXdcMulti<T> {
@@ -86,14 +92,14 @@ class Processor<T> implements IProcessor<T> {
     return client;
   }
 
-  distribute(update: Update<T>, desc: string) {
+  distribute(clientId: string, update: Update<T>, descr: string) {
     this.currentSerial++;
     const receivedUpdate: ReceivedUpdate<T> = {
       ...update,
       serial: this.currentSerial,
-      max_serial: this.updates.length + 1,
+      max_serial: this.messages.length + 1,
     };
-    this.updates.push(receivedUpdate);
+    this.messages.push({ clientId, update: receivedUpdate, descr });
     for (const client of this.clients) {
       client.receiveUpdate(receivedUpdate);
     }
@@ -104,16 +110,16 @@ class Processor<T> implements IProcessor<T> {
     for (const client of this.clients) {
       client.clear();
     }
-    this.updates = [];
+    this.messages = [];
     this.currentSerial = 0;
   }
 
   catchUp(updateListener: UpdateListenerMulti<T>, serial: number) {
-    const updates = this.updates;
+    const maxSerial = this.messages.length;
     updateListener(
-      updates
+      this.messages
         .slice(serial)
-        .map((update) => ({ ...update, max_serial: updates.length }))
+        .map((message) => ({ ...message.update, max_serial: maxSerial }))
     );
   }
 }

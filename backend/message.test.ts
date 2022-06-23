@@ -181,48 +181,48 @@ test("other starts listening later but is partially caught up", () => {
   ]);
 });
 
-test("wipe single client", () => {
+test("clear single client", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
 
-  const client0Wiped: string[] = [];
+  const client0Cleared: string[] = [];
 
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
 
-  processor.wipe();
+  processor.clear();
 
-  expect(client0Wiped).toMatchObject(["wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared"]);
 
-  // reconnecting shouldn't have an effect as it was wiped already
+  // reconnecting shouldn't have an effect as it was cleared already
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
-  expect(client0Wiped).toMatchObject(["wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared"]);
 });
 
-test("wipe multiple clients", () => {
+test("clear multiple clients", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Wiped: string[] = [];
-  const client1Wiped: string[] = [];
+  const client0Cleared: string[] = [];
+  const client1Cleared: string[] = [];
 
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
 
@@ -230,69 +230,69 @@ test("wipe multiple clients", () => {
     () => {},
     0,
     () => {
-      client1Wiped.push("wiped");
+      client1Cleared.push("cleared");
     }
   );
 
-  processor.wipe();
+  processor.clear();
 
-  expect(client0Wiped).toMatchObject(["wiped"]);
-  expect(client1Wiped).toMatchObject(["wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared"]);
 
-  // reconnecting doesn't have any effect as it was already wiped
+  // reconnecting doesn't have any effect as it was already Cleared
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
-  expect(client0Wiped).toMatchObject(["wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared"]);
 });
 
-test("wipe client that is created later", () => {
+test("clear client that is created later", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
 
-  const client0Wiped: string[] = [];
-  const client1Wiped: string[] = [];
+  const client0Cleared: string[] = [];
+  const client1Cleared: string[] = [];
 
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
 
-  processor.wipe();
+  processor.clear();
 
   const client1 = processor.createClient("3002");
   client1.connect(
     () => {},
     0,
     () => {
-      client1Wiped.push("wiped");
+      client1Cleared.push("cleared");
     }
   );
 
-  expect(client0Wiped).toMatchObject(["wiped"]);
-  expect(client1Wiped).toMatchObject(["wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared"]);
 });
 
-test("wipe multiple clients, multiple times", () => {
+test("clear multiple clients, multiple times", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Wiped: string[] = [];
-  const client1Wiped: string[] = [];
+  const client0Cleared: string[] = [];
+  const client1Cleared: string[] = [];
 
   client0.connect(
     () => {},
     0,
     () => {
-      client0Wiped.push("wiped");
+      client0Cleared.push("cleared");
     }
   );
 
@@ -300,18 +300,18 @@ test("wipe multiple clients, multiple times", () => {
     () => {},
     0,
     () => {
-      client1Wiped.push("wiped");
+      client1Cleared.push("cleared");
     }
   );
 
-  processor.wipe();
-  processor.wipe();
+  processor.clear();
+  processor.clear();
 
-  expect(client0Wiped).toMatchObject(["wiped", "wiped"]);
-  expect(client1Wiped).toMatchObject(["wiped", "wiped"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared", "cleared"]);
 });
 
-test("connect with wipe means we get no catchup if no new updates", () => {
+test("connect with clear means we get no catchup if no new updates", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
 
@@ -324,20 +324,20 @@ test("connect with wipe means we get no catchup if no new updates", () => {
     },
     0,
     () => {
-      client0Heard.push("wipe");
+      client0Heard.push("cleared");
     }
   );
 
   client0.sendUpdate({ payload: "Hello" }, "update");
   client0.sendUpdate({ payload: "Bye" }, "update 2");
 
-  // now we wipe, triggering a wipe event
-  processor.wipe();
+  // now we clear
+  processor.clear();
 
   expect(client0Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
-    "wipe",
+    "cleared",
   ]);
 
   // we only join later, so we haven't heard a thing yet
@@ -350,19 +350,19 @@ test("connect with wipe means we get no catchup if no new updates", () => {
     },
     0,
     () => {
-      client1Heard.push("wipe");
+      client1Heard.push("cleared");
     }
   );
 
   expect(client0Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
-    "wipe",
+    "cleared",
   ]);
-  expect(client1Heard).toMatchObject(["wipe"]);
+  expect(client1Heard).toMatchObject(["cleared"]);
 });
 
-test("connect with wipe means catchup only with updates after wipe", () => {
+test("connect with clear means catchup only with updates after clear", () => {
   const processor = createProcessor<string>();
   const client0 = processor.createClient("3001");
 
@@ -375,15 +375,14 @@ test("connect with wipe means catchup only with updates after wipe", () => {
     },
     0,
     () => {
-      client0Heard.push("wipe");
+      client0Heard.push("cleared");
     }
   );
 
   client0.sendUpdate({ payload: "Hello" }, "update");
   client0.sendUpdate({ payload: "Bye" }, "update 2");
 
-  // now we wipe, triggering a wipe event
-  processor.wipe();
+  processor.clear();
 
   // the aftermath update, which the newly connecting client should get
   client0.sendUpdate({ payload: "Aftermath" }, "update 3");
@@ -391,7 +390,7 @@ test("connect with wipe means catchup only with updates after wipe", () => {
   expect(client0Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
-    "wipe",
+    "cleared",
     { payload: "Aftermath", serial: 1, max_serial: 1 },
   ]);
 
@@ -405,18 +404,18 @@ test("connect with wipe means catchup only with updates after wipe", () => {
     },
     0,
     () => {
-      client1Heard.push("wipe");
+      client1Heard.push("cleared");
     }
   );
 
   expect(client0Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
-    "wipe",
+    "cleared",
     { payload: "Aftermath", serial: 1, max_serial: 1 },
   ]);
   expect(client1Heard).toMatchObject([
-    "wipe",
+    "cleared",
     {
       payload: "Aftermath",
       serial: 1,

@@ -48,10 +48,10 @@ const App: Component = () => {
     });
   };
 
-  const handleClearLocalStorage = async () => {
-    await fetch(`/wipe`, { method: "POST" });
+  const handleClear = async () => {
+    await fetch(`/clear`, { method: "POST" });
     notificationService.show({
-      title: `Clearing localStorage of instances`,
+      title: `Clearing state of dev server & instances`,
     });
   };
 
@@ -74,7 +74,7 @@ const App: Component = () => {
       </Box>
       <Flex direction="row" justifyContent="flex-start" gap="$3">
         <Button onClick={handleAddInstance}>Add Instance</Button>
-        <Button onClick={handleClearLocalStorage}>Clear localStorage</Button>
+        <Button onClick={handleClear}>Clear server and client state</Button>
       </Flex>
     </Box>
   );

@@ -35,7 +35,7 @@ export function createFrontend(
       port: instance.port,
     });
   });
-  app.post("/wipe", (req, res) => {
+  app.post("/clear", (req, res) => {
     res.json({
       status: "ok",
     });

@@ -20,7 +20,7 @@ export type WebXdcMulti<T = JsonValue> = {
 };
 
 export interface IProcessor<T = JsonValue> {
-  createClient(name: string): WebXdcMulti<T>;
+  createClient(id: string): WebXdcMulti<T>;
   clear(): void;
 }
 

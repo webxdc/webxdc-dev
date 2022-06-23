@@ -11,6 +11,11 @@ release date when you use `npm version` (see `README.md`).
 
 - Prettier UI.
 
+- "Clear" button which resets both server and client state, including
+  `localStorage`, `sessionStorage`, etc. This makes it easy to restart the
+  clients in a clean slate. When you restart `webxdc-dev` each client will also
+  start with a clean state.
+
 ### Changed
 
 - Updated the documentation to start with more basic use cases first.

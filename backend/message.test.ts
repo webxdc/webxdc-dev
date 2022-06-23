@@ -2,10 +2,10 @@ import { createProcessor } from "./message";
 import type { ReceivedUpdate } from "../types/webxdc-types";
 
 test("distribute to self", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -19,12 +19,12 @@ test("distribute to self", () => {
 });
 
 test("distribute to self and other", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
-  const client1Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
+  const client1Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -47,12 +47,12 @@ test("distribute to self and other", () => {
 });
 
 test("setUpdateListener serial should skip older", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
-  const client1Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
+  const client1Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -74,12 +74,12 @@ test("setUpdateListener serial should skip older", () => {
 });
 
 test("other starts listening later", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
-  const client1Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
+  const client1Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -110,11 +110,11 @@ test("other starts listening later", () => {
 });
 
 test("client is created later and needs to catch up", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
-  const client1Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
+  const client1Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -147,12 +147,12 @@ test("client is created later and needs to catch up", () => {
 });
 
 test("other starts listening later but is partially caught up", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: ReceivedUpdate<string>[] = [];
-  const client1Heard: ReceivedUpdate<string>[] = [];
+  const client0Heard: ReceivedUpdate<unknown>[] = [];
+  const client1Heard: ReceivedUpdate<unknown>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -182,7 +182,7 @@ test("other starts listening later but is partially caught up", () => {
 });
 
 test("clear single client", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
   const client0Cleared: string[] = [];
@@ -213,7 +213,7 @@ test("clear single client", () => {
 });
 
 test("clear multiple clients", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
@@ -256,7 +256,7 @@ test("clear multiple clients", () => {
 });
 
 test("clear client that is created later", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
   const client0Cleared: string[] = [];
@@ -290,7 +290,7 @@ test("clear client that is created later", () => {
 });
 
 test("clear multiple clients, multiple times", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
@@ -324,11 +324,11 @@ test("clear multiple clients, multiple times", () => {
 });
 
 test("connect with clear means we get no catchup if no new updates", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: (ReceivedUpdate<string> | string)[] = [];
-  const client1Heard: (ReceivedUpdate<string> | string)[] = [];
+  const client0Heard: (ReceivedUpdate<unknown> | string)[] = [];
+  const client1Heard: (ReceivedUpdate<unknown> | string)[] = [];
 
   client0.connect(
     (updates) => {
@@ -377,11 +377,11 @@ test("connect with clear means we get no catchup if no new updates", () => {
 });
 
 test("connect with clear means catchup only with updates after clear", () => {
-  const processor = createProcessor<string>();
+  const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: (ReceivedUpdate<string> | string)[] = [];
-  const client1Heard: (ReceivedUpdate<string> | string)[] = [];
+  const client0Heard: (ReceivedUpdate<unknown> | string)[] = [];
+  const client1Heard: (ReceivedUpdate<unknown> | string)[] = [];
 
   client0.connect(
     (updates) => {

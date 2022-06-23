@@ -65,7 +65,6 @@ class Client<T> implements WebXdcMulti<T> {
   clear() {
     if (
       this.clearListener == null ||
-      this.processor.clearClientIds == null ||
       this.processor.clearClientIds.has(this.id)
     ) {
       return;
@@ -79,7 +78,7 @@ class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
   updates: ReceivedUpdate<T>[] = [];
-  clearClientIds: Set<string> | null = null;
+  clearClientIds: Set<string> = new Set();
 
   createClient(id: string): WebXdcMulti<T> {
     const client = new Client(this, id);

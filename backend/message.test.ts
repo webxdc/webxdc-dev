@@ -194,10 +194,12 @@ test("clear single client", () => {
       client0Cleared.push("cleared");
     }
   );
+  // we always clear on first connection with a new processor
+  expect(client0Cleared).toMatchObject(["cleared"]);
 
   processor.clear();
 
-  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
 
   // reconnecting shouldn't have an effect as it was cleared already
   client0.connect(
@@ -207,7 +209,7 @@ test("clear single client", () => {
       client0Cleared.push("cleared");
     }
   );
-  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
 });
 
 test("clear multiple clients", () => {
@@ -234,10 +236,13 @@ test("clear multiple clients", () => {
     }
   );
 
-  processor.clear();
-
   expect(client0Cleared).toMatchObject(["cleared"]);
   expect(client1Cleared).toMatchObject(["cleared"]);
+
+  processor.clear();
+
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared", "cleared"]);
 
   // reconnecting doesn't have any effect as it was already Cleared
   client0.connect(
@@ -247,7 +252,7 @@ test("clear multiple clients", () => {
       client0Cleared.push("cleared");
     }
   );
-  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
 });
 
 test("clear client that is created later", () => {
@@ -265,6 +270,9 @@ test("clear client that is created later", () => {
     }
   );
 
+  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client1Cleared).toMatchObject([]);
+
   processor.clear();
 
   const client1 = processor.createClient("3002");
@@ -276,7 +284,8 @@ test("clear client that is created later", () => {
     }
   );
 
-  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
+  // first connected, so cleared only once
   expect(client1Cleared).toMatchObject(["cleared"]);
 });
 
@@ -304,11 +313,14 @@ test("clear multiple clients, multiple times", () => {
     }
   );
 
+  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared"]);
+
   processor.clear();
   processor.clear();
 
-  expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
-  expect(client1Cleared).toMatchObject(["cleared", "cleared"]);
+  expect(client0Cleared).toMatchObject(["cleared", "cleared", "cleared"]);
+  expect(client1Cleared).toMatchObject(["cleared", "cleared", "cleared"]);
 });
 
 test("connect with clear means we get no catchup if no new updates", () => {
@@ -335,6 +347,7 @@ test("connect with clear means we get no catchup if no new updates", () => {
   processor.clear();
 
   expect(client0Heard).toMatchObject([
+    "cleared",
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
@@ -355,6 +368,7 @@ test("connect with clear means we get no catchup if no new updates", () => {
   );
 
   expect(client0Heard).toMatchObject([
+    "cleared",
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
@@ -388,6 +402,7 @@ test("connect with clear means catchup only with updates after clear", () => {
   client0.sendUpdate({ payload: "Aftermath" }, "update 3");
 
   expect(client0Heard).toMatchObject([
+    "cleared",
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
@@ -409,6 +424,7 @@ test("connect with clear means catchup only with updates after clear", () => {
   );
 
   expect(client0Heard).toMatchObject([
+    "cleared",
     { payload: "Hello", serial: 1, max_serial: 1 },
     { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",

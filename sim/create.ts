@@ -2,7 +2,7 @@ import { WebXdc, JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 
 type UpdatesMessage = {
   type: "updates";
-  updates: ReceivedUpdate<unknown>[];
+  updates: ReceivedUpdate<JsonValue>[];
 };
 
 type ClearMessage = {
@@ -42,7 +42,7 @@ export function createWebXdc(
         if (isUpdatesMessage(message)) {
           log("recv", message.updates);
           for (const update of message.updates) {
-            listener(update as ReceivedUpdate<JsonValue>);
+            listener(update);
           }
           if (resolveUpdateListenerPromise != null) {
             resolveUpdateListenerPromise();

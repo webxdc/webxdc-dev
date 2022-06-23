@@ -1,6 +1,11 @@
-import type { Update, ReceivedUpdate, SendUpdate } from "../types/webxdc-types";
+import type {
+  Update,
+  JsonValue,
+  ReceivedUpdate,
+  SendUpdate,
+} from "../types/webxdc-types";
 
-type UpdateListenerMulti = (updates: ReceivedUpdate<unknown>[]) => void;
+type UpdateListenerMulti = (updates: ReceivedUpdate<JsonValue>[]) => void;
 type ClearListener = () => void;
 
 type Connect = (
@@ -11,12 +16,12 @@ type Connect = (
 
 export type WebXdcMulti = {
   connect: Connect;
-  sendUpdate: SendUpdate<unknown>;
+  sendUpdate: SendUpdate<JsonValue>;
 };
 
 type UpdateMessage = {
   clientId: string;
-  update: ReceivedUpdate<unknown>;
+  update: ReceivedUpdate<JsonValue>;
   descr: string;
 };
 
@@ -37,7 +42,7 @@ class Client implements WebXdcMulti {
 
   constructor(public processor: Processor, public id: string) {}
 
-  sendUpdate(update: Update<unknown>, descr: string): void {
+  sendUpdate(update: Update<JsonValue>, descr: string): void {
     this.processor.distribute(this.id, update, descr);
   }
 
@@ -70,7 +75,7 @@ class Client implements WebXdcMulti {
     this.clear();
   }
 
-  receiveUpdate(update: ReceivedUpdate<unknown>) {
+  receiveUpdate(update: ReceivedUpdate<JsonValue>) {
     if (this.updateListener == null || this.updateSerial == null) {
       return;
     }
@@ -96,7 +101,7 @@ class Client implements WebXdcMulti {
 class Processor implements IProcessor {
   clients: Client[] = [];
   currentSerial: number = 0;
-  updates: ReceivedUpdate<unknown>[] = [];
+  updates: ReceivedUpdate<JsonValue>[] = [];
   messages: Message[] = [];
   clearClientIds: Set<string> = new Set();
 
@@ -106,9 +111,9 @@ class Processor implements IProcessor {
     return client;
   }
 
-  distribute(clientId: string, update: Update<unknown>, descr: string) {
+  distribute(clientId: string, update: Update<JsonValue>, descr: string) {
     this.currentSerial++;
-    const receivedUpdate: ReceivedUpdate<unknown> = {
+    const receivedUpdate: ReceivedUpdate<JsonValue> = {
       ...update,
       serial: this.currentSerial,
       max_serial: this.updates.length + 1,

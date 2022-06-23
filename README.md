@@ -30,7 +30,8 @@ can also install `webxdc-dev` in just your development project as a
 When you start `webxdc-dev`, it opens a browser window with the webxdc-dev UI.
 Two webxdc application instances are already running. You can click on
 instances to open them in new tab. You can also add new instances. Instances
-start with a clean slate: empty `localStorage` and `sessionStorage`.
+start with a clean slate: empty `localStorage` and `sessionStorage`. This means
+an instance may flash briefly with old state when it is opened.
 
 The UI also lets you clear the state - this refreshes both server and client
 state, and is as if you restarted `webxdc-dev`.

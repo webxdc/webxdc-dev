@@ -36,6 +36,7 @@ export function createFrontend(
     });
   });
   app.post("/clear", (req, res) => {
+    instances.clear();
     res.json({
       status: "ok",
     });
@@ -136,10 +137,17 @@ export class Instances {
         if (isSendUpdateMessage(parsed)) {
           instance.webXdc.sendUpdate(parsed.update, "update");
         } else if (isSetUpdateListenerMessage(parsed)) {
-          instance.webXdc.connect((updates) => {
-            console.log("gossip", updates);
-            ws.send(JSON.stringify(updates));
-          }, parsed.serial);
+          instance.webXdc.connect(
+            (updates) => {
+              console.info("gossip", updates);
+              ws.send(JSON.stringify({ type: "updates", updates }));
+            },
+            parsed.serial,
+            () => {
+              console.info("clear");
+              ws.send(JSON.stringify({ type: "clear" }));
+            }
+          );
         } else {
           throw new Error(`Unknown message: ${JSON.stringify(parsed)}`);
         }
@@ -147,6 +155,10 @@ export class Instances {
     });
     this.instances.set(port, instance);
     return instance;
+  }
+
+  clear() {
+    this.processor.clear();
   }
 }
 

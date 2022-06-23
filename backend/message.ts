@@ -83,7 +83,7 @@ class Client<T> implements WebXdcMulti<T> {
 class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
-  sentMessages: Message<T>[] = [];
+  messages: Message<T>[] = [];
   clearClientIds: Set<string> = new Set();
 
   createClient(id: string): WebXdcMulti<T> {
@@ -97,9 +97,9 @@ class Processor<T> implements IProcessor<T> {
     const receivedUpdate: ReceivedUpdate<T> = {
       ...update,
       serial: this.currentSerial,
-      max_serial: this.sentMessages.length + 1,
+      max_serial: this.messages.length + 1,
     };
-    this.sentMessages.push({ clientId, update: receivedUpdate, descr });
+    this.messages.push({ clientId, update: receivedUpdate, descr });
     for (const client of this.clients) {
       client.receiveUpdate(receivedUpdate);
     }
@@ -110,14 +110,14 @@ class Processor<T> implements IProcessor<T> {
     for (const client of this.clients) {
       client.clear();
     }
-    this.sentMessages = [];
+    this.messages = [];
     this.currentSerial = 0;
   }
 
   catchUp(updateListener: UpdateListenerMulti<T>, serial: number) {
-    const maxSerial = this.sentMessages.length;
+    const maxSerial = this.messages.length;
     updateListener(
-      this.sentMessages
+      this.messages
         .slice(serial)
         .map((message) => ({ ...message.update, max_serial: maxSerial }))
     );

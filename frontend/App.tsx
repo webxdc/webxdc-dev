@@ -11,6 +11,8 @@ import {
   Th,
   Td,
   notificationService,
+  Flex,
+  Tooltip,
 } from "@hope-ui/solid";
 
 type InstanceData = {
@@ -23,6 +25,10 @@ const [instances, { refetch: refetchInstances }] = createResource<
 >(async () => {
   return (await fetch(`/instances`)).json();
 });
+
+const CLEAR_INFO = `\
+Clear both webxdc-dev server state as well as client state.
+This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
 
 const Instance: Component<{ instance: InstanceData }> = (props) => {
   return (
@@ -47,6 +53,13 @@ const App: Component = () => {
     });
   };
 
+  const handleClear = async () => {
+    await fetch(`/clear`, { method: "POST" });
+    notificationService.show({
+      title: `Clearing state of dev server & instances`,
+    });
+  };
+
   return (
     <Box m="$20" mt="$12">
       <Heading level="1" size="3xl">
@@ -64,7 +77,12 @@ const App: Component = () => {
           </Tbody>
         </Table>
       </Box>
-      <Button onClick={handleAddInstance}>Add Instance</Button>
+      <Flex direction="row" justifyContent="flex-start" gap="$3">
+        <Button onClick={handleAddInstance}>Add Instance</Button>
+        <Tooltip label={CLEAR_INFO}>
+          <Button onClick={handleClear}>Clear</Button>
+        </Tooltip>
+      </Flex>
     </Box>
   );
 };

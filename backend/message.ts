@@ -6,39 +6,49 @@ import type {
 } from "../types/webxdc-types";
 
 type UpdateListenerMulti<T> = (updates: ReceivedUpdate<T>[]) => void;
+type ClearListener = () => void;
 
-type SetUpdateListenerMulti<T> = (
-  listener: UpdateListenerMulti<T>,
-  serial: number
-) => Promise<void>;
+type Connect<T> = (
+  updateListener: UpdateListenerMulti<T>,
+  serial: number,
+  clearListener?: ClearListener
+) => void;
 
 export type WebXdcMulti<T = JsonValue> = {
+  connect: Connect<T>;
   sendUpdate: SendUpdate<T>;
-  setUpdateListenerMulti: SetUpdateListenerMulti<T>;
 };
 
 export interface IProcessor<T = JsonValue> {
   createClient(name: string): WebXdcMulti<T>;
+  clear(): void;
 }
 
 class Client<T> implements WebXdcMulti<T> {
   updateListener: UpdateListenerMulti<T> | null = null;
+  clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
 
-  constructor(public processor: Processor<T>, public name: string) {}
+  constructor(public processor: Processor<T>, public id: string) {}
 
   sendUpdate(update: Update<T>, descr: string): void {
     this.processor.distribute(update, descr);
   }
 
-  async setUpdateListenerMulti(
+  connect(
     listener: UpdateListenerMulti<T>,
-    serial: number
-  ): Promise<void> {
+    serial: number,
+    clearListener: ClearListener = () => {}
+  ): void {
+    this.setClearListener(clearListener);
     this.updateListener = listener;
     this.updateSerial = serial;
     this.processor.catchUp(listener, serial);
-    return Promise.resolve();
+  }
+
+  setClearListener(listener: ClearListener): void {
+    this.clearListener = listener;
+    this.clear();
   }
 
   receiveUpdate(update: ReceivedUpdate<T>) {
@@ -51,15 +61,27 @@ class Client<T> implements WebXdcMulti<T> {
     }
     this.updateListener([update]);
   }
+
+  clear() {
+    if (
+      this.clearListener == null ||
+      this.processor.clearClientIds.has(this.id)
+    ) {
+      return;
+    }
+    this.clearListener();
+    this.processor.clearClientIds.add(this.id);
+  }
 }
 
 class Processor<T> implements IProcessor<T> {
   clients: Client<T>[] = [];
   currentSerial: number = 0;
   updates: ReceivedUpdate<T>[] = [];
+  clearClientIds: Set<string> = new Set();
 
-  createClient(name: string): WebXdcMulti<T> {
-    const client = new Client(this, name);
+  createClient(id: string): WebXdcMulti<T> {
+    const client = new Client(this, id);
     this.clients.push(client);
     return client;
   }
@@ -75,6 +97,15 @@ class Processor<T> implements IProcessor<T> {
     for (const client of this.clients) {
       client.receiveUpdate(receivedUpdate);
     }
+  }
+
+  clear() {
+    this.clearClientIds = new Set();
+    for (const client of this.clients) {
+      client.clear();
+    }
+    this.updates = [];
+    this.currentSerial = 0;
   }
 
   catchUp(updateListener: UpdateListenerMulti<T>, serial: number) {

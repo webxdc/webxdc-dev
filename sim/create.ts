@@ -1,34 +1,55 @@
 import { WebXdc, JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 
-export type TransportMessageCallback = (data: JsonValue) => void;
+type UpdatesMessage = {
+  type: "updates";
+  updates: ReceivedUpdate<JsonValue>[];
+};
+
+type ClearMessage = {
+  type: "clear";
+};
+
+type Message = UpdatesMessage | ClearMessage;
+
+export type TransportMessageCallback = (message: Message) => void;
+
 export type TransportConnectCallback = () => void;
 
 export type Transport = {
   send(data: JsonValue): void;
   onMessage(callback: TransportMessageCallback): void;
   onConnect(callback: TransportConnectCallback): void;
+  clear(): void;
   address(): string;
   name(): string;
 };
 
-export function createWebXdc(transport: Transport): WebXdc {
+type Log = (...args: any[]) => void;
+
+export function createWebXdc(
+  transport: Transport,
+  log: Log = () => {}
+): WebXdc {
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
   const webXdc: WebXdc = {
     sendUpdate: (update, descr) => {
       transport.send({ type: "sendUpdate", update, descr });
-      console.info("send", { update, descr });
+      log("send", { update, descr });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
-      transport.onMessage((data) => {
-        const receivedUpdates: ReceivedUpdate<any>[] = data as any;
-        console.info("recv", receivedUpdates);
-        for (const update of receivedUpdates) {
-          listener(update);
-        }
-        if (resolveUpdateListenerPromise != null) {
-          resolveUpdateListenerPromise();
-          resolveUpdateListenerPromise = null;
+      transport.onMessage((message) => {
+        if (isUpdatesMessage(message)) {
+          log("recv", message.updates);
+          for (const update of message.updates) {
+            listener(update);
+          }
+          if (resolveUpdateListenerPromise != null) {
+            resolveUpdateListenerPromise();
+            resolveUpdateListenerPromise = null;
+          }
+        } else if (isClearMessage(message)) {
+          transport.clear();
         }
       });
       transport.onConnect(() => {
@@ -43,4 +64,12 @@ export function createWebXdc(transport: Transport): WebXdc {
     selfName: transport.name(),
   };
   return webXdc;
+}
+
+function isUpdatesMessage(data: Message): data is UpdatesMessage {
+  return data.type === "updates";
+}
+
+function isClearMessage(data: Message): data is ClearMessage {
+  return data.type === "clear";
 }

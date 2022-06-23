@@ -13,7 +13,12 @@ class FakeTransport implements Transport {
   _address: string;
   _name: string;
 
-  constructor(public client: WebXdcMulti, address: string, name: string) {
+  constructor(
+    public client: WebXdcMulti,
+    address: string,
+    name: string,
+    public onClear: () => void
+  ) {
     this._address = address;
     this._name = name;
   }
@@ -23,11 +28,19 @@ class FakeTransport implements Transport {
       const { update, descr } = data;
       this.client.sendUpdate(update, descr);
     } else if (data.type === "setUpdateListener") {
-      this.client.setUpdateListenerMulti((updates) => {
-        if (this.messageCallback != null) {
-          this.messageCallback(updates);
+      this.client.connect(
+        (updates) => {
+          if (this.messageCallback != null) {
+            this.messageCallback({ type: "updates", updates });
+          }
+        },
+        data.serial,
+        () => {
+          if (this.messageCallback != null) {
+            this.messageCallback({ type: "clear" });
+          }
         }
-      }, data.serial);
+      );
     } else {
       throw new Error(`Unknown data ${JSON.stringify(data)}`);
     }
@@ -37,6 +50,9 @@ class FakeTransport implements Transport {
   }
   onConnect(callback: TransportConnectCallback) {
     this.connectCallback = callback;
+  }
+  clear() {
+    this.onClear();
   }
   address() {
     return this._address;
@@ -55,8 +71,11 @@ class FakeTransport implements Transport {
 test("webxdc sends", async () => {
   const processor = createProcessor();
   const client = processor.createClient("a");
+  const clientCleared: string[] = [];
 
-  const fakeTransport = new FakeTransport(client, "A", "a");
+  const fakeTransport = new FakeTransport(client, "A", "a", () => {
+    clientCleared.push("cleared");
+  });
 
   const webXdc = createWebXdc(fakeTransport);
   const updates: any[] = [];
@@ -80,8 +99,15 @@ test("webxdc distributes", async () => {
   const processor = createProcessor();
   const clientA = processor.createClient("a");
   const clientB = processor.createClient("b");
-  const fakeTransportA = new FakeTransport(clientA, "A", "a");
-  const fakeTransportB = new FakeTransport(clientB, "B", "b");
+  const clientACleared: string[] = [];
+  const clientBCleared: string[] = [];
+
+  const fakeTransportA = new FakeTransport(clientA, "A", "a", () => {
+    clientACleared.push("cleared");
+  });
+  const fakeTransportB = new FakeTransport(clientB, "B", "b", () => {
+    clientBCleared.push("cleared");
+  });
 
   const webXdcA = createWebXdc(fakeTransportA);
   const webXdcB = createWebXdc(fakeTransportB);

@@ -10,7 +10,7 @@ const url = `ws://${document.location.host}/webxdc`;
 
 type SocketMessageListener = (event: Event) => void;
 
-class SocketTransport implements Transport {
+class DevServerTransport implements Transport {
   socket: WebSocket;
   messageListener: SocketMessageListener | null = null;
 
@@ -52,6 +52,17 @@ class SocketTransport implements Transport {
       throw new Error(`SocketTransport: socket not ready: ${readyState}`);
     }
   }
+
+  clear() {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    // XXX what about indexedDB?
+
+    // we want to reload the window otherwise we won't take the
+    // cleared localstorage into account
+    window.location.reload();
+  }
+
   address() {
     return `device@${document.location.port}`;
   }
@@ -60,4 +71,9 @@ class SocketTransport implements Transport {
   }
 }
 
-(window as any).webxdc = createWebXdc(new SocketTransport(url));
+(window as any).webxdc = createWebXdc(
+  new DevServerTransport(url),
+  (...args) => {
+    console.info(...args);
+  }
+);

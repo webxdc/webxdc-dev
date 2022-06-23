@@ -12,12 +12,13 @@ export type InjectExpress = (app: Express) => void;
 export function createFrontend(
   instances: Instances,
   injectFrontend: InjectExpress
-): Express {
-  const app = express();
-
+): expressWs.Application {
+  const expressApp = express();
+  const wsInstance = expressWs(expressApp);
+  const app = wsInstance.app;
   // inject how to serve the frontend; this is
   // different in dev mode and in production
-  injectFrontend(app);
+  injectFrontend(app as unknown as Express);
 
   app.get("/instances", (req, res) => {
     res.json(
@@ -140,7 +141,12 @@ export class Instances {
           instance.webXdc.connect(
             (updates) => {
               console.info("gossip", updates);
-              ws.send(JSON.stringify({ type: "updates", updates }));
+              ws.send(
+                JSON.stringify({
+                  type: "updates",
+                  updates: updates.map(([update]) => update),
+                })
+              );
             },
             parsed.serial,
             () => {

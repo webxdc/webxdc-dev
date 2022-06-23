@@ -34,7 +34,7 @@ export type Message =
   | (UpdateMessage & { type: "received" })
   | { type: "clear"; clientId: string };
 
-type OnMessage = (message: Message) => void;
+export type OnMessage = (message: Message) => void;
 
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;

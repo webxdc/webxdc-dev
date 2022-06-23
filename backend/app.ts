@@ -1,7 +1,6 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
-import { WebSocket } from "ws";
-import { createProcessor, IProcessor, WebXdcMulti } from "./message";
+import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
@@ -40,6 +39,12 @@ export function createFrontend(
     instances.clear();
     res.json({
       status: "ok",
+    });
+  });
+
+  app.ws("/webxdc-message", (ws, req) => {
+    instances.onMessage((message) => {
+      ws.send(JSON.stringify(message));
     });
   });
   return app;
@@ -101,6 +106,7 @@ export class Instances {
   currentPort: number;
   injectSim: InjectExpress;
   processor: IProcessor;
+  _onMessage: OnMessage | null = null;
 
   constructor(location: string, injectSim: InjectExpress, basePort: number) {
     this.location = location;
@@ -108,7 +114,12 @@ export class Instances {
     this.currentPort = basePort;
     this.instances = new Map();
     this.injectSim = injectSim;
-    this.processor = createProcessor();
+    this.processor = createProcessor((message) => {
+      if (this._onMessage == null) {
+        return;
+      }
+      this._onMessage(message);
+    });
   }
 
   add(): Instance {
@@ -165,6 +176,10 @@ export class Instances {
 
   clear() {
     this.processor.clear();
+  }
+
+  onMessage(onMessage: OnMessage) {
+    this._onMessage = onMessage;
   }
 }
 

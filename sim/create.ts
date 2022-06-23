@@ -11,18 +11,23 @@ export type Transport = {
   name(): string;
 };
 
-export function createWebXdc(transport: Transport): WebXdc {
+type Log = (...args: any[]) => void;
+
+export function createWebXdc(
+  transport: Transport,
+  log: Log = () => {}
+): WebXdc {
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
   const webXdc: WebXdc = {
     sendUpdate: (update, descr) => {
       transport.send({ type: "sendUpdate", update, descr });
-      console.info("send", { update, descr });
+      log("send", { update, descr });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((data) => {
         const receivedUpdates: ReceivedUpdate<any>[] = data as any;
-        console.info("recv", receivedUpdates);
+        log("recv", receivedUpdates);
         for (const update of receivedUpdates) {
           listener(update);
         }

@@ -60,4 +60,6 @@ class SocketTransport implements Transport {
   }
 }
 
-(window as any).webxdc = createWebXdc(new SocketTransport(url));
+(window as any).webxdc = createWebXdc(new SocketTransport(url), (...args) => {
+  console.info(...args);
+});

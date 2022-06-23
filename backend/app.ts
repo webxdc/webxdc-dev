@@ -135,7 +135,7 @@ export class Instances {
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         if (isSendUpdateMessage(parsed)) {
-          instance.webXdc.sendUpdate(parsed.update, "update");
+          instance.webXdc.sendUpdate(parsed.update, parsed.descr);
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {

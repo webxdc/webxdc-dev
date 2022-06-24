@@ -1,4 +1,4 @@
-import { ReceivedUpdate, JsonValue } from "./webxdc-types";
+import { ReceivedUpdate, JsonValue } from "./webxdc";
 
 type UpdateMessage = {
   clientId: string;

@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
-import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
+import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];

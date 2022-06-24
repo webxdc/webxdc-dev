@@ -3,7 +3,7 @@ import type {
   JsonValue,
   ReceivedUpdate,
   SendUpdate,
-} from "../types/webxdc-types";
+} from "../types/webxdc";
 import type { Message } from "../types/message";
 
 type UpdateListenerMulti = (

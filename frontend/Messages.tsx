@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@hope-ui/solid";
 
-import { getMessages } from "./store";
+import { state } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
 
 const UpdateMessageComponent: Component<{ message: UpdateMessage }> = (
@@ -56,7 +56,7 @@ const Messages: Component = () => {
           <Th>payload</Th>
         </Thead>
         <Tbody>
-          <For each={getMessages()}>
+          <For each={state}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

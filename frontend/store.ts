@@ -1,12 +1,16 @@
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import type { Message } from "../types/message";
 
 const [state, setState] = createStore<Message[]>([]);
 
+export { state };
+
 export function addMessage(message: Message): void {
-  setState((s) => {
-    s.push(message);
-  });
+  setState(
+    produce((s) => {
+      s.push(message);
+    })
+  );
 }
 
 export function sent(clientId: string): number {

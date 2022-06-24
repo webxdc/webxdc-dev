@@ -3,8 +3,6 @@ import type { Message } from "../types/message";
 
 const [state, setState] = createStore<Message[]>([]);
 
-export { state };
-
 export function addMessage(message: Message): void {
   setState(
     produce((s) => {

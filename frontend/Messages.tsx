@@ -1,13 +1,13 @@
 import type { Component } from "solid-js";
 import { For, Show, JSX } from "solid-js";
-import { Table, Thead, Tbody, Tr, Th, Td, Box } from "@hope-ui/solid";
+import { Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@hope-ui/solid";
 
-import { state } from "./store";
+import { getMessages } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
 
 const COLUMN_WIDTHS = {
   clientId: "3%",
-  type: "3%",
+  type: "5%",
   descr: "10%",
   serial: "3%",
   maxSerial: "3%",
@@ -20,6 +20,7 @@ const COLUMN_WIDTHS = {
 const TdEllipsis: Component<{
   children: JSX.Element;
   numeric?: boolean;
+  tooltip?: JSX.Element;
 }> = (props) => {
   return (
     <Td
@@ -30,7 +31,9 @@ const TdEllipsis: Component<{
       }}
       numeric={props.numeric}
     >
-      {props.children}
+      <Tooltip label={props.tooltip || props.children}>
+        <span>{props.children}</span>
+      </Tooltip>
     </Td>
   );
 };
@@ -46,7 +49,13 @@ const UpdateMessageComponent: Component<{ message: UpdateMessage }> = (
       <TdEllipsis>{props.message.update.info}</TdEllipsis>
       <TdEllipsis>{props.message.update.document}</TdEllipsis>
       <TdEllipsis>{props.message.update.summary}</TdEllipsis>
-      <TdEllipsis>
+      <TdEllipsis
+        tooltip={
+          <pre>
+            <code>{JSON.stringify(props.message.update.payload, null, 2)}</code>
+          </pre>
+        }
+      >
         <code>{JSON.stringify(props.message.update.payload)}</code>
       </TdEllipsis>
     </>
@@ -97,7 +106,7 @@ const Messages: Component = () => {
           <Th width={COLUMN_WIDTHS.payload}>payload</Th>
         </Thead>
         <Tbody>
-          <For each={state}>
+          <For each={getMessages()}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

@@ -13,6 +13,10 @@
 
 ## Simulator
 
+- State breaks down if you have multiple browser window pointing at the same
+  port: for instance, if you open an instance again the server doesn't know to
+  clear it first, because it thinks it already been cleared previously.
+
 - content security policy, disallow anything except local images,
   and (shared, see below) websocket.
 

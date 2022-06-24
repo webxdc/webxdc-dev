@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import { For, Show, JSX } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
+import { useSearchParams } from "solid-app-router";
 
 import { getMessages } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
@@ -95,7 +96,8 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
   );
 };
 
-const Messages: Component = () => {
+const Messages: Component = (props) => {
+  const [searchParams] = useSearchParams();
   return (
     <>
       <Table
@@ -134,7 +136,7 @@ const Messages: Component = () => {
           </Th>
         </Thead>
         <Tbody>
-          <For each={getMessages()}>
+          <For each={getMessages(searchParams.clientId)}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

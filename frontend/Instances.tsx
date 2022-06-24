@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@hope-ui/solid";
 import { Link } from "solid-app-router";
+import { sent, received } from "./store";
 
 type InstanceData = {
   id: number;
@@ -41,6 +42,8 @@ const Instance: Component<{ instance: InstanceData }> = (props) => {
       <Td>
         <Link href={`/messages?clientId=${props.instance.id}`}>inspect</Link>
       </Td>
+      <Td numeric>{sent(props.instance.id.toString())}</Td>
+      <Td numeric>{received(props.instance.id.toString())}</Td>
     </Tr>
   );
 };
@@ -70,6 +73,8 @@ const Instances: Component = () => {
           <Thead>
             <Th>Instance</Th>
             <Th>Inspect</Th>
+            <Th numeric>Sent</Th>
+            <Th numeric>Received</Th>
           </Thead>
           <Tbody>
             <For each={instances()}>

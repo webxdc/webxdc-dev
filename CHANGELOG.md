@@ -9,6 +9,9 @@ release date when you use `npm version` (see `README.md`).
 
 ### Changed
 
+- Introduces a tabbed UI with a second "messages" tab which displays a list of
+  all messages sent and received.
+
 - webxdc instances now use the name `Instance {port number}` instead of just
   the port number. The address has also been updated to use "instance" instead
   of "device".

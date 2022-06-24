@@ -23,7 +23,7 @@ export function createFrontend(
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
-        id: instance.port,
+        id: instance.port.toString(),
         url: `http://localhost:${instance.port}`,
       }))
     );

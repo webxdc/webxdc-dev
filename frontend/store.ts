@@ -31,9 +31,16 @@ export function received(clientId: string): number {
   return result;
 }
 
-export function getMessages(clientId: string | undefined): Message[] {
-  if (clientId == null) {
+export function getMessages(
+  clientId: string | undefined,
+  type: string | undefined
+): Message[] {
+  if (clientId == null && type == null) {
     return state;
   }
-  return state.filter((message) => message.clientId === clientId);
+  return state.filter(
+    (message) =>
+      (clientId == null || message.clientId === clientId) &&
+      (type == null || message.type === type)
+  );
 }

@@ -7,7 +7,7 @@ import { getMessages } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
 
 const COLUMN_WIDTHS = {
-  clientId: "3%",
+  clientId: "4%",
   type: "5%",
   descr: "10%",
   serial: "4%",
@@ -136,7 +136,7 @@ const Messages: Component = (props) => {
           </Th>
         </Thead>
         <Tbody>
-          <For each={getMessages(searchParams.clientId)}>
+          <For each={getMessages(searchParams.clientId, searchParams.type)}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

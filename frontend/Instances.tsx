@@ -1,5 +1,5 @@
-import type { Component } from "solid-js";
-import { For, createResource } from "solid-js";
+import type { Component, JSX } from "solid-js";
+import { For, createResource, createMemo } from "solid-js";
 import {
   Box,
   Button,
@@ -12,12 +12,14 @@ import {
   notificationService,
   Flex,
   Tooltip,
+  Anchor,
 } from "@hope-ui/solid";
-import { Link } from "solid-app-router";
+import { Link as RouterLink } from "solid-app-router";
+
 import { sent, received } from "./store";
 
 type InstanceData = {
-  id: number;
+  id: string;
   url: string;
 };
 
@@ -31,19 +33,54 @@ const CLEAR_INFO = `\
 Clear both webxdc-dev server state as well as client state.
 This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
 
+const Link: Component<{
+  href: string;
+  children: JSX.Element;
+}> = (props) => {
+  return (
+    <Anchor as={RouterLink} color="$primary10" href={props.href}>
+      {props.children}
+    </Anchor>
+  );
+};
+
 const Instance: Component<{ instance: InstanceData }> = (props) => {
+  const inspectPath = createMemo(() => {
+    return `/messages?clientId=${props.instance.id}`;
+  });
+
+  const sentPath = createMemo(() => {
+    return inspectPath() + `&type=sent`;
+  });
+
+  const receivedPath = createMemo(() => {
+    return inspectPath() + `&type=received`;
+  });
+
+  const sentCount = createMemo(() => {
+    return sent(props.instance.id);
+  });
+
+  const receivedCount = createMemo(() => {
+    return received(props.instance.id);
+  });
+
   return (
     <Tr>
       <Td>
-        <a target="_blank" href={props.instance.url}>
+        <Anchor color="$primary10" external href={props.instance.url}>
           {props.instance.id}
-        </a>
+        </Anchor>
       </Td>
       <Td>
-        <Link href={`/messages?clientId=${props.instance.id}`}>inspect</Link>
+        <Link href={inspectPath()}>inspect</Link>
       </Td>
-      <Td numeric>{sent(props.instance.id.toString())}</Td>
-      <Td numeric>{received(props.instance.id.toString())}</Td>
+      <Td numeric>
+        <Link href={sentPath()}>{sentCount()}</Link>
+      </Td>
+      <Td numeric>
+        <Link href={receivedPath()}>{receivedCount()}</Link>
+      </Td>
     </Tr>
   );
 };

@@ -1,89 +1,33 @@
 import type { Component } from "solid-js";
-import { For, createResource } from "solid-js";
-import {
-  Box,
-  Button,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  notificationService,
-  Flex,
-  Tooltip,
-} from "@hope-ui/solid";
+import { JSX } from "solid-js";
+import Instances from "./Instances";
 
-type InstanceData = {
-  id: number;
-  url: string;
-};
+import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 
-const [instances, { refetch: refetchInstances }] = createResource<
-  InstanceData[]
->(async () => {
-  return (await fetch(`/instances`)).json();
-});
-
-const CLEAR_INFO = `\
-Clear both webxdc-dev server state as well as client state.
-This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
-
-const Instance: Component<{ instance: InstanceData }> = (props) => {
+const Panel: Component<{ children: JSX.Element }> = (props) => {
   return (
-    <Tr>
-      <Td>
-        <a target="_blank" href={props.instance.url}>
-          {props.instance.id}
-        </a>
-      </Td>
-    </Tr>
+    <Box m="$20" mt="$12">
+      {props.children}
+    </Box>
   );
 };
 
 const App: Component = () => {
-  const handleAddInstance = async () => {
-    const { port } = await (
-      await fetch(`/instances`, { method: "POST" })
-    ).json();
-    refetchInstances();
-    notificationService.show({
-      title: `New instance ${port} added`,
-    });
-  };
-
-  const handleClear = async () => {
-    await fetch(`/clear`, { method: "POST" });
-    notificationService.show({
-      title: `Clearing state of dev server & instances`,
-    });
-  };
-
   return (
-    <Box m="$20" mt="$12">
-      <Heading level="1" size="3xl">
-        webxdc-dev
-      </Heading>
-      <Box m="$8" ml="$1">
-        <Table>
-          <Thead>
-            <Th>Instance</Th>
-          </Thead>
-          <Tbody>
-            <For each={instances()}>
-              {(instance) => <Instance instance={instance} />}
-            </For>
-          </Tbody>
-        </Table>
-      </Box>
-      <Flex direction="row" justifyContent="flex-start" gap="$3">
-        <Button onClick={handleAddInstance}>Add Instance</Button>
-        <Tooltip label={CLEAR_INFO}>
-          <Button onClick={handleClear}>Clear</Button>
-        </Tooltip>
-      </Flex>
-    </Box>
+    <Tabs>
+      <TabList>
+        <Tab>Instances</Tab>
+        <Tab>Messages</Tab>
+      </TabList>
+      <TabPanel>
+        <Panel>
+          <Instances />
+        </Panel>
+      </TabPanel>
+      <TabPanel>
+        <Panel>Messages</Panel>
+      </TabPanel>
+    </Tabs>
   );
 };
 

@@ -1,22 +1,54 @@
 import type { Component } from "solid-js";
-import { For, Show } from "solid-js";
-import { Table, Thead, Tbody, Tr, Th, Td } from "@hope-ui/solid";
+import { For, Show, JSX } from "solid-js";
+import { Table, Thead, Tbody, Tr, Th, Td, Box } from "@hope-ui/solid";
 
 import { state } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
+
+const COLUMN_WIDTHS = {
+  clientId: "3%",
+  type: "3%",
+  descr: "10%",
+  serial: "3%",
+  maxSerial: "3%",
+  info: "5%",
+  document: "5%",
+  summary: "5%",
+  payload: "30%",
+};
+
+const TdEllipsis: Component<{
+  children: JSX.Element;
+  numeric?: boolean;
+}> = (props) => {
+  return (
+    <Td
+      style={{
+        overflow: "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap",
+      }}
+      numeric={props.numeric}
+    >
+      {props.children}
+    </Td>
+  );
+};
 
 const UpdateMessageComponent: Component<{ message: UpdateMessage }> = (
   props
 ) => {
   return (
     <>
-      <Td>{props.message.descr}</Td>
-      <Td>{props.message.update.serial}</Td>
-      <Td>{props.message.update.max_serial}</Td>
-      <Td>{props.message.update.info}</Td>
-      <Td>{props.message.update.document}</Td>
-      <Td>{props.message.update.summary}</Td>
-      <Td>{JSON.stringify(props.message.update.payload)}</Td>
+      <TdEllipsis>{props.message.descr}</TdEllipsis>
+      <TdEllipsis numeric>{props.message.update.serial}</TdEllipsis>
+      <TdEllipsis numeric>{props.message.update.max_serial}</TdEllipsis>
+      <TdEllipsis>{props.message.update.info}</TdEllipsis>
+      <TdEllipsis>{props.message.update.document}</TdEllipsis>
+      <TdEllipsis>{props.message.update.summary}</TdEllipsis>
+      <TdEllipsis>
+        <code>{JSON.stringify(props.message.update.payload)}</code>
+      </TdEllipsis>
     </>
   );
 };
@@ -28,8 +60,8 @@ const FallbackMessageComponent: Component = (props) => {
 const MessageComponent: Component<{ message: Message }> = (props) => {
   return (
     <Tr>
-      <Td>{props.message.clientId}</Td>
-      <Td>{props.message.type}</Td>
+      <TdEllipsis>{props.message.clientId}</TdEllipsis>
+      <TdEllipsis>{props.message.type}</TdEllipsis>
       <Show
         when={props.message.type !== "clear"}
         fallback={<FallbackMessageComponent />}
@@ -43,17 +75,26 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
 const Messages: Component = () => {
   return (
     <>
-      <Table striped="even" dense>
+      <Table
+        width="100%"
+        striped="even"
+        dense
+        style={{ "table-layout": "fixed" }}
+      >
         <Thead>
-          <Th>client id</Th>
-          <Th>type</Th>
-          <Th>descr</Th>
-          <Th>serial</Th>
-          <Th>max serial</Th>
-          <Th>info</Th>
-          <Th>document</Th>
-          <Th>summary</Th>
-          <Th>payload</Th>
+          <Th width={COLUMN_WIDTHS.clientId}>client id</Th>
+          <Th width={COLUMN_WIDTHS.type}>type</Th>
+          <Th width={COLUMN_WIDTHS.descr}>descr</Th>
+          <Th width={COLUMN_WIDTHS.serial} numeric>
+            serial
+          </Th>
+          <Th width={COLUMN_WIDTHS.maxSerial} numeric>
+            max serial
+          </Th>
+          <Th width={COLUMN_WIDTHS.info}>info</Th>
+          <Th width={COLUMN_WIDTHS.document}>document</Th>
+          <Th width={COLUMN_WIDTHS.summary}>summary</Th>
+          <Th width={COLUMN_WIDTHS.payload}>payload</Th>
         </Thead>
         <Tbody>
           <For each={state}>

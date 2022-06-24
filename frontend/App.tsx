@@ -7,7 +7,7 @@ import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 
 const Panel: Component<{ children: JSX.Element }> = (props) => {
   return (
-    <Box m="$20" mt="$12">
+    <Box m="$2" mt="$6">
       {props.children}
     </Box>
   );

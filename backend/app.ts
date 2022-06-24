@@ -1,8 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
-import { WebSocket } from "ws";
-import { createProcessor, IProcessor, WebXdcMulti } from "./message";
-import { JsonValue, ReceivedUpdate } from "../types/webxdc-types";
+import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
+import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
@@ -12,12 +11,13 @@ export type InjectExpress = (app: Express) => void;
 export function createFrontend(
   instances: Instances,
   injectFrontend: InjectExpress
-): Express {
-  const app = express();
-
+): expressWs.Application {
+  const expressApp = express();
+  const wsInstance = expressWs(expressApp);
+  const app = wsInstance.app;
   // inject how to serve the frontend; this is
   // different in dev mode and in production
-  injectFrontend(app);
+  injectFrontend(app as unknown as Express);
 
   app.get("/instances", (req, res) => {
     res.json(
@@ -39,6 +39,12 @@ export function createFrontend(
     instances.clear();
     res.json({
       status: "ok",
+    });
+  });
+
+  app.ws("/webxdc-message", (ws, req) => {
+    instances.onMessage((message) => {
+      ws.send(JSON.stringify(message));
     });
   });
   return app;
@@ -100,6 +106,7 @@ export class Instances {
   currentPort: number;
   injectSim: InjectExpress;
   processor: IProcessor;
+  _onMessage: OnMessage | null = null;
 
   constructor(location: string, injectSim: InjectExpress, basePort: number) {
     this.location = location;
@@ -107,7 +114,12 @@ export class Instances {
     this.currentPort = basePort;
     this.instances = new Map();
     this.injectSim = injectSim;
-    this.processor = createProcessor();
+    this.processor = createProcessor((message) => {
+      if (this._onMessage == null) {
+        return;
+      }
+      this._onMessage(message);
+    });
   }
 
   add(): Instance {
@@ -135,12 +147,17 @@ export class Instances {
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         if (isSendUpdateMessage(parsed)) {
-          instance.webXdc.sendUpdate(parsed.update, "update");
+          instance.webXdc.sendUpdate(parsed.update, parsed.descr);
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
               console.info("gossip", updates);
-              ws.send(JSON.stringify({ type: "updates", updates }));
+              ws.send(
+                JSON.stringify({
+                  type: "updates",
+                  updates: updates.map(([update]) => update),
+                })
+              );
             },
             parsed.serial,
             () => {
@@ -159,6 +176,10 @@ export class Instances {
 
   clear() {
     this.processor.clear();
+  }
+
+  onMessage(onMessage: OnMessage) {
+    this._onMessage = onMessage;
   }
 }
 

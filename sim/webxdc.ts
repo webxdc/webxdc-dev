@@ -1,4 +1,4 @@
-import { JsonValue } from "../types/webxdc-types";
+import { JsonValue } from "../types/webxdc";
 import {
   Transport,
   TransportMessageCallback,

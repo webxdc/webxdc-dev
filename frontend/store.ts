@@ -28,3 +28,7 @@ export function received(clientId: string): number {
   }
   return result;
 }
+
+export function getMessages(): Message[] {
+  return state;
+}

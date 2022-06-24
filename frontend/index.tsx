@@ -11,8 +11,8 @@ const url = `ws://${document.location.host}/webxdc-message`;
 const socket = new WebSocket(url);
 
 socket.addEventListener("message", (event) => {
-  // const message = JSON.parse((event as any).data) as Message;
-  // addMessage(message);
+  const message = JSON.parse((event as any).data) as Message;
+  addMessage(message);
 });
 
 render(

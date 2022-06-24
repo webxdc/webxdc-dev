@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import { JSX } from "solid-js";
 import Instances from "./Instances";
+import Messages from "./Messages";
 
 import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 
@@ -25,7 +26,9 @@ const App: Component = () => {
         </Panel>
       </TabPanel>
       <TabPanel>
-        <Panel>Messages</Panel>
+        <Panel>
+          <Messages />
+        </Panel>
       </TabPanel>
     </Tabs>
   );

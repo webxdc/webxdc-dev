@@ -1,6 +1,6 @@
 import { ReceivedUpdate, JsonValue } from "./webxdc";
 
-type UpdateMessage = {
+export type UpdateMessage = {
   clientId: string;
   update: ReceivedUpdate<JsonValue>;
   descr: string;

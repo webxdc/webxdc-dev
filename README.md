@@ -37,6 +37,9 @@ time after startup.
 The UI also lets you clear the state - this refreshes both server and client
 state, and is as if you restarted `webxdc-dev`.
 
+The "messages" tab lets you see all updates sent and received from the dev
+server. Hover over the fields to see the complete text.
+
 ### Running a directory
 
 In case you don't use bundling tooling and have a simple webxdc project where

@@ -43,7 +43,7 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
 const Messages: Component = () => {
   return (
     <>
-      <Table>
+      <Table striped="even" dense>
         <Thead>
           <Th>client id</Th>
           <Th>type</Th>

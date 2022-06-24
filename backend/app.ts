@@ -10,7 +10,8 @@ export type InjectExpress = (app: Express) => void;
 
 export function createFrontend(
   instances: Instances,
-  injectFrontend: InjectExpress
+  injectFrontend: InjectExpress,
+  getIndexHtml: () => string
 ): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -46,6 +47,11 @@ export function createFrontend(
     instances.onMessage((message) => {
       ws.send(JSON.stringify(message));
     });
+  });
+
+  // fallback to send index.html to serve frontend router
+  app.get("*", (req, res) => {
+    res.sendFile(getIndexHtml());
   });
   return app;
 }

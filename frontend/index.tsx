@@ -1,9 +1,9 @@
 import { render } from "solid-js/web";
 import { HopeProvider, NotificationsProvider } from "@hope-ui/solid";
+import { Router } from "solid-app-router";
+
 import { Message } from "../types/message";
-
 import { addMessage } from "./store";
-
 import App from "./App";
 
 const url = `ws://${document.location.host}/webxdc-message`;
@@ -17,11 +17,13 @@ socket.addEventListener("message", (event) => {
 
 render(
   () => (
-    <HopeProvider>
-      <NotificationsProvider>
-        <App />
-      </NotificationsProvider>
-    </HopeProvider>
+    <Router>
+      <HopeProvider>
+        <NotificationsProvider>
+          <App />
+        </NotificationsProvider>
+      </HopeProvider>
+    </Router>
   ),
   document.getElementById("root") as HTMLElement
 );

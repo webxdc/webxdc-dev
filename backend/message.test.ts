@@ -1,4 +1,5 @@
-import { createProcessor, Message, UpdateDescr } from "./message";
+import { createProcessor, UpdateDescr } from "./message";
+import type { Message } from "../types/message";
 
 // a little helper to let us track messages for testing purposes
 function track(): [() => Message[], (message: Message) => void] {

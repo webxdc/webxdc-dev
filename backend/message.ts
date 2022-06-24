@@ -4,6 +4,7 @@ import type {
   ReceivedUpdate,
   SendUpdate,
 } from "../types/webxdc-types";
+import type { Message } from "../types/message";
 
 type UpdateListenerMulti = (
   updates: [ReceivedUpdate<JsonValue>, string][]
@@ -22,17 +23,6 @@ export type WebXdcMulti = {
 };
 
 export type UpdateDescr = [ReceivedUpdate<JsonValue>, string];
-
-type UpdateMessage = {
-  clientId: string;
-  update: ReceivedUpdate<JsonValue>;
-  descr: string;
-};
-
-export type Message =
-  | (UpdateMessage & { type: "sent" })
-  | (UpdateMessage & { type: "received" })
-  | { type: "clear"; clientId: string };
 
 export type OnMessage = (message: Message) => void;
 

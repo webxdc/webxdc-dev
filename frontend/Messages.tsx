@@ -1,10 +1,11 @@
-import type { Component } from "solid-js";
-import { For, Show, JSX } from "solid-js";
+import { Component, createEffect } from "solid-js";
+import { For, Show, JSX, createSignal, createMemo } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
 import { useSearchParams } from "solid-app-router";
 
-import { getMessages } from "./store";
+import { getMessages, instances } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
+import Filter, { FilterEntry } from "./Filter";
 
 const COLUMN_WIDTHS = {
   clientId: "4%",
@@ -96,10 +97,58 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
   );
 };
 
-const Messages: Component = (props) => {
-  const [searchParams] = useSearchParams();
+const clientIdEntries = createMemo(() => {
+  const resolvedInstances = instances();
+  const all_entry = {
+    value: "*",
+    text: "All client ids",
+  };
+  if (resolvedInstances == null) {
+    return [all_entry];
+  }
+  return [
+    all_entry,
+    ...resolvedInstances.map((instance) => ({
+      value: instance.id,
+      text: instance.id,
+    })),
+  ];
+});
+
+const Messages: Component = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
     <>
+      <Filter
+        label="clientId"
+        entries={clientIdEntries()}
+        value={searchParams.clientId || "*"}
+        onChange={(value) => {
+          if (value === "*") {
+            setSearchParams({ ...searchParams, clientId: undefined });
+          } else {
+            setSearchParams({ ...searchParams, clientId: value });
+          }
+        }}
+      />
+      <Filter
+        label="type"
+        entries={[
+          { value: "*", text: "All types" },
+          { value: "sent", text: "Sent" },
+          { value: "received", text: "Received" },
+          { value: "clear", text: "Clear" },
+        ]}
+        value={searchParams.type || "*"}
+        onChange={(value) => {
+          if (value === "*") {
+            setSearchParams({ ...searchParams, type: undefined });
+          } else {
+            setSearchParams({ ...searchParams, type: value });
+          }
+        }}
+      />
       <Table
         width="100%"
         striped="even"

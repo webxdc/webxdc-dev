@@ -1,5 +1,5 @@
 import type { Component, JSX } from "solid-js";
-import { For, createResource, createMemo } from "solid-js";
+import { For, createMemo } from "solid-js";
 import {
   Box,
   Button,
@@ -16,18 +16,13 @@ import {
 } from "@hope-ui/solid";
 import { Link as RouterLink } from "solid-app-router";
 
-import { sent, received } from "./store";
-
-type InstanceData = {
-  id: string;
-  url: string;
-};
-
-const [instances, { refetch: refetchInstances }] = createResource<
-  InstanceData[]
->(async () => {
-  return (await fetch(`/instances`)).json();
-});
+import {
+  sent,
+  received,
+  instances,
+  refetchInstances,
+  InstanceData,
+} from "./store";
 
 const CLEAR_INFO = `\
 Clear both webxdc-dev server state as well as client state.

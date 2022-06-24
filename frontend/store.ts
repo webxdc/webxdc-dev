@@ -1,5 +1,19 @@
 import { createStore, produce } from "solid-js/store";
+import { createResource } from "solid-js";
 import type { Message } from "../types/message";
+
+export type InstanceData = {
+  id: string;
+  url: string;
+};
+
+const [instances, { refetch: refetchInstances }] = createResource<
+  InstanceData[]
+>(async () => {
+  return (await fetch(`/instances`)).json();
+});
+
+export { instances, refetchInstances };
 
 const [state, setState] = createStore<Message[]>([]);
 
@@ -31,10 +45,7 @@ export function received(clientId: string): number {
   return result;
 }
 
-export function getMessages(
-  clientId: string | undefined,
-  type: string | undefined
-): Message[] {
+export function getMessages(clientId: string, type: string): Message[] {
   if (clientId == null && type == null) {
     return state;
   }

@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { For, Show, JSX } from "solid-js";
-import { Table, Thead, Tbody, Tr, Th, Td, Tooltip } from "@hope-ui/solid";
+import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
 
 import { getMessages } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
@@ -9,12 +9,33 @@ const COLUMN_WIDTHS = {
   clientId: "3%",
   type: "5%",
   descr: "10%",
-  serial: "3%",
-  maxSerial: "3%",
+  serial: "4%",
+  maxSerial: "4%",
   info: "5%",
   document: "5%",
   summary: "5%",
-  payload: "30%",
+  payload: "20%",
+};
+
+const TooltipEllipsis: Component<{
+  children: JSX.Element;
+  tooltip?: JSX.Element;
+}> = (props) => {
+  return (
+    <Tooltip label={props.tooltip || props.children}>
+      <Text
+        noOfLines={1}
+        fontSize={{
+          "@initial": "8px",
+          "@sm": "8px",
+          "@md": "10px",
+          "@lg": "12px",
+        }}
+      >
+        {props.children}
+      </Text>
+    </Tooltip>
+  );
 };
 
 const TdEllipsis: Component<{
@@ -23,17 +44,10 @@ const TdEllipsis: Component<{
   tooltip?: JSX.Element;
 }> = (props) => {
   return (
-    <Td
-      style={{
-        overflow: "hidden",
-        "text-overflow": "ellipsis",
-        "white-space": "nowrap",
-      }}
-      numeric={props.numeric}
-    >
-      <Tooltip label={props.tooltip || props.children}>
-        <span>{props.children}</span>
-      </Tooltip>
+    <Td numeric={props.numeric}>
+      <TooltipEllipsis tooltip={props.tooltip}>
+        {props.children}
+      </TooltipEllipsis>
     </Td>
   );
 };
@@ -88,22 +102,36 @@ const Messages: Component = () => {
         width="100%"
         striped="even"
         dense
-        style={{ "table-layout": "fixed" }}
+        css={{ "table-layout": "fixed" }}
       >
         <Thead>
-          <Th width={COLUMN_WIDTHS.clientId}>client id</Th>
-          <Th width={COLUMN_WIDTHS.type}>type</Th>
-          <Th width={COLUMN_WIDTHS.descr}>descr</Th>
+          <Th width={COLUMN_WIDTHS.clientId}>
+            <TooltipEllipsis>client id</TooltipEllipsis>
+          </Th>
+          <Th width={COLUMN_WIDTHS.type}>
+            <TooltipEllipsis>type</TooltipEllipsis>
+          </Th>
+          <Th width={COLUMN_WIDTHS.descr}>
+            <TooltipEllipsis>descr</TooltipEllipsis>
+          </Th>
           <Th width={COLUMN_WIDTHS.serial} numeric>
-            serial
+            <TooltipEllipsis>serial</TooltipEllipsis>
           </Th>
           <Th width={COLUMN_WIDTHS.maxSerial} numeric>
-            max serial
+            <TooltipEllipsis>max serial</TooltipEllipsis>
           </Th>
-          <Th width={COLUMN_WIDTHS.info}>info</Th>
-          <Th width={COLUMN_WIDTHS.document}>document</Th>
-          <Th width={COLUMN_WIDTHS.summary}>summary</Th>
-          <Th width={COLUMN_WIDTHS.payload}>payload</Th>
+          <Th width={COLUMN_WIDTHS.info}>
+            <TooltipEllipsis>info</TooltipEllipsis>
+          </Th>
+          <Th width={COLUMN_WIDTHS.document}>
+            <TooltipEllipsis>document</TooltipEllipsis>
+          </Th>
+          <Th width={COLUMN_WIDTHS.summary}>
+            <TooltipEllipsis>summary</TooltipEllipsis>
+          </Th>
+          <Th width={COLUMN_WIDTHS.payload}>
+            <TooltipEllipsis>payload</TooltipEllipsis>
+          </Th>
         </Thead>
         <Tbody>
           <For each={getMessages()}>

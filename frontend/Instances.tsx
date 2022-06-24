@@ -109,7 +109,7 @@ const Instances: Component = () => {
         <Table>
           <Thead>
             <Th>Instance</Th>
-            <Th>Inspect</Th>
+            <Th>Messages</Th>
             <Th numeric>Sent</Th>
             <Th numeric>Received</Th>
           </Thead>

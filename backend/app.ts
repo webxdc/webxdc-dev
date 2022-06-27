@@ -1,5 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
+import { WebSocket, Server } from "ws";
+
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProxyMiddleware } from "http-proxy-middleware";
@@ -59,7 +61,7 @@ export function createFrontend(
 export function createPeer(
   location: string,
   injectSim: InjectExpress
-): expressWs.Application {
+): expressWs.Instance {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
 
@@ -84,7 +86,7 @@ export function createPeer(
     // serve webxdc project from directory
     wsInstance.app.use(express.static(location));
   }
-  return wsInstance.app;
+  return wsInstance;
 }
 
 export class Instance {
@@ -134,7 +136,10 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const app = createPeer(this.location, this.injectSim);
+    const wsInstance = createPeer(this.location, this.injectSim);
+    const app = wsInstance.app;
+    const wss = wsInstance.getWss();
+
     const instance = new Instance(
       app,
       port,
@@ -158,7 +163,8 @@ export class Instances {
           instance.webXdc.connect(
             (updates) => {
               console.info("gossip", updates);
-              ws.send(
+              broadcast(
+                wss,
                 JSON.stringify({
                   type: "updates",
                   updates: updates.map(([update]) => update),
@@ -168,7 +174,7 @@ export class Instances {
             parsed.serial,
             () => {
               console.info("clear");
-              ws.send(JSON.stringify({ type: "clear" }));
+              broadcast(wss, JSON.stringify({ type: "clear" }));
             }
           );
         } else {
@@ -187,6 +193,14 @@ export class Instances {
   onMessage(onMessage: OnMessage) {
     this._onMessage = onMessage;
   }
+}
+
+function broadcast(wss: Server<WebSocket>, data: string) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
 }
 
 type SendUpdateMessage = {

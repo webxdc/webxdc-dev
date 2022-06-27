@@ -30,8 +30,10 @@
 
 ## Architecture
 
-- can we have only a single web socket that handles all frontends? we can
-  use getWss().clients to broadcast to all clients.
+- can we have only a single web socket that handles all frontends? We could
+  broadcast to all clients at once. The drawbacks of this are that the client
+  becomes dependent on more than just its own backend, and that we cannot
+  easily distinguish between instances and make one of them broken in some way.
 
 ## CLI / config
 

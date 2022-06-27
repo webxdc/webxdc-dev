@@ -5,6 +5,7 @@ import { Route, Routes, useNavigate, useLocation } from "solid-app-router";
 
 import Instances from "./Instances";
 import Messages from "./Messages";
+import Info from "./Info";
 
 const Panel: Component<{ children: JSX.Element }> = (props) => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes: Component = () => {
     <Routes>
       <Route path="/" element={<Instances />} />
       <Route path="/messages" element={<Messages />} />
+      <Route path="/info" element={<Info />} />
     </Routes>
   );
 };
@@ -33,6 +35,8 @@ const App: Component = () => {
       setTabIndex(0);
     } else if (location.pathname === "/messages") {
       setTabIndex(1);
+    } else if (location.pathname === "/info") {
+      setTabIndex(2);
     }
   });
 
@@ -43,6 +47,8 @@ const App: Component = () => {
       navigate("/");
     } else if (index === 1) {
       navigate("/messages");
+    } else if (index === 2) {
+      navigate("/info");
     }
     setTabIndex(index);
   };
@@ -52,7 +58,13 @@ const App: Component = () => {
       <TabList>
         <Tab>Instances</Tab>
         <Tab>Messages</Tab>
+        <Tab>Info</Tab>
       </TabList>
+      <TabPanel>
+        <Panel>
+          <AppRoutes />
+        </Panel>
+      </TabPanel>
       <TabPanel>
         <Panel>
           <AppRoutes />

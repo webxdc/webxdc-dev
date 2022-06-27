@@ -1,16 +1,19 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
-
-import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
-import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProxyMiddleware } from "http-proxy-middleware";
+
+import { JsonValue, ReceivedUpdate } from "../types/webxdc";
+import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
+import { Location } from "./location";
+import { AppInfo } from "./appInfo";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
 
 export type InjectExpress = (app: Express) => void;
 
 export function createFrontend(
+  appInfo: AppInfo,
   instances: Instances,
   injectFrontend: InjectExpress,
   getIndexHtml: () => string
@@ -22,6 +25,21 @@ export function createFrontend(
   // different in dev mode and in production
   injectFrontend(app as unknown as Express);
 
+  app.get("/app-info", (req, res) => {
+    res.json({
+      name: appInfo.manifest.name,
+      iconUrl: appInfo.icon ? "/icon" : null,
+      sourceCodeUrl: appInfo.manifest.sourceCodeUrl,
+      manifestFound: appInfo.manifest.manifestFound,
+    });
+  });
+  app.get("/icon", (req, res) => {
+    if (appInfo.icon == null) {
+      res.sendStatus(404);
+      return;
+    }
+    res.send(appInfo.icon.buffer);
+  });
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
@@ -59,7 +77,7 @@ export function createFrontend(
 }
 
 export function createPeer(
-  location: string,
+  location: Location,
   injectSim: InjectExpress
 ): expressWs.Instance {
   const expressApp = express();
@@ -69,7 +87,7 @@ export function createPeer(
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
 
-  if (location.startsWith("http://")) {
+  if (location.type === "url") {
     // serve webxdc project from URL by proxying
     const filter = (pathname: string) => {
       // make sure we don't proxy any path to do with the simulator
@@ -78,13 +96,13 @@ export function createPeer(
     wsInstance.app.use(
       "/",
       createProxyMiddleware(filter, {
-        target: location,
+        target: location.url,
         ws: false,
       })
     );
   } else {
     // serve webxdc project from directory
-    wsInstance.app.use(express.static(location));
+    wsInstance.app.use(express.static(location.path));
   }
   return wsInstance;
 }
@@ -108,7 +126,7 @@ export class Instance {
 }
 
 export class Instances {
-  location: string;
+  location: Location;
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
@@ -116,7 +134,7 @@ export class Instances {
   processor: IProcessor;
   _onMessage: OnMessage | null = null;
 
-  constructor(location: string, injectSim: InjectExpress, basePort: number) {
+  constructor(location: Location, injectSim: InjectExpress, basePort: number) {
     this.location = location;
     this.basePort = basePort;
     this.currentPort = basePort;

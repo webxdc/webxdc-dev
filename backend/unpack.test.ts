@@ -1,21 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { isXdcFile, withTempDir, unpack } from "./unpack";
-
-test("isXdcFile", () => {
-  // URLs aren't xdc files
-  expect(isXdcFile("http://localhost:3000")).toBeFalsy();
-  expect(isXdcFile("https://localhost:3000")).toBeFalsy();
-  // non .xdc files aren't .xdc files
-  expect(isXdcFile(path.resolve(__dirname, "fixtures/notXdc"))).toBeFalsy();
-  // directories even if ending in .xdc aren't .xdc files
-  expect(
-    isXdcFile(path.resolve(__dirname, "fixtures/notXdcDir.xdc"))
-  ).toBeFalsy();
-
-  // finally a real .xdc file is valid
-  expect(isXdcFile(path.resolve(__dirname, "fixtures/clean.xdc"))).toBeTruthy();
-});
+import { withTempDir, unpack } from "./unpack";
 
 test("withTempDir", () => {
   let createdTmpDir: string | null = null;

@@ -2,8 +2,8 @@ import process from "process";
 import open from "open";
 
 import { createFrontend, Instances, InjectExpress } from "./app";
-import { getLocation } from "./location";
-import { getAppInfo, AppInfo } from "./appInfo";
+import { getLocation, Location, LocationError } from "./location";
+import { getAppInfo, AppInfo, AppInfoError } from "./appInfo";
 
 export type Inject = {
   injectFrontend: InjectExpress;
@@ -37,16 +37,32 @@ function actualRun(appInfo: AppInfo, basePort: number, inject: Inject): void {
 }
 
 export function run(locationStr: string, basePort: number, inject: Inject) {
-  const location = getLocation(locationStr);
+  let location: Location;
+  try {
+    location = getLocation(locationStr);
+  } catch (e) {
+    if (e instanceof LocationError) {
+      console.error(e.message);
+      return;
+    }
+    throw e;
+  }
+
   for (const signal in ["SIGINT", "SIGTERM"]) {
     process.on(signal, () => {
       location.dispose();
     });
   }
 
-  console.log("Starting webxdc project in: ", location);
+  console.log("Starting webxdc project in:", locationStr);
 
-  getAppInfo(location).then((appInfo) => {
-    actualRun(appInfo, basePort, inject);
-  });
+  getAppInfo(location)
+    .then((appInfo) => {
+      actualRun(appInfo, basePort, inject);
+    })
+    .catch((e) => {
+      if (e instanceof AppInfoError) {
+        console.error(e.message);
+      }
+    });
 }

@@ -1,8 +1,9 @@
 import path from "path";
 import fs from "fs";
 import toml from "toml";
-// have to use v2 otherwise end up in config hell becasue v3 is ESM only
+// have to use v2 otherwise end up in config hell because v3 is ESM only
 import fetch from "node-fetch";
+import waitOn from "wait-on";
 
 import { Location } from "./location";
 
@@ -23,8 +24,26 @@ export type AppInfo = {
   icon: IconInfo | null;
 };
 
+export class AppInfoError extends Error {}
+
 export async function getAppInfo(location: Location): Promise<AppInfo> {
   if (location.type === "url") {
+    // wait for the URL to become available, so we can retrieve
+    // information from it
+    try {
+      await waitOn({
+        // we don't want to do a HEAD check, just a GET check
+        resources: [location.url.replace("http:", "http-get:")],
+        // workaround https://github.com/jeffbski/wait-on/issues/78#issuecomment-867813529
+        headers: {
+          accept: "text/html",
+        },
+        timeout: 5000,
+      });
+    } catch (e) {
+      throw new AppInfoError(`Timeout. Could not access URL: ${location.url}`);
+    }
+
     return {
       location,
       manifest: await getManifestInfoFromUrl(location.url),

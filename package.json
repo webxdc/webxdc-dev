@@ -50,6 +50,7 @@
     "@types/jest": "^28.1.2",
     "@types/node": "^18.0.0",
     "@types/node-fetch": "^2.6.2",
+    "@types/wait-on": "^5.3.1",
     "babel-loader": "^8.2.5",
     "babel-preset-solid": "^1.4.4",
     "concurrently": "^7.2.2",
@@ -80,6 +81,7 @@
     "solid-js": "^1.4.2",
     "solid-transition-group": "^0.0.10",
     "toml": "^3.0.0",
+    "wait-on": "^6.0.1",
     "ws": "^8.8.0"
   }
 }

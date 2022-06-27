@@ -1,8 +1,7 @@
 ## UI
 
-- Messages sent, inspect messages
-
-- mobile display option for XDC applications
+- mobile display option for XDC applications. This could try to integrate
+  everything in one page, with mobile windows as iframes stacked 2 wide.
 
 - Content security reporting
 
@@ -10,6 +9,8 @@
 
 - When an instance opens it flashes with old state. Is it worthwhile to prevent
   the flash by temporaly blanking everything out upon initial load?
+
+- Show the metadata fields (icon, name, etc) somewhere.
 
 ## Simulator
 
@@ -31,8 +32,6 @@
 
 - can we have only a single web socket that handles all frontends? we can
   use getWss().clients to broadcast to all clients.
-
-- Is express-ws worth it?
 
 ## CLI / config
 

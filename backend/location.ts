@@ -3,21 +3,24 @@ import { resolve } from "path";
 
 import { createTempDir, unpack } from "./unpack";
 
-export type Location =
-  | {
-      type: "directory";
-      path: string;
-      derivedName: string;
-      dispose: () => void;
-    }
-  | {
-      type: "xdc";
-      path: string;
-      filePath: string;
-      derivedName: string;
-      dispose: () => void;
-    }
-  | { type: "url"; url: string; dispose: () => void };
+export type DirectoryLocation = {
+  type: "directory";
+  path: string;
+  derivedName: string;
+  dispose: () => void;
+};
+
+export type XdcLocation = {
+  type: "xdc";
+  path: string;
+  filePath: string;
+  derivedName: string;
+  dispose: () => void;
+};
+
+export type UrlLocation = { type: "url"; url: string; dispose: () => void };
+
+export type Location = DirectoryLocation | XdcLocation | UrlLocation;
 
 export class LocationError extends Error {}
 

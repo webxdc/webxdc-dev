@@ -2,10 +2,10 @@ import path from "path";
 import fs from "fs";
 import toml from "toml";
 // have to use v2 otherwise end up in config hell because v3 is ESM only
-import fetch from "node-fetch";
+import nodeFetch from "node-fetch";
 import waitOn from "wait-on";
 
-import { Location } from "./location";
+import { Location, UrlLocation } from "./location";
 
 export type IconInfo = {
   buffer: Buffer;
@@ -28,8 +28,6 @@ export class AppInfoError extends Error {}
 
 export async function getAppInfo(location: Location): Promise<AppInfo> {
   if (location.type === "url") {
-    // wait for the URL to become available, so we can retrieve
-    // information from it
     try {
       await waitOn({
         // we don't want to do a HEAD check, just a GET check
@@ -43,12 +41,7 @@ export async function getAppInfo(location: Location): Promise<AppInfo> {
     } catch (e) {
       throw new AppInfoError(`Timeout. Could not access URL: ${location.url}`);
     }
-
-    return {
-      location,
-      manifest: await getManifestInfoFromUrl(location.url),
-      icon: await getIconInfoFromUrl(location.url),
-    };
+    return getAppInfoUrl(location, nodeFetch);
   }
   return {
     location,
@@ -57,7 +50,21 @@ export async function getAppInfo(location: Location): Promise<AppInfo> {
   };
 }
 
-async function getManifestInfoFromUrl(url: string): Promise<ManifestInfo> {
+export async function getAppInfoUrl(
+  location: UrlLocation,
+  fetch: typeof nodeFetch
+): Promise<AppInfo> {
+  return {
+    location,
+    manifest: await getManifestInfoFromUrl(location.url, fetch),
+    icon: await getIconInfoFromUrl(location.url, fetch),
+  };
+}
+
+async function getManifestInfoFromUrl(
+  url: string,
+  fetch: typeof nodeFetch
+): Promise<ManifestInfo> {
   if (!url.endsWith("/")) {
     url = url + "/";
   }
@@ -70,7 +77,7 @@ async function getManifestInfoFromUrl(url: string): Promise<ManifestInfo> {
     };
   }
   const body = await response.text();
-  const parsed = toml.parse(body);
+  const parsed = tomlParse(body);
   return {
     name: parsed.name || "Unknown",
     sourceCodeUrl: parsed.source_code_url,
@@ -78,18 +85,21 @@ async function getManifestInfoFromUrl(url: string): Promise<ManifestInfo> {
   };
 }
 
-async function getIconInfoFromUrl(url: string): Promise<IconInfo | null> {
+async function getIconInfoFromUrl(
+  url: string,
+  fetch: typeof nodeFetch
+): Promise<IconInfo | null> {
   if (!url.endsWith("/")) {
     url = url + "/";
   }
-  const pngBuffer = await readUrlBuffer(url + "icon.png");
+  const pngBuffer = await readUrlBuffer(url + "icon.png", fetch);
   if (pngBuffer != null) {
     return {
       buffer: pngBuffer,
       contentType: "image/png",
     };
   }
-  const jpgBuffer = await readUrlBuffer((url = "icon.jpg"));
+  const jpgBuffer = await readUrlBuffer(url + "icon.jpg", fetch);
   if (jpgBuffer != null) {
     return {
       buffer: jpgBuffer,
@@ -111,13 +121,21 @@ function getManifestInfoFromDir(
       manifestFound: false,
     };
   }
-  const parsed = toml.parse(tomlBuffer.toString());
+  const parsed = tomlParse(tomlBuffer.toString());
   const name = parsed.name || fallbackName;
   return {
     name,
     sourceCodeUrl: parsed.source_code_url,
     manifestFound: true,
   };
+}
+
+function tomlParse(s: string): any {
+  try {
+    return toml.parse(s);
+  } catch (e) {
+    throw new AppInfoError("Invalid manifest.toml, please check the format");
+  }
 }
 
 function getIconInfoFromDir(dir: string): IconInfo | null {
@@ -143,7 +161,10 @@ function readFileBuffer(location: string): Buffer | null {
   return fs.readFileSync(location);
 }
 
-async function readUrlBuffer(url: string): Promise<Buffer | null> {
+async function readUrlBuffer(
+  url: string,
+  fetch: typeof nodeFetch
+): Promise<Buffer | null> {
   const response = await fetch(url);
   if (!response.ok) {
     return null;

@@ -3,9 +3,9 @@ import fs from "fs";
 
 import { getLocation, LocationError } from "./location";
 
-test("directory location with index.html", async () => {
+test("directory location with index.html", () => {
   const dir = path.resolve(__dirname, "fixtures/minimal");
-  const location = await getLocation(dir);
+  const location = getLocation(dir);
   expect(location.type).toEqual("directory");
   // help ts
   if (location.type !== "directory") {
@@ -16,9 +16,9 @@ test("directory location with index.html", async () => {
   expect(() => location.dispose()).not.toThrow();
 });
 
-test("directory location with index.html with trailing slash", async () => {
+test("directory location with index.html with trailing slash", () => {
   const dir = path.resolve(__dirname, "fixtures/minimal/");
-  const location = await getLocation(dir);
+  const location = getLocation(dir);
   expect(location.type).toEqual("directory");
   // help ts
   if (location.type !== "directory") {
@@ -29,19 +29,19 @@ test("directory location with index.html with trailing slash", async () => {
   expect(() => location.dispose()).not.toThrow();
 });
 
-test("invalid directory location without index.html", async () => {
+test("invalid directory location without index.html", () => {
   const dir = path.resolve(__dirname, "fixtures/invalid");
   try {
-    await getLocation(dir);
+    getLocation(dir);
   } catch (e) {
     expect(e).toBeInstanceOf(LocationError);
   }
   expect.assertions(1);
 });
 
-test("xdc file", async () => {
+test("xdc file", () => {
   const filePath = path.resolve(__dirname, "fixtures/clean.xdc");
-  const location = await getLocation(filePath);
+  const location = getLocation(filePath);
   expect(location.type).toEqual("xdc");
   // help ts
   if (location.type !== "xdc") {
@@ -58,29 +58,29 @@ test("xdc file", async () => {
   expect(fs.existsSync(location.path)).toBeFalsy();
 });
 
-test("xdc file with invalid zip", async () => {
+test("xdc file with invalid zip", () => {
   const filePath = path.resolve(__dirname, "fixtures/invalid.xdc");
   try {
-    await getLocation(filePath);
+    getLocation(filePath);
   } catch (e) {
     expect(e).toBeInstanceOf(LocationError);
   }
   expect.assertions(1);
 });
 
-test("a non-xdc file cannot be handled", async () => {
+test("a non-xdc file cannot be handled", () => {
   const filePath = path.resolve(__dirname, "fixtures/notXdc");
   try {
-    await getLocation(filePath);
+    getLocation(filePath);
   } catch (e) {
     expect(e).toBeInstanceOf(LocationError);
   }
   expect.assertions(1);
 });
 
-test("directory is never xdc file", async () => {
+test("directory is never xdc file", () => {
   const filePath = path.resolve(__dirname, "fixtures/notXdcDir.xdc");
-  const location = await getLocation(filePath);
+  const location = getLocation(filePath);
   expect(location.type).toEqual("directory");
   // help ts
   if (location.type !== "directory") {
@@ -91,8 +91,8 @@ test("directory is never xdc file", async () => {
   expect(() => location.dispose()).not.toThrow();
 });
 
-test("url", async () => {
-  const location = await getLocation("http://example.com");
+test("url", () => {
+  const location = getLocation("http://example.com");
   expect(location.type).toEqual("url");
   // help ts
   if (location.type !== "url") {

@@ -63,6 +63,8 @@ export function run(locationStr: string, basePort: number, inject: Inject) {
     .catch((e) => {
       if (e instanceof AppInfoError) {
         console.error(e.message);
+        return;
       }
+      throw e;
     });
 }

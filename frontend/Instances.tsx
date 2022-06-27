@@ -40,6 +40,7 @@ const Link: Component<{
 };
 
 const Instance: Component<{ instance: InstanceData }> = (props) => {
+  // XXX these could be simple functions not memos
   const inspectPath = createMemo(() => {
     return `/messages?clientId=${props.instance.id}`;
   });

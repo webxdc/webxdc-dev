@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { For, Show, JSX, createMemo } from "solid-js";
+import { For, Show, JSX } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
 import { useSearchParams } from "solid-app-router";
 

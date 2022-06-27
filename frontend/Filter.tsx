@@ -26,12 +26,12 @@ const Filter: Component<{
 }> = (props) => {
   return (
     <Select size="xs" value={props.value} onChange={props.onChange}>
-      <SelectTrigger>
+      <SelectTrigger width="$64">
         <SelectPlaceholder>{props.label}</SelectPlaceholder>
         <SelectValue />
         <SelectIcon />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent width="$64">
         <SelectListbox>
           <For each={props.entries}>
             {(entry) => (

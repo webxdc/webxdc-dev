@@ -1,5 +1,6 @@
 import { Component, createMemo } from "solid-js";
 import { useSearchParams } from "solid-app-router";
+import { Flex, Box } from "@hope-ui/solid";
 
 import Filter from "./Filter";
 import { instances } from "./store";
@@ -30,7 +31,7 @@ const Filters: Component<{
   setSearchParams: SetParamsType;
 }> = (props) => {
   return (
-    <>
+    <Flex justifyContent="flex-start" gap="$5">
       <Filter
         label="instanceId"
         entries={instanceIdEntries()}
@@ -42,7 +43,10 @@ const Filters: Component<{
               instanceId: undefined,
             });
           } else {
-            props.setSearchParams({ ...props.searchParams, instanceId: value });
+            props.setSearchParams({
+              ...props.searchParams,
+              instanceId: value,
+            });
           }
         }}
       />
@@ -63,7 +67,7 @@ const Filters: Component<{
           }
         }}
       />
-    </>
+    </Flex>
   );
 };
 

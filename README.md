@@ -35,7 +35,7 @@ The "messages" tab lets you see all updates sent and received from the dev
 server. Hover over the fields to see the complete text.
 
 You can see filtered messages by clicking in the "messages", "sent" and
-"received" columns.
+"received" columns. You can use your browser back button to go back.
 
 ### Clean state
 

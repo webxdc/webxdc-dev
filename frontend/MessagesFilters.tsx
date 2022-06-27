@@ -38,15 +38,21 @@ const Filters: Component<{
         value={props.searchParams.instanceId || "*"}
         onChange={(value) => {
           if (value === "*") {
-            props.setSearchParams({
-              ...props.searchParams,
-              instanceId: undefined,
-            });
+            props.setSearchParams(
+              {
+                ...props.searchParams,
+                instanceId: undefined,
+              },
+              { replace: true }
+            );
           } else {
-            props.setSearchParams({
-              ...props.searchParams,
-              instanceId: value,
-            });
+            props.setSearchParams(
+              {
+                ...props.searchParams,
+                instanceId: value,
+              },
+              { replace: true }
+            );
           }
         }}
       />
@@ -61,9 +67,15 @@ const Filters: Component<{
         value={props.searchParams.type || "*"}
         onChange={(value) => {
           if (value === "*") {
-            props.setSearchParams({ ...props.searchParams, type: undefined });
+            props.setSearchParams(
+              { ...props.searchParams, type: undefined },
+              { replace: true }
+            );
           } else {
-            props.setSearchParams({ ...props.searchParams, type: value });
+            props.setSearchParams(
+              { ...props.searchParams, type: value },
+              { replace: true }
+            );
           }
         }}
       />

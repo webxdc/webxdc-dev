@@ -85,7 +85,7 @@ const FallbackMessageComponent: Component = (props) => {
 const MessageComponent: Component<{ message: Message }> = (props) => {
   return (
     <Tr>
-      <TdEllipsis>{props.message.clientId}</TdEllipsis>
+      <TdEllipsis>{props.message.instanceId}</TdEllipsis>
       <TdEllipsis>{props.message.type}</TdEllipsis>
       <Show
         when={props.message.type !== "clear"}

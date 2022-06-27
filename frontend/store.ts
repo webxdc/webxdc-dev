@@ -28,7 +28,7 @@ export function addMessage(message: Message): void {
 export function sent(instanceId: string): number {
   let result = 0;
   for (const message of state) {
-    if (message.type === "sent" && message.clientId === instanceId) {
+    if (message.type === "sent" && message.instanceId === instanceId) {
       result++;
     }
   }
@@ -38,7 +38,7 @@ export function sent(instanceId: string): number {
 export function received(instanceId: string): number {
   let result = 0;
   for (const message of state) {
-    if (message.type === "received" && message.clientId === instanceId) {
+    if (message.type === "received" && message.instanceId === instanceId) {
       result++;
     }
   }
@@ -51,7 +51,7 @@ export function getMessages(instanceId: string, type: string): Message[] {
   }
   return state.filter(
     (message) =>
-      (instanceId == null || message.clientId === instanceId) &&
+      (instanceId == null || message.instanceId === instanceId) &&
       (type == null || message.type === type)
   );
 }

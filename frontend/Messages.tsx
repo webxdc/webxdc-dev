@@ -1,16 +1,16 @@
-import { Component, createEffect } from "solid-js";
-import { For, Show, JSX, createSignal, createMemo } from "solid-js";
+import { Component } from "solid-js";
+import { For, Show, JSX, createMemo } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
 import { useSearchParams } from "solid-app-router";
 
 import { getMessages, instances } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
-import Filter, { FilterEntry } from "./Filter";
+import Filter from "./Filter";
 
 const COLUMN_WIDTHS = {
-  clientId: "4%",
+  instanceId: "4%",
   type: "5%",
-  descr: "10%",
+  descr: "8%",
   serial: "4%",
   maxSerial: "4%",
   info: "5%",
@@ -97,11 +97,11 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
   );
 };
 
-const clientIdEntries = createMemo(() => {
+const instanceIdEntries = createMemo(() => {
   const resolvedInstances = instances();
   const all_entry = {
     value: "*",
-    text: "All client ids",
+    text: "All instance ids",
   };
   if (resolvedInstances == null) {
     return [all_entry];
@@ -121,14 +121,14 @@ const Messages: Component = () => {
   return (
     <>
       <Filter
-        label="clientId"
-        entries={clientIdEntries()}
-        value={searchParams.clientId || "*"}
+        label="instanceId"
+        entries={instanceIdEntries()}
+        value={searchParams.instanceId || "*"}
         onChange={(value) => {
           if (value === "*") {
-            setSearchParams({ ...searchParams, clientId: undefined });
+            setSearchParams({ ...searchParams, instanceId: undefined });
           } else {
-            setSearchParams({ ...searchParams, clientId: value });
+            setSearchParams({ ...searchParams, instanceId: value });
           }
         }}
       />
@@ -156,8 +156,8 @@ const Messages: Component = () => {
         css={{ "table-layout": "fixed" }}
       >
         <Thead>
-          <Th width={COLUMN_WIDTHS.clientId}>
-            <TooltipEllipsis>client id</TooltipEllipsis>
+          <Th width={COLUMN_WIDTHS.instanceId}>
+            <TooltipEllipsis>instance id</TooltipEllipsis>
           </Th>
           <Th width={COLUMN_WIDTHS.type}>
             <TooltipEllipsis>type</TooltipEllipsis>
@@ -185,7 +185,7 @@ const Messages: Component = () => {
           </Th>
         </Thead>
         <Tbody>
-          <For each={getMessages(searchParams.clientId, searchParams.type)}>
+          <For each={getMessages(searchParams.instanceId, searchParams.type)}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

@@ -25,33 +25,33 @@ export function addMessage(message: Message): void {
   );
 }
 
-export function sent(clientId: string): number {
+export function sent(instanceId: string): number {
   let result = 0;
   for (const message of state) {
-    if (message.type === "sent" && message.clientId === clientId) {
+    if (message.type === "sent" && message.clientId === instanceId) {
       result++;
     }
   }
   return result;
 }
 
-export function received(clientId: string): number {
+export function received(instanceId: string): number {
   let result = 0;
   for (const message of state) {
-    if (message.type === "received" && message.clientId === clientId) {
+    if (message.type === "received" && message.clientId === instanceId) {
       result++;
     }
   }
   return result;
 }
 
-export function getMessages(clientId: string, type: string): Message[] {
-  if (clientId == null && type == null) {
+export function getMessages(instanceId: string, type: string): Message[] {
+  if (instanceId == null && type == null) {
     return state;
   }
   return state.filter(
     (message) =>
-      (clientId == null || message.clientId === clientId) &&
+      (instanceId == null || message.clientId === instanceId) &&
       (type == null || message.type === type)
   );
 }

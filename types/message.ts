@@ -1,7 +1,7 @@
 import { ReceivedUpdate, JsonValue } from "./webxdc";
 
 export type UpdateMessage = {
-  clientId: string;
+  instanceId: string;
   update: ReceivedUpdate<JsonValue>;
   descr: string;
 };
@@ -9,4 +9,4 @@ export type UpdateMessage = {
 export type Message =
   | (UpdateMessage & { type: "sent" })
   | (UpdateMessage & { type: "received" })
-  | { type: "clear"; clientId: string };
+  | { type: "clear"; instanceId: string };

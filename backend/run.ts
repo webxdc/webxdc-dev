@@ -9,17 +9,18 @@ import { isXdcFile, unpack, createTempDir } from "./unpack";
 export type Inject = {
   injectFrontend: InjectExpress;
   injectSim: InjectExpress;
+  getIndexHtml: () => string;
 };
 
 function actualRun(location: string, basePort: number, inject: Inject): void {
-  const { injectFrontend, injectSim } = inject;
+  const { injectFrontend, injectSim, getIndexHtml } = inject;
 
   const instances = new Instances(location, injectSim, basePort);
 
   const peer0 = instances.add();
   const peer1 = instances.add();
 
-  const frontend = createFrontend(instances, injectFrontend);
+  const frontend = createFrontend(instances, injectFrontend, getIndexHtml);
 
   frontend.listen(basePort, () => {
     console.log("Starting webxdc-dev frontend");

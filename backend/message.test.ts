@@ -32,17 +32,17 @@ test("distribute to self", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", clientId: "3001" },
+    { type: "clear", instanceId: "3001" },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update",
     },
   ]);
@@ -77,42 +77,42 @@ test("distribute to self and other", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", clientId: "3001" },
-    { type: "clear", clientId: "3002" },
+    { type: "clear", instanceId: "3001" },
+    { type: "clear", instanceId: "3002" },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      clientId: "3002",
+      instanceId: "3002",
       descr: "update",
     },
     {
       type: "sent",
-      clientId: "3002",
+      instanceId: "3002",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      clientId: "3002",
+      instanceId: "3002",
       descr: "update 2",
     },
   ]);
@@ -182,42 +182,42 @@ test("other starts listening later", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", clientId: "3001" },
+    { type: "clear", instanceId: "3001" },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update",
     },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update 2",
     },
-    { type: "clear", clientId: "3002" },
+    { type: "clear", instanceId: "3002" },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 2 },
-      clientId: "3002",
+      instanceId: "3002",
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      clientId: "3002",
+      instanceId: "3002",
       descr: "update 2",
     },
   ]);
@@ -551,48 +551,48 @@ test("connect with clear means catchup only with updates after clear", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", clientId: "3001" },
+    { type: "clear", instanceId: "3001" },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update",
     },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update 2",
     },
-    { type: "clear", clientId: "3001" },
+    { type: "clear", instanceId: "3001" },
     {
       type: "sent",
-      clientId: "3001",
+      instanceId: "3001",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
       descr: "update 3",
     },
     {
       type: "received",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
-      clientId: "3001",
+      instanceId: "3001",
       descr: "update 3",
     },
-    { type: "clear", clientId: "3002" },
+    { type: "clear", instanceId: "3002" },
     {
       type: "received",
-      clientId: "3002",
+      instanceId: "3002",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
       descr: "update 3",
     },

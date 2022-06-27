@@ -1,9 +1,10 @@
 import type { Component } from "solid-js";
-import { JSX } from "solid-js";
+import { JSX, createSignal, createEffect } from "solid-js";
+import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
+import { Route, Routes, useNavigate, useLocation } from "solid-app-router";
+
 import Instances from "./Instances";
 import Messages from "./Messages";
-
-import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 
 const Panel: Component<{ children: JSX.Element }> = (props) => {
   return (
@@ -13,21 +14,53 @@ const Panel: Component<{ children: JSX.Element }> = (props) => {
   );
 };
 
-const App: Component = () => {
+const AppRoutes: Component = () => {
   return (
-    <Tabs>
+    <Routes>
+      <Route path="/" element={<Instances />} />
+      <Route path="/messages" element={<Messages />} />
+    </Routes>
+  );
+};
+
+const App: Component = () => {
+  const [tabIndex, setTabIndex] = createSignal(0);
+
+  // set correct tab index from pathname
+  createEffect(() => {
+    const location = useLocation();
+    if (location.pathname === "/") {
+      setTabIndex(0);
+    } else if (location.pathname === "/messages") {
+      setTabIndex(1);
+    }
+  });
+
+  // use tab index to navigate to pathname
+  const navigate = useNavigate();
+  const handleTabsChange = (index: number) => {
+    if (index === 0) {
+      navigate("/");
+    } else if (index === 1) {
+      navigate("/messages");
+    }
+    setTabIndex(index);
+  };
+
+  return (
+    <Tabs index={tabIndex()} onChange={handleTabsChange}>
       <TabList>
         <Tab>Instances</Tab>
         <Tab>Messages</Tab>
       </TabList>
       <TabPanel>
         <Panel>
-          <Instances />
+          <AppRoutes />
         </Panel>
       </TabPanel>
       <TabPanel>
         <Panel>
-          <Messages />
+          <AppRoutes />
         </Panel>
       </TabPanel>
     </Tabs>

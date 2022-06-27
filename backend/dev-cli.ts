@@ -19,6 +19,9 @@ const program = createProgram({
     // in dev mode we serve the files from the dist directory
     app.use(express.static(path.resolve(__dirname, "../dist/webxdc")));
   },
+  getIndexHtml: () => {
+    return path.resolve(__dirname, "../dist/index.html");
+  },
 });
 
 program.parse();

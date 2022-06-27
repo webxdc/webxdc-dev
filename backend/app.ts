@@ -10,7 +10,8 @@ export type InjectExpress = (app: Express) => void;
 
 export function createFrontend(
   instances: Instances,
-  injectFrontend: InjectExpress
+  injectFrontend: InjectExpress,
+  getIndexHtml: () => string
 ): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -22,7 +23,7 @@ export function createFrontend(
   app.get("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
-        id: instance.port,
+        id: instance.port.toString(),
         url: `http://localhost:${instance.port}`,
       }))
     );
@@ -46,6 +47,11 @@ export function createFrontend(
     instances.onMessage((message) => {
       ws.send(JSON.stringify(message));
     });
+  });
+
+  // fallback to send index.html to serve frontend router
+  app.get("*", (req, res) => {
+    res.sendFile(getIndexHtml());
   });
   return app;
 }

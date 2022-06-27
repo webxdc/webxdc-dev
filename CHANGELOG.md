@@ -7,12 +7,26 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
-## [0.8.0][] - 2022-06-24
+### Added
+
+- The instances table now contains links to inspect messages for a client; all
+  of them, sent or received. A client-side router is introduced, so the back
+  button does what you expect.
+
+- You can see how many messages were sent and received per client.
 
 ### Changed
 
+- Better link styling
+
+## [0.8.0][] - 2022-06-24
+
+### Added
+
 - Introduces a tabbed UI with a second "messages" tab which displays a list of
   all messages sent and received.
+
+### Changed
 
 - webxdc instances now use the name `Instance {port number}` instead of just
   the port number. The address has also been updated to use "instance" instead
@@ -156,7 +170,5 @@ release date when you use `npm version` (see `README.md`).
 [0.6.0]: https://github.com/webxdc/webxdc-dev/tree/v0.6.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.7.0...HEAD
 [0.7.0]: https://github.com/webxdc/webxdc-dev/tree/v0.7.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.8.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.8.0...HEAD
 [0.8.0]: https://github.com/webxdc/webxdc-dev/tree/v0.8.0

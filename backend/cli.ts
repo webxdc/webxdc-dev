@@ -13,6 +13,9 @@ const program = createProgram({
     // in production we serve the static files from within the dist directory
     app.use(express.static(path.resolve(__dirname, "../webxdc")));
   },
+  getIndexHtml: () => {
+    return path.resolve(__dirname, "..", "index.html");
+  },
 });
 
 program.parse();

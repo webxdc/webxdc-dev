@@ -1,14 +1,16 @@
-import type { Component } from "solid-js";
+import { Component } from "solid-js";
 import { For, Show, JSX } from "solid-js";
 import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
+import { useSearchParams } from "solid-app-router";
 
 import { getMessages } from "./store";
 import type { Message, UpdateMessage } from "../types/message";
+import Filters from "./MessagesFilters";
 
 const COLUMN_WIDTHS = {
-  clientId: "3%",
+  instanceId: "4%",
   type: "5%",
-  descr: "10%",
+  descr: "8%",
   serial: "4%",
   maxSerial: "4%",
   info: "5%",
@@ -83,7 +85,7 @@ const FallbackMessageComponent: Component = (props) => {
 const MessageComponent: Component<{ message: Message }> = (props) => {
   return (
     <Tr>
-      <TdEllipsis>{props.message.clientId}</TdEllipsis>
+      <TdEllipsis>{props.message.instanceId}</TdEllipsis>
       <TdEllipsis>{props.message.type}</TdEllipsis>
       <Show
         when={props.message.type !== "clear"}
@@ -96,8 +98,11 @@ const MessageComponent: Component<{ message: Message }> = (props) => {
 };
 
 const Messages: Component = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
     <>
+      <Filters searchParams={searchParams} setSearchParams={setSearchParams} />
       <Table
         width="100%"
         striped="even"
@@ -105,8 +110,8 @@ const Messages: Component = () => {
         css={{ "table-layout": "fixed" }}
       >
         <Thead>
-          <Th width={COLUMN_WIDTHS.clientId}>
-            <TooltipEllipsis>client id</TooltipEllipsis>
+          <Th width={COLUMN_WIDTHS.instanceId}>
+            <TooltipEllipsis>instance id</TooltipEllipsis>
           </Th>
           <Th width={COLUMN_WIDTHS.type}>
             <TooltipEllipsis>type</TooltipEllipsis>
@@ -134,7 +139,7 @@ const Messages: Component = () => {
           </Th>
         </Thead>
         <Tbody>
-          <For each={getMessages()}>
+          <For each={getMessages(searchParams.instanceId, searchParams.type)}>
             {(message) => <MessageComponent message={message} />}
           </For>
         </Tbody>

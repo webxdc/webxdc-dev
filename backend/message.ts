@@ -48,7 +48,7 @@ class Client implements WebXdcMulti {
     clearListener: ClearListener = () => {}
   ): void {
     this.setClearListener(() => {
-      this.processor.onMessage({ type: "clear", clientId: this.id });
+      this.processor.onMessage({ type: "clear", instanceId: this.id });
       clearListener();
     });
     const updateListener = (updates: UpdateDescr[]) => {
@@ -56,7 +56,7 @@ class Client implements WebXdcMulti {
         this.processor.onMessage({
           type: "received",
           update: update,
-          clientId: this.id,
+          instanceId: this.id,
           descr,
         });
       }
@@ -86,12 +86,12 @@ class Client implements WebXdcMulti {
   clear() {
     if (
       this.clearListener == null ||
-      this.processor.clearClientIds.has(this.id)
+      this.processor.clearInstanceIds.has(this.id)
     ) {
       return;
     }
     this.clearListener();
-    this.processor.clearClientIds.add(this.id);
+    this.processor.clearInstanceIds.add(this.id);
   }
 }
 
@@ -99,7 +99,7 @@ class Processor implements IProcessor {
   clients: Client[] = [];
   currentSerial: number = 0;
   updates: UpdateDescr[] = [];
-  clearClientIds: Set<string> = new Set();
+  clearInstanceIds: Set<string> = new Set();
 
   constructor(public onMessage: OnMessage) {}
 
@@ -109,7 +109,7 @@ class Processor implements IProcessor {
     return client;
   }
 
-  distribute(clientId: string, update: Update<JsonValue>, descr: string) {
+  distribute(instanceId: string, update: Update<JsonValue>, descr: string) {
     this.currentSerial++;
     const receivedUpdate: ReceivedUpdate<JsonValue> = {
       ...update,
@@ -119,7 +119,7 @@ class Processor implements IProcessor {
     this.updates.push([receivedUpdate, descr]);
     this.onMessage({
       type: "sent",
-      clientId,
+      instanceId: instanceId,
       update: receivedUpdate,
       descr,
     });
@@ -129,7 +129,7 @@ class Processor implements IProcessor {
   }
 
   clear() {
-    this.clearClientIds = new Set();
+    this.clearInstanceIds = new Set();
     for (const client of this.clients) {
       client.clear();
     }

@@ -115,20 +115,27 @@ const instanceIdEntries = createMemo(() => {
   ];
 });
 
-const Messages: Component = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+type ParamsType = ReturnType<typeof useSearchParams>[0];
+type SetParamsType = ReturnType<typeof useSearchParams>[1];
 
+const Filters: Component<{
+  searchParams: ParamsType;
+  setSearchParams: SetParamsType;
+}> = (props) => {
   return (
     <>
       <Filter
         label="instanceId"
         entries={instanceIdEntries()}
-        value={searchParams.instanceId || "*"}
+        value={props.searchParams.instanceId || "*"}
         onChange={(value) => {
           if (value === "*") {
-            setSearchParams({ ...searchParams, instanceId: undefined });
+            props.setSearchParams({
+              ...props.searchParams,
+              instanceId: undefined,
+            });
           } else {
-            setSearchParams({ ...searchParams, instanceId: value });
+            props.setSearchParams({ ...props.searchParams, instanceId: value });
           }
         }}
       />
@@ -140,15 +147,25 @@ const Messages: Component = () => {
           { value: "received", text: "Received" },
           { value: "clear", text: "Clear" },
         ]}
-        value={searchParams.type || "*"}
+        value={props.searchParams.type || "*"}
         onChange={(value) => {
           if (value === "*") {
-            setSearchParams({ ...searchParams, type: undefined });
+            props.setSearchParams({ ...props.searchParams, type: undefined });
           } else {
-            setSearchParams({ ...searchParams, type: value });
+            props.setSearchParams({ ...props.searchParams, type: value });
           }
         }}
       />
+    </>
+  );
+};
+
+const Messages: Component = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  return (
+    <>
+      <Filters searchParams={searchParams} setSearchParams={setSearchParams} />
       <Table
         width="100%"
         striped="even"

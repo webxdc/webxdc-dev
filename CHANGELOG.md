@@ -7,12 +7,23 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- An info tab which displays information about the webxdc application you are
+  running, including name, icon, source URL.
+
+- When you launch `webxdc-dev` for the wrong XDC file/directory/URL you get an
+  error message on the command-line describing what is wrong.
+
 ### Changed
 
 - The dev server now broadcasts to all connected sockets for an instance
   instead of just one. This shouldn't make much of an operational difference
   expect if you open multiple browser windows for the same instance (which may
   have unpredictable effects for other reasons).
+
+- `webxdc-dev` now waits to start until the URL it is proxying is available.
+  This because it needs to retrieve manifest and icon information.
 
 ## [0.9.0][] - 2022-06-27
 

@@ -37,6 +37,9 @@ server. Hover over the fields to see the complete text.
 You can see filtered messages by clicking in the "messages", "sent" and
 "received" columns. You can use your browser back button to go back.
 
+The "info" tab lets you see basic information about the webxdc application you
+are running.
+
 ### Clean state
 
 Instances start with a clean slate: empty `localStorage` and `sessionStorage`.

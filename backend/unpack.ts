@@ -3,21 +3,6 @@ import path from "path";
 import os from "os";
 import AdmZip from "adm-zip";
 
-export function isXdcFile(location: string): boolean {
-  if (
-    location.startsWith("http://") ||
-    location.startsWith("https://") ||
-    !location.endsWith(".xdc")
-  ) {
-    return false;
-  }
-  const stats = fs.statSync(location);
-  if (!stats.isFile()) {
-    return false;
-  }
-  return true;
-}
-
 export function unpack(xdcPath: string, extractLocation: string): void {
   const zip = new AdmZip(xdcPath);
   zip.extractAllTo(extractLocation);

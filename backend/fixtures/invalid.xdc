@@ -1,0 +1,1 @@
+This is NOT a zip file so unpackign should fail

@@ -1,10 +1,9 @@
 import process from "process";
-import fs from "fs";
-
 import open from "open";
 
 import { createFrontend, Instances, InjectExpress } from "./app";
-import { isXdcFile, unpack, createTempDir } from "./unpack";
+import { getLocation, Location, LocationError } from "./location";
+import { getAppInfo, AppInfo, AppInfoError } from "./appInfo";
 
 export type Inject = {
   injectFrontend: InjectExpress;
@@ -12,15 +11,20 @@ export type Inject = {
   getIndexHtml: () => string;
 };
 
-function actualRun(location: string, basePort: number, inject: Inject): void {
+function actualRun(appInfo: AppInfo, basePort: number, inject: Inject): void {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
 
-  const instances = new Instances(location, injectSim, basePort);
+  const instances = new Instances(appInfo.location, injectSim, basePort);
 
   const peer0 = instances.add();
   const peer1 = instances.add();
 
-  const frontend = createFrontend(instances, injectFrontend, getIndexHtml);
+  const frontend = createFrontend(
+    appInfo,
+    instances,
+    injectFrontend,
+    getIndexHtml
+  );
 
   frontend.listen(basePort, () => {
     console.log("Starting webxdc-dev frontend");
@@ -32,21 +36,35 @@ function actualRun(location: string, basePort: number, inject: Inject): void {
   open("http://localhost:" + basePort);
 }
 
-export function run(location: string, basePort: number, inject: Inject) {
-  console.log("Starting webxdc project in: ", location);
-  if (isXdcFile(location)) {
-    const tmpDir = createTempDir();
-    console.log("TEMP DIR", tmpDir);
-    unpack(location, tmpDir);
-    actualRun(tmpDir, basePort, inject);
-
-    for (const signal in ["SIGINT", "SIGTERM"]) {
-      process.on(signal, () => {
-        console.log("clean up");
-        fs.rmSync(tmpDir, { recursive: true });
-      });
+export function run(locationStr: string, basePort: number, inject: Inject) {
+  let location: Location;
+  try {
+    location = getLocation(locationStr);
+  } catch (e) {
+    if (e instanceof LocationError) {
+      console.error(e.message);
+      return;
     }
-  } else {
-    actualRun(location, basePort, inject);
+    throw e;
   }
+
+  for (const signal in ["SIGINT", "SIGTERM"]) {
+    process.on(signal, () => {
+      location.dispose();
+    });
+  }
+
+  console.log("Starting webxdc project in:", locationStr);
+
+  getAppInfo(location)
+    .then((appInfo) => {
+      actualRun(appInfo, basePort, inject);
+    })
+    .catch((e) => {
+      if (e instanceof AppInfoError) {
+        console.error(e.message);
+        return;
+      }
+      throw e;
+    });
 }

@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.9.0][] - 2022-06-27
+
 ### Added
 
 - The instances table now contains links to inspect messages for a client; all
@@ -172,3 +174,7 @@ release date when you use `npm version` (see `README.md`).
 [0.7.0]: https://github.com/webxdc/webxdc-dev/tree/v0.7.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.8.0...HEAD
 [0.8.0]: https://github.com/webxdc/webxdc-dev/tree/v0.8.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/webxdc/webxdc-dev/tree/v0.9.0

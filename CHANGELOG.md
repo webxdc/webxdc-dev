@@ -7,6 +7,13 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- The dev server now broadcasts to all connected sockets for an instance
+  instead of just one. This shouldn't make much of an operational difference
+  expect if you open multiple browser windows for the same instance (which may
+  have unpredictable effects for other reasons).
+
 ## [0.9.0][] - 2022-06-27
 
 ### Added
@@ -174,7 +181,5 @@ release date when you use `npm version` (see `README.md`).
 [0.7.0]: https://github.com/webxdc/webxdc-dev/tree/v0.7.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.8.0...HEAD
 [0.8.0]: https://github.com/webxdc/webxdc-dev/tree/v0.8.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.9.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.9.0...HEAD
 [0.9.0]: https://github.com/webxdc/webxdc-dev/tree/v0.9.0

@@ -19,8 +19,8 @@ const AppRoutes: Component = () => {
   return (
     <Routes>
       <Route path="/" element={<Instances />} />
-      <Route path="/messages" element={<Messages />} />
       <Route path="/info" element={<Info />} />
+      <Route path="/messages" element={<Messages />} />
     </Routes>
   );
 };
@@ -33,9 +33,9 @@ const App: Component = () => {
     const location = useLocation();
     if (location.pathname === "/") {
       setTabIndex(0);
-    } else if (location.pathname === "/messages") {
-      setTabIndex(1);
     } else if (location.pathname === "/info") {
+      setTabIndex(1);
+    } else if (location.pathname === "/messages") {
       setTabIndex(2);
     }
   });
@@ -46,9 +46,9 @@ const App: Component = () => {
     if (index === 0) {
       navigate("/");
     } else if (index === 1) {
-      navigate("/messages");
-    } else if (index === 2) {
       navigate("/info");
+    } else if (index === 2) {
+      navigate("/messages");
     }
     setTabIndex(index);
   };
@@ -57,8 +57,8 @@ const App: Component = () => {
     <Tabs index={tabIndex()} onChange={handleTabsChange}>
       <TabList>
         <Tab>Instances</Tab>
-        <Tab>Messages</Tab>
         <Tab>Info</Tab>
+        <Tab>Messages</Tab>
       </TabList>
       <TabPanel>
         <Panel>

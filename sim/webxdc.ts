@@ -1,4 +1,4 @@
-import { JsonValue } from "../types/webxdc";
+import { JsonValue, WebXdc } from "../types/webxdc";
 import {
   Transport,
   TransportMessageCallback,
@@ -71,9 +71,24 @@ class DevServerTransport implements Transport {
   }
 }
 
+function alterUi(): void {
+  let title = document.getElementsByTagName("title")[0];
+  if (title == null) {
+    title = document.createElement("title");
+    document.getElementsByTagName("head")[0].append(title);
+  }
+  title.innerText = getWebXdc().selfName;
+}
+
+function getWebXdc(): WebXdc {
+  return (window as any).webxdc;
+}
+
 (window as any).webxdc = createWebXdc(
   new DevServerTransport(url),
   (...args) => {
     console.info(...args);
   }
 );
+
+window.addEventListener("load", alterUi);

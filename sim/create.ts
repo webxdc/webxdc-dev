@@ -49,6 +49,7 @@ export function createWebXdc(
             resolveUpdateListenerPromise = null;
           }
         } else if (isClearMessage(message)) {
+          log("clear");
           transport.clear();
         }
       });

@@ -9,6 +9,8 @@
 
 - Option to open tabs automatically upon startup and when you add an instance.
 
+- favicon for simulator app.
+
 ## Messages
 
 - Show the time a message was sent/received (at least on the server end)
@@ -20,7 +22,12 @@
 
 - When an instance opens it flashes with old state. Is it worthwhile to prevent
   the flash by temporaly blanking everything out upon initial load?
-- inject page title to be something like "Instance 7001 - Arkanoid"
+
+- Inject name of webxdc app after page title, like "Instance 7001 - Arkanoid".
+  To this end instances need to get some information about themselves in a
+  special message upon connection.
+
+- Inject favicon for instances.
 
 - content security policy, disallow anything except local images,
   and (shared, see below) websocket.
@@ -35,6 +42,11 @@
 - State breaks down if you have multiple browser window pointing at the same
   port: for instance, if you open an instance again the server doesn't know to
   clear it first, because it thinks it already been cleared previously.
+
+## Webxdc development
+
+- Make typescript types for webxdc available as a standalone package so that
+  developers can use this in their own projects.
 
 ## Architecture
 

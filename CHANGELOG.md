@@ -14,6 +14,11 @@ release date when you use `npm version` (see `README.md`).
 - Add `--version` command-line argument for `webxdc-dev` to see its version
   number.
 
+- The title of instances is now overridden by the simulator to titles like
+  "Instance 7001".
+
+- Log `clear` events to instance console too.
+
 ## [0.10.0][] - 2022-06-28
 
 ### Added

@@ -29,6 +29,20 @@ test("directory app info with manifest", async () => {
   expect(appInfo.icon).toBeNull();
 });
 
+test("directory app info with manifest but no name entry", async () => {
+  const location = getLocation(
+    path.resolve(__dirname, "fixtures", "withManifestWithoutName")
+  );
+  const appInfo = await getAppInfo(location);
+  expect(appInfo.location).toEqual(location);
+  expect(appInfo.manifest).toEqual({
+    name: "withManifestWithoutName",
+    sourceCodeUrl: "http://example.com",
+    manifestFound: true,
+  });
+  expect(appInfo.icon).toBeNull();
+});
+
 // Would like to enable this test, but a broken manifest.toml fixture
 // causes vscode to freak out with red files and I don't know how to disable
 // test("directory app info with broken manifest", async () => {
@@ -102,7 +116,7 @@ test("url app info without manifest or icon", async () => {
 
   expect(appInfo.location).toEqual(location);
   expect(appInfo.manifest).toEqual({
-    name: "Unknown",
+    name: "Unknown (running from URL)",
     sourceCodeUrl: undefined,
     manifestFound: false,
   });
@@ -146,6 +160,31 @@ test("url app info with manifest", async () => {
     "http://localhost:3000/icon.png",
     "http://localhost:3000/icon.jpg",
   ]);
+});
+
+test("url app info with manifest without name", async () => {
+  const fetch = async (url: any): Promise<any> => {
+    if (url.endsWith("manifest.toml")) {
+      return {
+        ok: true,
+        text: async () => `source_code_url = "http://example.com"`,
+      };
+    }
+    return {
+      ok: false,
+    };
+  };
+  fetch.isRedirect = () => false;
+
+  const location = getLocation("http://localhost:3000") as UrlLocation;
+  const appInfo = await getAppInfoUrl(location, fetch);
+
+  expect(appInfo.location).toEqual(location);
+  expect(appInfo.manifest).toEqual({
+    name: "No entry in manifest.toml (running from URL)",
+    sourceCodeUrl: "http://example.com",
+    manifestFound: true,
+  });
 });
 
 test("url app info with broken manifest", async () => {
@@ -237,7 +276,7 @@ test("url app info with png icon", async () => {
 
   expect(appInfo.location).toEqual(location);
   expect(appInfo.manifest).toEqual({
-    name: "Unknown",
+    name: "Unknown (running from URL)",
     sourceCodeUrl: undefined,
     manifestFound: false,
   });
@@ -270,7 +309,7 @@ test("url app info with jpg icon", async () => {
 
   expect(appInfo.location).toEqual(location);
   expect(appInfo.manifest).toEqual({
-    name: "Unknown",
+    name: "Unknown (running from URL)",
     sourceCodeUrl: undefined,
     manifestFound: false,
   });

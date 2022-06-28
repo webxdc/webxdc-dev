@@ -71,7 +71,7 @@ async function getManifestInfoFromUrl(
   const response = await fetch(url + "manifest.toml");
   if (!response.ok) {
     return {
-      name: "Unknown",
+      name: "Unknown (running from URL)",
       sourceCodeUrl: undefined,
       manifestFound: false,
     };
@@ -79,7 +79,7 @@ async function getManifestInfoFromUrl(
   const body = await response.text();
   const parsed = tomlParse(body);
   return {
-    name: parsed.name || "Unknown",
+    name: parsed.name || "No entry in manifest.toml (running from URL)",
     sourceCodeUrl: parsed.source_code_url,
     manifestFound: true,
   };

@@ -121,7 +121,7 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
 
       <iframe
         ref={iframe_ref}
-        src={props.instance.url}
+        src={props.instance.url + `?${encodeURIComponent(getColorForId(props.instance.id))}`}
         style={{
           height: "667px",
           width: "375px",

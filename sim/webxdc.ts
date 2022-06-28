@@ -6,22 +6,25 @@ import {
   createWebXdc,
 } from "./create";
 
-const deviceIdentifier = `%c${document.location.port}`;
-const logStyle =
-  "color:black;background:lightgrey;border-radius:4px;padding:2px";
-function overwriteConsoleFunction(
-  subFunction: "debug" | "log" | "info" | "warn" | "error"
-) {
-  const original = console[subFunction];
-  const replacement = original.bind(null, deviceIdentifier, logStyle);
-  window.console[subFunction] = replacement;
-  console[subFunction] = replacement;
+if (document.location.search) {
+  const deviceIdentifier = `%c${document.location.port}`;
+  const logStyle = `color:white;font-weight:bold;border-radius:4px;padding:2px;background: ${
+    decodeURIComponent(document.location.search).substring(1) || "lightgrey"
+  }`;
+  function overwriteConsoleFunction(
+    subFunction: "debug" | "log" | "info" | "warn" | "error"
+  ) {
+    const original = console[subFunction];
+    const replacement = original.bind(null, deviceIdentifier, logStyle);
+    window.console[subFunction] = replacement;
+    console[subFunction] = replacement;
+  }
+  overwriteConsoleFunction("debug");
+  overwriteConsoleFunction("log");
+  overwriteConsoleFunction("info");
+  overwriteConsoleFunction("warn");
+  overwriteConsoleFunction("error");
 }
-overwriteConsoleFunction("debug");
-overwriteConsoleFunction("log");
-overwriteConsoleFunction("info");
-overwriteConsoleFunction("warn");
-overwriteConsoleFunction("error");
 
 const url = `ws://${document.location.host}/webxdc`;
 

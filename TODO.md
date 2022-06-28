@@ -12,6 +12,9 @@
 - Opening a tab multiple times results in multiple windows on the same
   instance, which isn't ideal. Perhaps iframes would help control this better?
 
+- Sizzy integration to open in a "as real as possible" mobile browser?
+  https://sizzy.co/ But for pay software.
+
 ## Messages
 
 - Show the time a message was sent/received (at least on the server end)
@@ -39,6 +42,9 @@
 - simulate messages that never arrive. For instance is block messages from A to
   B, but everyone else receives updates correctly. This will reveal problems
   with collaborative apps before users start noticing them.
+
+- open URL to external hosts. Is this already happening? Show ip number at
+  least.
 
 - State breaks down if you have multiple browser window pointing at the same
   port: for instance, if you open an instance again the server doesn't know to

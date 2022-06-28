@@ -9,6 +9,9 @@
 
 - Option to open tabs automatically upon startup and when you add an instance.
 
+- Opening a tab multiple times results in multiple windows on the same
+  instance, which isn't ideal. Perhaps iframes would help control this better?
+
 ## Messages
 
 - Show the time a message was sent/received (at least on the server end)

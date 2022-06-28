@@ -59,7 +59,10 @@ export function received(instanceId: string): number {
   return result;
 }
 
-export function getMessages(instanceId: string, type: string): Message[] {
+export function getMessages(
+  instanceId: string | null,
+  type: string | null
+): Message[] {
   if (instanceId == null && type == null) {
     return state;
   }

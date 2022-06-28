@@ -40,7 +40,7 @@ const TooltipEllipsis: Component<{
   );
 };
 
-const TdEllipsis: Component<{
+export const TdEllipsis: Component<{
   children: JSX.Element;
   numeric?: boolean;
   tooltip?: JSX.Element;

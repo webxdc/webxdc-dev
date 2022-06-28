@@ -106,8 +106,12 @@ const Instances: Component = () => {
           <Thead>
             <Th>Instance</Th>
             <Th>Messages</Th>
-            <Th numeric>Sent</Th>
-            <Th numeric>Received</Th>
+            <Th numeric>
+              <Link href="/messages?type=sent">Sent</Link>
+            </Th>
+            <Th numeric>
+              <Link href="/messages?type=received">Received</Link>
+            </Th>
           </Thead>
           <Tbody>
             <For each={instances()}>

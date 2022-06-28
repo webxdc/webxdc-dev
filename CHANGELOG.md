@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.11.0][] - 2022-06-28
+
 ## Added
 
 - Show version number of dev tool in info tab.
@@ -226,3 +228,7 @@ release date when you use `npm version` (see `README.md`).
 [0.9.0]: https://github.com/webxdc/webxdc-dev/tree/v0.9.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.10.0...HEAD
 [0.10.0]: https://github.com/webxdc/webxdc-dev/tree/v0.10.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/webxdc/webxdc-dev/tree/v0.11.0

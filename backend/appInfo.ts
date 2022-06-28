@@ -22,6 +22,7 @@ export type AppInfo = {
   location: Location;
   manifest: ManifestInfo;
   icon: IconInfo | null;
+  toolVersion: string;
 };
 
 export class AppInfoError extends Error {}
@@ -47,6 +48,7 @@ export async function getAppInfo(location: Location): Promise<AppInfo> {
     location,
     manifest: getManifestInfoFromDir(location.path, location.derivedName),
     icon: getIconInfoFromDir(location.path),
+    toolVersion: getToolVersion(),
   };
 }
 
@@ -58,7 +60,12 @@ export async function getAppInfoUrl(
     location,
     manifest: await getManifestInfoFromUrl(location.url, fetch),
     icon: await getIconInfoFromUrl(location.url, fetch),
+    toolVersion: getToolVersion(),
   };
+}
+
+function getToolVersion(): string {
+  return process.env.npm_package_version || "Unknown";
 }
 
 async function getManifestInfoFromUrl(

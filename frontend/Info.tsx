@@ -70,6 +70,12 @@ const Info: Component = () => {
             </Tr>
             <Tr>
               <Td>
+                <strong>webxdc-dev version</strong>
+              </Td>
+              <Td>{appInfo.toolVersion}</Td>
+            </Tr>
+            <Tr>
+              <Td>
                 <strong>Icon</strong>
               </Td>
               <Td>

@@ -31,6 +31,7 @@ export function createFrontend(
       iconUrl: appInfo.icon ? "/icon" : null,
       sourceCodeUrl: appInfo.manifest.sourceCodeUrl,
       manifestFound: appInfo.manifest.manifestFound,
+      toolVersion: appInfo.toolVersion,
     });
   });
   app.get("/icon", (req, res) => {

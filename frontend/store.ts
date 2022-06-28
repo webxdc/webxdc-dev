@@ -7,6 +7,7 @@ export type AppInfo = {
   iconUrl: string;
   sourceCodeUrl: string;
   manifestFound: boolean;
+  toolVersion: string;
 };
 
 const [appInfo] = createResource<AppInfo>(async () => {

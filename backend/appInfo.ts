@@ -64,7 +64,7 @@ export async function getAppInfoUrl(
   };
 }
 
-function getToolVersion(): string {
+export function getToolVersion(): string {
   return process.env.npm_package_version || "Unknown";
 }
 

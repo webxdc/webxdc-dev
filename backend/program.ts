@@ -1,10 +1,14 @@
 import { Command } from "commander";
 import { run } from "./run";
 import { Inject } from "./run";
+import { getToolVersion } from "./appInfo";
 
 export function createProgram(inject: Inject): Command {
   const program = new Command();
-  program.name("webxdc-dev").description("Tool simulate Webxdc in the browser");
+  program
+    .name("webxdc-dev")
+    .description("Tool simulate Webxdc in the browser")
+    .version(getToolVersion());
 
   program
     .command("run")

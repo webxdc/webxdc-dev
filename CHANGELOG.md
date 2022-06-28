@@ -9,7 +9,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## Added
 
-- Show version number of dev tool in info tab
+- Show version number of dev tool in info tab.
+
+- Add `--version` command-line argument for `webxdc-dev` to see its version
+  number.
 
 ## [0.10.0][] - 2022-06-28
 

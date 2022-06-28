@@ -9,8 +9,6 @@
 
 - Option to open tabs automatically upon startup and when you add an instance.
 
-- Show version number of webxdc-dev in info tab
-
 ## Messages
 
 - Show the time a message was sent/received (at least on the server end)
@@ -48,8 +46,6 @@
 ## CLI / config
 
 - CLI start with a number of peers (default 2?)
-
-- A --version command-line option.
 
 - config file with things such as base port, timing info defaults (also
   configurable through CLI)

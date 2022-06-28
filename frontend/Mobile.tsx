@@ -48,11 +48,18 @@ function getColorForId(id: string): string {
   return color;
 }
 
+const scrollToDevice = (instanceId: string) => {
+  document.getElementById("device-" + instanceId)?.scrollIntoView();
+};
+
 const MessageComponent: Component<{ message: UpdateMessage }> = (props) => {
   return (
     <Tr>
       <TdEllipsis>
-        <Text color={getColorForId(props.message.instanceId)}>
+        <Text
+          color={getColorForId(props.message.instanceId)}
+          onClick={() => scrollToDevice(props.message.instanceId)}
+        >
           {props.message.instanceId}
         </Text>
       </TdEllipsis>
@@ -64,11 +71,11 @@ const MessageComponent: Component<{ message: UpdateMessage }> = (props) => {
 
 const Messages: Component = () => {
   return (
-    <Table width="100%" striped="even" dense css={{ "table-layout": "fixed" }}>
+    <Table width="33vw" striped="even" dense css={{ "table-layout": "fixed" }}>
       <Thead>
-        <Th width="20%">Instance id</Th>
-        <Th width="20%">Descr</Th>
-        <Th width="60%">Payload</Th>
+        <Th width="10em">Instance id</Th>
+        <Th>Descr</Th>
+        <Th min-width="30em">Payload</Th>
       </Thead>
       <Tbody>
         <For each={getMessages(null, "sent")}>
@@ -83,14 +90,35 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
   let iframe_ref: HTMLIFrameElement | undefined = undefined;
 
   return (
-    <div>
-      <Button
-        onClick={() => {
-          iframe_ref?.contentWindow?.postMessage("reload", props.instance.url);
-        }}
-      >
-        Reload
-      </Button>
+    <div
+      style={{
+        display: "flex",
+        "flex-direction": "column",
+      }}
+    >
+      <div id={"device-" + props.instance.id} style={{ display: "flex" }}>
+        <Text
+          style={{
+            "font-size": "x-large",
+            "flex-grow": 1,
+            "font-weight": "bold",
+            color: getColorForId(props.instance.id),
+          }}
+        >
+          {props.instance.id}
+        </Text>
+        <Button
+          onClick={() => {
+            iframe_ref?.contentWindow?.postMessage(
+              "reload",
+              props.instance.url
+            );
+          }}
+        >
+          Reload
+        </Button>
+      </div>
+
       <iframe
         ref={iframe_ref}
         src={props.instance.url}

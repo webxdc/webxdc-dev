@@ -9,8 +9,6 @@
 
 - Option to open tabs automatically upon startup and when you add an instance.
 
-- favicon for simulator app.
-
 ## Messages
 
 - Show the time a message was sent/received (at least on the server end)

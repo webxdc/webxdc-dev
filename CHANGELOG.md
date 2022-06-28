@@ -19,6 +19,8 @@ release date when you use `npm version` (see `README.md`).
 
 - Log `clear` events to instance console too.
 
+- Add favicon for dev tool.
+
 ## [0.10.0][] - 2022-06-28
 
 ### Added

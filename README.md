@@ -84,6 +84,8 @@ this is how you can run it:
 webxdc-dev run http://localhost:3000
 ```
 
+### Command-line options
+
 ### Controlling the port number
 
 By default the dev tool is opened on port 7000 and following. You can change
@@ -91,6 +93,15 @@ the base port number using `--port`, so for instance:
 
 ```shell
 webxdc-dev run --port 4000 /path/to/webxdc/project
+```
+
+### Automatically opening tabs.
+
+By using the `--open` command line option you can cause `webxdc-dev` to
+automatically open tabs for each instance upon startup and when you add one.
+
+```shell
+webxdc-dev run --open /path/to/webxdc/project
 ```
 
 ## `webxdc` as a `package.json` script

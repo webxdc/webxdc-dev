@@ -11,32 +11,48 @@ export type Inject = {
   getIndexHtml: () => string;
 };
 
-function actualRun(appInfo: AppInfo, basePort: number, inject: Inject): void {
+function actualRun(
+  appInfo: AppInfo,
+  basePort: number,
+  inject: Inject,
+  autoOpen: boolean
+): void {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
 
   const instances = new Instances(appInfo.location, injectSim, basePort);
 
-  const peer0 = instances.add();
-  const peer1 = instances.add();
+  const numberOfInstances = 2;
+  for (let i = 0; i < numberOfInstances; i++) {
+    instances.add();
+  }
 
   const frontend = createFrontend(
     appInfo,
     instances,
     injectFrontend,
-    getIndexHtml
+    getIndexHtml,
+    autoOpen
   );
 
   frontend.listen(basePort, () => {
     console.log("Starting webxdc-dev frontend");
   });
 
-  peer0.start();
-  peer1.start();
+  instances.start();
 
   open("http://localhost:" + basePort);
+
+  if (autoOpen) {
+    instances.open();
+  }
 }
 
-export function run(locationStr: string, basePort: number, inject: Inject) {
+export function run(
+  locationStr: string,
+  basePort: number,
+  inject: Inject,
+  autoOpen: boolean
+) {
   let location: Location;
   try {
     location = getLocation(locationStr);
@@ -58,7 +74,7 @@ export function run(locationStr: string, basePort: number, inject: Inject) {
 
   getAppInfo(location)
     .then((appInfo) => {
-      actualRun(appInfo, basePort, inject);
+      actualRun(appInfo, basePort, inject, autoOpen);
     })
     .catch((e) => {
       if (e instanceof AppInfoError) {

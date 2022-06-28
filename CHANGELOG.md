@@ -21,6 +21,13 @@ release date when you use `npm version` (see `README.md`).
 
 - Add favicon for dev tool.
 
+- Add `--open` option to automatically open instances on startup and as soon as
+  they're created.
+
+## Changed
+
+- Better handling of command-line arguments.
+
 ## [0.10.0][] - 2022-06-28
 
 ### Added

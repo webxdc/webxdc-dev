@@ -3,9 +3,11 @@ import fs from "fs";
 import toml from "toml";
 // have to use v2 otherwise end up in config hell because v3 is ESM only
 import nodeFetch from "node-fetch";
-import waitOn from "wait-on";
 
 import { Location, UrlLocation } from "./location";
+import { waitOnUrl } from "./waitOn";
+
+const APP_INFO_TIMEOUT = 5000;
 
 export type IconInfo = {
   buffer: Buffer;
@@ -30,15 +32,7 @@ export class AppInfoError extends Error {}
 export async function getAppInfo(location: Location): Promise<AppInfo> {
   if (location.type === "url") {
     try {
-      await waitOn({
-        // we don't want to do a HEAD check, just a GET check
-        resources: [location.url.replace("http:", "http-get:")],
-        // workaround https://github.com/jeffbski/wait-on/issues/78#issuecomment-867813529
-        headers: {
-          accept: "text/html",
-        },
-        timeout: 5000,
-      });
+      await waitOnUrl(location.url, APP_INFO_TIMEOUT);
     } catch (e) {
       throw new AppInfoError(`Timeout. Could not access URL: ${location.url}`);
     }

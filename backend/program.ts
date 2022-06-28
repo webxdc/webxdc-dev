@@ -1,7 +1,18 @@
-import { Command } from "commander";
+import { Command, InvalidArgumentError } from "commander";
 import { run } from "./run";
 import { Inject } from "./run";
 import { getToolVersion } from "./appInfo";
+
+function parsePort(value: string): number {
+  const result = Number(value);
+  if (isNaN(result)) {
+    throw new InvalidArgumentError("not a number");
+  }
+  if (result < 0 || result > 65535) {
+    throw new InvalidArgumentError("port number out of range");
+  }
+  return result;
+}
 
 export function createProgram(inject: Inject): Command {
   const program = new Command();
@@ -19,20 +30,15 @@ export function createProgram(inject: Inject): Command {
     .option(
       "-p, --port <port>",
       "start port for webxdc-dev UI, instance ports are incremented by one each",
-      "7000"
+      parsePort,
+      7000
     )
+    .option("-o, --open", "Automatically open instance tabs", false)
     .description(
       "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
     )
-    .action((location, portString) => {
-      const port = Number(portString.port);
-      if (isNaN(port) || port < 0 || port > 65535) {
-        throw new Error(
-          "provided port is invalid: " + JSON.stringify(portString)
-        );
-      }
-      run(location, Number(port), inject);
+    .action((location, options) => {
+      run(location, options.port, inject, options.open);
     });
-  program.showHelpAfterError();
   return program;
 }

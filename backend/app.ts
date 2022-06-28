@@ -2,12 +2,16 @@ import express, { Express } from "express";
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import open from "open";
 
 import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { Location } from "./location";
 import { AppInfo } from "./appInfo";
+import { waitOnUrl } from "./waitOn";
 
+// timeout for open in miliseconds
+const OPEN_TIMEOUT = 500;
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
 
 export type InjectExpress = (app: Express) => void;
@@ -16,7 +20,8 @@ export function createFrontend(
   appInfo: AppInfo,
   instances: Instances,
   injectFrontend: InjectExpress,
-  getIndexHtml: () => string
+  getIndexHtml: () => string,
+  autoOpen: boolean
 ): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -52,6 +57,9 @@ export function createFrontend(
   app.post("/instances", (req, res) => {
     const instance = instances.add();
     instance.start();
+    if (autoOpen) {
+      instance.open();
+    }
     res.json({
       status: "ok",
       port: instance.port,
@@ -110,6 +118,7 @@ export function createPeer(
 
 export class Instance {
   id: string;
+  url: string;
 
   constructor(
     public app: expressWs.Application,
@@ -117,12 +126,18 @@ export class Instance {
     public webXdc: WebXdcMulti
   ) {
     this.id = port.toString();
+    this.url = `http://localhost:${port}`;
   }
 
   start() {
     this.app.listen(this.port, () => {
-      console.log(`Starting Webxdc instance at port ${this.port}`);
+      console.log(`Starting webxdc instance at port ${this.port}`);
     });
+  }
+
+  async open(): Promise<void> {
+    await waitOnUrl(this.url, OPEN_TIMEOUT);
+    await open(this.url);
   }
 }
 
@@ -203,6 +218,19 @@ export class Instances {
     });
     this.instances.set(port, instance);
     return instance;
+  }
+
+  start() {
+    for (const instance of this.instances.values()) {
+      instance.start();
+    }
+  }
+
+  async open() {
+    // open the URLs
+    for (const instance of this.instances.values()) {
+      await instance.open();
+    }
   }
 
   clear() {

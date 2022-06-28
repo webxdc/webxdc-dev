@@ -78,6 +78,34 @@ const Messages: Component = () => {
     </Table>
   );
 };
+
+const Device: Component<{ instance: InstanceData }> = (props) => {
+  let iframe_ref: HTMLIFrameElement | undefined = undefined;
+
+  return (
+    <div>
+      <Button
+        onClick={() => {
+          iframe_ref?.contentWindow?.postMessage("reload", props.instance.url);
+        }}
+      >
+        Reload
+      </Button>
+      <iframe
+        ref={iframe_ref}
+        src={props.instance.url}
+        style={{
+          height: "667px",
+          width: "375px",
+          "border-color": getColorForId(props.instance.id),
+          "border-width": "7px",
+          "border-style": "solid",
+        }}
+      ></iframe>
+    </div>
+  );
+};
+
 const Mobile: Component = () => {
   const handleAddInstance = async () => {
     const { port } = await (
@@ -94,20 +122,7 @@ const Mobile: Component = () => {
       <Flex>
         <Flex flexWrap="wrap" gap="$5">
           <For each={instances()}>
-            {(instance: InstanceData) => (
-              <div>
-                <iframe
-                  src={instance.url}
-                  style={{
-                    height: "667px",
-                    width: "375px",
-                    "border-color": getColorForId(instance.id),
-                    "border-width": "7px",
-                    "border-style": "solid",
-                  }}
-                ></iframe>
-              </div>
-            )}
+            {(instance: InstanceData) => <Device instance={instance} />}
           </For>
         </Flex>
         <Box>

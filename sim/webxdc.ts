@@ -92,3 +92,11 @@ function getWebXdc(): WebXdc {
 );
 
 window.addEventListener("load", alterUi);
+
+window.addEventListener("message", (event) => {
+  if (event.origin.indexOf("localhost:") !== -1) {
+    if (event.data === "reload") {
+      window.location.reload();
+    }
+  }
+});

@@ -64,18 +64,49 @@ const Instance: Component<{ instance: InstanceData }> = (props) => {
   return (
     <Tr>
       <Td>
-        <Anchor color="$primary10" external href={props.instance.url}>
-          {props.instance.id}
-        </Anchor>
+        <Tooltip
+          label={
+            <span>Open new browser tab for instance {props.instance.id}</span>
+          }
+        >
+          <Anchor color="$primary10" external href={props.instance.url}>
+            {props.instance.id}
+          </Anchor>
+        </Tooltip>
       </Td>
       <Td>
-        <Link href={inspectPath()}>inspect</Link>
+        <Tooltip
+          label={
+            <span>
+              Click to see all updates/clears sent and received by instance{" "}
+              {props.instance.id}
+            </span>
+          }
+        >
+          <Link href={inspectPath()}>inspect</Link>
+        </Tooltip>
       </Td>
       <Td numeric>
-        <Link href={sentPath()}>{sentCount()}</Link>
+        <Tooltip
+          label={
+            <span>
+              Click to see updates sent by instance {props.instance.id}
+            </span>
+          }
+        >
+          <Link href={sentPath()}>{sentCount()}</Link>
+        </Tooltip>
       </Td>
       <Td numeric>
-        <Link href={receivedPath()}>{receivedCount()}</Link>
+        <Tooltip
+          label={
+            <span>
+              Click to see updates received by instance {props.instance.id}
+            </span>
+          }
+        >
+          <Link href={receivedPath()}>{receivedCount()}</Link>
+        </Tooltip>
       </Td>
     </Tr>
   );
@@ -107,10 +138,14 @@ const Instances: Component = () => {
             <Th>Instance</Th>
             <Th>Messages</Th>
             <Th numeric>
-              <Link href="/messages?type=sent">Sent</Link>
+              <Tooltip label="Click to see updates sent by all instances">
+                <Link href="/messages?type=sent">Sent</Link>
+              </Tooltip>
             </Th>
             <Th numeric>
-              <Link href="/messages?type=received">Received</Link>
+              <Tooltip label="Click to see updates received by all instances">
+                <Link href="/messages?type=received">Received</Link>
+              </Tooltip>
             </Th>
           </Thead>
           <Tbody>

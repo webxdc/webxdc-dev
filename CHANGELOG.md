@@ -15,6 +15,11 @@ release date when you use `npm version` (see `README.md`).
 - When you launch `webxdc-dev` for the wrong XDC file/directory/URL you get an
   error message on the command-line describing what is wrong.
 
+- The instances overview page has links to `sent` and `received` from the table
+  heading to see just sent messages or received messages.
+
+- Various tooltips in the instances screen to explain what each link does.
+
 ### Changed
 
 - The dev server now broadcasts to all connected sockets for an instance

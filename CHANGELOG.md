@@ -28,6 +28,8 @@ release date when you use `npm version` (see `README.md`).
 
 - Better handling of command-line arguments.
 
+- Pull `backend/instance.ts` module out of `backend/app.ts`.
+
 ## [0.10.0][] - 2022-06-28
 
 ### Added

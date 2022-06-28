@@ -1,7 +1,8 @@
 import process from "process";
 import open from "open";
 
-import { createFrontend, Instances, InjectExpress } from "./app";
+import { createFrontend, InjectExpress } from "./app";
+import { Instances } from "./instance";
 import { getLocation, Location, LocationError } from "./location";
 import { getAppInfo, AppInfo, AppInfoError } from "./appInfo";
 

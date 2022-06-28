@@ -23,7 +23,7 @@ type SetUpdateListenerMessage = {
   serial: number;
 };
 
-export class Instance {
+class Instance {
   id: string;
   url: string;
 

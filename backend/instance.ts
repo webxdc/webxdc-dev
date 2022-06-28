@@ -1,4 +1,3 @@
-import { Express } from "express";
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
 import open from "open";

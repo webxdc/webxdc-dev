@@ -65,13 +65,8 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        "flex-direction": "column",
-      }}
-    >
-      <div id={"device-" + props.instance.id} style={{ display: "flex" }}>
+    <Flex flexDirection="column">
+      <Flex>
         <Text
           color={props.instance.color}
           style={{
@@ -83,8 +78,7 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
           {props.instance.id}
         </Text>
         <Button onClick={handleReload}>Reload</Button>
-      </div>
-
+      </Flex>
       <iframe
         ref={iframe_ref}
         src={props.instance.url}
@@ -96,7 +90,7 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
           "border-style": "solid",
         }}
       ></iframe>
-    </div>
+    </Flex>
   );
 };
 

@@ -104,7 +104,7 @@ const Mobile: Component = () => {
   return (
     <>
       <Box m="$8" ml="$1">
-        <Flex>
+        <Flex justifyContent="space-between">
           <Flex flexWrap="wrap" gap="$5">
             <For each={instances()}>
               {(instance: InstanceData) => <Device instance={instance} />}

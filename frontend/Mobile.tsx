@@ -90,28 +90,25 @@ const Messages: Component = () => {
 
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
-      <Table
-        width="33vw"
-        striped="even"
-        dense
-        css={{ "table-layout": "fixed" }}
-      >
-        <Thead>
-          <Th width="10em">Instance id</Th>
-          <Th>Descr</Th>
-          <Th min-width="30em">Payload</Th>
-        </Thead>
-        <Tbody>
-          <For each={getMessages(undefined, "sent")}>
-            {(message) => (
-              <MessageComponent
-                message={message as UpdateMessage}
-                onSelect={setMessage}
-              />
-            )}
-          </For>
-        </Tbody>
-      </Table>
+      <Box width="33vw" maxHeight="40vh" overflow="scroll">
+        <Table striped="even" dense css={{ "table-layout": "fixed" }}>
+          <Thead>
+            <Th width="10em">Instance id</Th>
+            <Th>Descr</Th>
+            <Th min-width="30em">Payload</Th>
+          </Thead>
+          <Tbody>
+            <For each={getMessages(undefined, "sent")}>
+              {(message) => (
+                <MessageComponent
+                  message={message as UpdateMessage}
+                  onSelect={setMessage}
+                />
+              )}
+            </For>
+          </Tbody>
+        </Table>
+      </Box>
       <Box>
         <Show when={message()}>
           {(message) => <MessageDetails message={message} />}

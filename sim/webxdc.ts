@@ -6,32 +6,13 @@ import {
   createWebXdc,
   Info,
 } from "./create";
-
-if (document.location.search) {
-  const deviceIdentifier = `%c${document.location.port}`;
-  const logStyle = `color:white;font-weight:bold;border-radius:4px;padding:2px;background: ${
-    decodeURIComponent(document.location.search).substring(1) || "lightgrey"
-  }`;
-  function overwriteConsoleFunction(
-    subFunction: "debug" | "log" | "info" | "warn" | "error"
-  ) {
-    const original = console[subFunction];
-    const replacement = original.bind(null, deviceIdentifier, logStyle);
-    window.console[subFunction] = replacement;
-    console[subFunction] = replacement;
-  }
-  overwriteConsoleFunction("debug");
-  overwriteConsoleFunction("log");
-  overwriteConsoleFunction("info");
-  overwriteConsoleFunction("warn");
-  overwriteConsoleFunction("error");
-}
+import { overwriteConsole, alterUi } from "./ui";
 
 const url = `ws://${document.location.host}/webxdc`;
 
 type SocketMessageListener = (event: Event) => void;
 
-class DevServerTransport implements Transport {
+export class DevServerTransport implements Transport {
   socket: WebSocket;
   messageListener: SocketMessageListener | null = null;
   promise: Promise<Info>;
@@ -105,16 +86,6 @@ class DevServerTransport implements Transport {
   }
 }
 
-async function alterUi(): Promise<void> {
-  const info = await transport.getInfo();
-  let title = document.getElementsByTagName("title")[0];
-  if (title == null) {
-    title = document.createElement("title");
-    document.getElementsByTagName("head")[0].append(title);
-  }
-  title.innerText = `${getWebXdc().selfName} - ${info.name}`;
-}
-
 function getWebXdc(): WebXdc {
   return (window as any).webxdc;
 }
@@ -125,12 +96,16 @@ const transport = new DevServerTransport(url);
   console.info(...args);
 });
 
-window.addEventListener("load", alterUi);
+overwriteConsole(document.location.port, transport);
 
+window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
+
+// listen to messages coming into iframe
 window.addEventListener("message", (event) => {
-  if (event.origin.indexOf("localhost:") !== -1) {
-    if (event.data === "reload") {
-      window.location.reload();
-    }
+  if (event.origin.indexOf("localhost:") === -1) {
+    return;
+  }
+  if (event.data === "reload") {
+    window.location.reload();
   }
 });

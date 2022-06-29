@@ -2,31 +2,19 @@ import type { Component, JSX } from "solid-js";
 import { For, createMemo } from "solid-js";
 import {
   Box,
-  Button,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  notificationService,
-  Flex,
   Tooltip,
   Anchor,
 } from "@hope-ui/solid";
 import { Link as RouterLink } from "solid-app-router";
 
-import {
-  sent,
-  received,
-  instances,
-  refetchInstances,
-  InstanceData,
-} from "./store";
-
-const CLEAR_INFO = `\
-Clear both webxdc-dev server state as well as client state.
-This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
+import { sent, received, instances, InstanceData } from "./store";
+import InstancesButtons from "./InstancesButtons";
 
 const Link: Component<{
   href: string;
@@ -113,23 +101,6 @@ const Instance: Component<{ instance: InstanceData }> = (props) => {
 };
 
 const Instances: Component = () => {
-  const handleAddInstance = async () => {
-    const { port } = await (
-      await fetch(`/instances`, { method: "POST" })
-    ).json();
-    refetchInstances();
-    notificationService.show({
-      title: `New instance ${port} added`,
-    });
-  };
-
-  const handleClear = async () => {
-    await fetch(`/clear`, { method: "POST" });
-    notificationService.show({
-      title: `Clearing state of dev server & instances`,
-    });
-  };
-
   return (
     <>
       <Box m="$8" ml="$1">
@@ -155,12 +126,7 @@ const Instances: Component = () => {
           </Tbody>
         </Table>
       </Box>
-      <Flex direction="row" justifyContent="flex-start" gap="$3">
-        <Button onClick={handleAddInstance}>Add Instance</Button>
-        <Tooltip label={CLEAR_INFO}>
-          <Button onClick={handleClear}>Clear</Button>
-        </Tooltip>
-      </Flex>
+      <InstancesButtons />
     </>
   );
 };

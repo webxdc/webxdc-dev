@@ -9,6 +9,8 @@
 - Opening a tab multiple times results in multiple windows on the same
   instance, which isn't ideal. Perhaps iframes would help control this better?
 
+- Somehow simulate chat messages (description, summary, info).
+
 ## Mobile UI
 
 - Open in tab button per instance.

@@ -175,27 +175,32 @@ const Messages: Component<{
 
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
-      <Box width="55vw" maxHeight="40vh" overflow="scroll">
+      <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
-        <Table striped="even" dense css={{ "table-layout": "fixed" }}>
-          <Thead>
-            <Th width="10%" minWidth="7em">
-              Id
-            </Th>
-            <Th width="10%">Type</Th>
-            <Th width="20%">Descr</Th>
-            <Th minWidth="60%">Payload</Th>
-          </Thead>
-          <Tbody>
-            <For
-              each={getMessages(props.search().instanceId, props.search().type)}
-            >
-              {(message) => (
-                <MessageComponent message={message} onSelect={setMessage} />
-              )}
-            </For>
-          </Tbody>
-        </Table>
+        <Box width="55vw" maxHeight="40vh" overflow="scroll">
+          <Table striped="even" dense css={{ "table-layout": "fixed" }}>
+            <Thead>
+              <Th width="10%" minWidth="7em">
+                Id
+              </Th>
+              <Th width="10%">Type</Th>
+              <Th width="20%">Descr</Th>
+              <Th minWidth="60%">Payload</Th>
+            </Thead>
+            <Tbody>
+              <For
+                each={getMessages(
+                  props.search().instanceId,
+                  props.search().type
+                )}
+              >
+                {(message) => (
+                  <MessageComponent message={message} onSelect={setMessage} />
+                )}
+              </For>
+            </Tbody>
+          </Table>
+        </Box>
       </Box>
       <Box>
         <Show when={message()}>

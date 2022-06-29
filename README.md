@@ -122,7 +122,7 @@ follows in the `scripts` section of your `package.json`:
 ```json
 {
   "scripts": {
-    "webxdc-dev": "concurrently \"npm run dev\" && \"webxdc-dev run http://localhost:3000\""
+    "webxdc-dev": "concurrently \"npm run dev\" \"webxdc-dev run http://localhost:3000\""
   }
 }
 ```

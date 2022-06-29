@@ -15,6 +15,7 @@ import { TdEllipsis } from "./Messages";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { UpdateMessage, Message } from "../types/message";
+import RecordRow from "./RecordRow";
 
 const scrollToDevice = (instanceId: string) => {
   document.getElementById("device-" + instanceId)?.scrollIntoView();
@@ -41,6 +42,46 @@ const MessageComponent: Component<{
       <TdEllipsis>{props.message.descr}</TdEllipsis>
       <TdEllipsis>{JSON.stringify(props.message.update.payload)}</TdEllipsis>
     </Tr>
+  );
+};
+
+const MessageDetails: Component<{ message: Message }> = (props) => {
+  return (
+    <Table dense>
+      <Tbody>
+        <RecordRow label="Instance id">
+          <Text color={props.message.instanceColor}>
+            {props.message.instanceId}
+          </Text>
+        </RecordRow>
+        <RecordRow label="type">{props.message.type}</RecordRow>
+        <Show when={props.message.type !== "clear" && props.message}>
+          {(message) => {
+            return (
+              <>
+                <RecordRow label="descr">{message.descr}</RecordRow>
+                <RecordRow label="serial">{message.update.serial}</RecordRow>
+                <RecordRow label="max serial">
+                  {message.update.max_serial}
+                </RecordRow>
+                <RecordRow label="info">{message.update.info}</RecordRow>
+                <RecordRow label="document">
+                  {message.update.document}
+                </RecordRow>
+                <RecordRow label="summary">{message.update.summary}</RecordRow>
+                <RecordRow label="payload">
+                  <pre>
+                    <code>
+                      {JSON.stringify(message.update.payload, null, 2)}
+                    </code>
+                  </pre>
+                </RecordRow>
+              </>
+            );
+          }}
+        </Show>
+      </Tbody>
+    </Table>
   );
 };
 
@@ -73,14 +114,7 @@ const Messages: Component = () => {
       </Table>
       <Box>
         <Show when={message()}>
-          {(message) => (
-            <pre>
-              <code>
-                {message.type !== "clear" &&
-                  JSON.stringify(message.update.payload, null, 2)}
-              </code>
-            </pre>
-          )}
+          {(message) => <MessageDetails message={message} />}
         </Show>
       </Box>
     </Flex>

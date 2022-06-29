@@ -20,7 +20,7 @@ function actualRun(
 ): void {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
 
-  const instances = new Instances(appInfo.location, injectSim, basePort);
+  const instances = new Instances(appInfo, injectSim, basePort);
 
   const numberOfInstances = 2;
   for (let i = 0; i < numberOfInstances; i++) {

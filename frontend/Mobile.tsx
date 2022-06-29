@@ -1,4 +1,12 @@
-import { Component, For, createSignal, Show } from "solid-js";
+import {
+  Component,
+  For,
+  createSignal,
+  Show,
+  createMemo,
+  Accessor,
+  Setter,
+} from "solid-js";
 import {
   Flex,
   Button,
@@ -10,6 +18,7 @@ import {
   Thead,
   Tbody,
   Text,
+  Badge,
 } from "@hope-ui/solid";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
@@ -19,6 +28,7 @@ import InstancesButtons from "./InstancesButtons";
 import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./MessagesFilters";
+import { sent, received } from "./store";
 
 const scrollToDevice = (instanceId: string) => {
   document.getElementById("device-" + instanceId)?.scrollIntoView();
@@ -157,16 +167,16 @@ const Filters: Component<{
   );
 };
 
-const Messages: Component = () => {
+const Messages: Component<{
+  search: Accessor<Search>;
+  setSearch: Setter<Search>;
+}> = (props) => {
   const [message, setMessage] = createSignal<Message | null>(null);
-  const [search, setSearch] = createSignal<Search>({
-    type: "sent",
-  });
 
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
       <Box width="55vw" maxHeight="40vh" overflow="scroll">
-        <Filters value={search()} onChange={setSearch} />
+        <Filters value={props.search()} onChange={props.setSearch} />
         <Table striped="even" dense css={{ "table-layout": "fixed" }}>
           <Thead>
             <Th width="10%" minWidth="7em">
@@ -177,7 +187,9 @@ const Messages: Component = () => {
             <Th minWidth="60%">Payload</Th>
           </Thead>
           <Tbody>
-            <For each={getMessages(search().instanceId, search().type)}>
+            <For
+              each={getMessages(props.search().instanceId, props.search().type)}
+            >
               {(message) => (
                 <MessageComponent message={message} onSelect={setMessage} />
               )}
@@ -194,7 +206,18 @@ const Messages: Component = () => {
   );
 };
 
-const Device: Component<{ instance: InstanceData }> = (props) => {
+const Device: Component<{
+  instance: InstanceData;
+  setSearch: (search: Search) => void;
+}> = (props) => {
+  const sentCount = createMemo(() => {
+    return sent(props.instance.id);
+  });
+
+  const receivedCount = createMemo(() => {
+    return received(props.instance.id);
+  });
+
   let iframe_ref: HTMLIFrameElement | undefined = undefined;
 
   const handleReload = () => {
@@ -206,17 +229,34 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
 
   return (
     <Flex flexDirection="column">
-      <Flex id={"device-" + props.instance.id}>
+      <Flex
+        id={"device-" + props.instance.id}
+        gap="$1"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Text
           color={props.instance.color}
-          style={{
-            "font-size": "x-large",
-            "flex-grow": 1,
-            "font-weight": "bold",
-          }}
+          fontSize="$2xl"
+          fontWeight="bold"
+          onClick={() => props.setSearch({ instanceId: props.instance.id })}
         >
           {props.instance.id}
         </Text>
+        <Badge
+          onClick={() =>
+            props.setSearch({ instanceId: props.instance.id, type: "sent" })
+          }
+        >
+          Sent: {sentCount}
+        </Badge>
+        <Badge
+          onClick={() =>
+            props.setSearch({ instanceId: props.instance.id, type: "received" })
+          }
+        >
+          Received: {receivedCount}
+        </Badge>
         <Button onClick={handleReload}>Reload</Button>
       </Flex>
       <iframe
@@ -235,6 +275,10 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
 };
 
 const Mobile: Component = () => {
+  const [search, setSearch] = createSignal<Search>({
+    type: "sent",
+  });
+
   return (
     <>
       <Flex justifyContent="space-between">
@@ -242,13 +286,15 @@ const Mobile: Component = () => {
           <Box m="$8" ml="$1">
             <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
               <For each={instances()}>
-                {(instance: InstanceData) => <Device instance={instance} />}
+                {(instance: InstanceData) => (
+                  <Device instance={instance} setSearch={setSearch} />
+                )}
               </For>
             </Flex>
           </Box>
           <InstancesButtons />
         </Flex>
-        <Messages />
+        <Messages search={search} setSearch={setSearch} />
       </Flex>
     </>
   );

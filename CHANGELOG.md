@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.12.1][] - 2022-06-29
+
 ### Added
 
 - A few tooltips and tweaks to the mobile UI.
@@ -253,3 +255,7 @@ release date when you use `npm version` (see `README.md`).
 [0.11.0]: https://github.com/webxdc/webxdc-dev/tree/v0.11.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.0...HEAD
 [0.12.0]: https://github.com/webxdc/webxdc-dev/tree/v0.12.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.1...HEAD
+[0.12.1]: https://github.com/webxdc/webxdc-dev/tree/v0.12.1

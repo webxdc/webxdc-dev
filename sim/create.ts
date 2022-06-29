@@ -9,7 +9,17 @@ type ClearMessage = {
   type: "clear";
 };
 
-type Message = UpdatesMessage | ClearMessage;
+export type Info = {
+  name: string;
+  color: string;
+};
+
+type InfoMessage = {
+  type: "info";
+  info: Info;
+};
+
+type Message = UpdatesMessage | ClearMessage | InfoMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -22,6 +32,8 @@ export type Transport = {
   clear(): void;
   address(): string;
   name(): string;
+  setInfo(info: Info): void;
+  //  getInfo(): Promise<Info>;
 };
 
 type Log = (...args: any[]) => void;
@@ -51,9 +63,13 @@ export function createWebXdc(
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();
+        } else if (isInfoMessage(message)) {
+          log("info", message.info);
+          transport.setInfo(message.info);
         }
       });
       transport.onConnect(() => {
+        transport.send({ type: "requestInfo" });
         transport.send({ type: "setUpdateListener", serial });
       });
       const promise = new Promise<void>((resolve) => {
@@ -73,4 +89,8 @@ function isUpdatesMessage(data: Message): data is UpdatesMessage {
 
 function isClearMessage(data: Message): data is ClearMessage {
   return data.type === "clear";
+}
+
+function isInfoMessage(data: Message): data is InfoMessage {
+  return data.type === "info";
 }

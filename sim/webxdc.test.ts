@@ -3,6 +3,7 @@ import {
   Transport,
   TransportMessageCallback,
   TransportConnectCallback,
+  Info,
 } from "./create";
 import { createProcessor, WebXdcMulti } from "../backend/message";
 
@@ -12,6 +13,7 @@ class FakeTransport implements Transport {
   connectCallback: TransportConnectCallback | null = null;
   _address: string;
   _name: string;
+  info: Info | null = null;
 
   constructor(
     public client: WebXdcMulti,
@@ -44,6 +46,16 @@ class FakeTransport implements Transport {
           }
         }
       );
+    } else if (data.type === "requestInfo") {
+      if (this.messageCallback != null) {
+        this.messageCallback({
+          type: "info",
+          info: {
+            name: "Foo",
+            color: "red",
+          },
+        });
+      }
     } else {
       throw new Error(`Unknown data ${JSON.stringify(data)}`);
     }
@@ -68,6 +80,10 @@ class FakeTransport implements Transport {
     if (this.connectCallback != null) {
       this.connectCallback();
     }
+  }
+
+  setInfo(info: Info): void {
+    this.info = info;
   }
 }
 
@@ -96,6 +112,7 @@ test("webxdc sends", async () => {
       max_serial: 1,
     },
   ]);
+  expect(fakeTransport.info).toEqual({ name: "Foo", color: "red" });
 });
 
 test("webxdc distributes", async () => {

@@ -60,8 +60,8 @@ export function received(instanceId: string): number {
 }
 
 export function getMessages(
-  instanceId: string | null,
-  type: string | null
+  instanceId: string | undefined,
+  type: string | undefined
 ): Message[] {
   if (instanceId == null && type == null) {
     return state;

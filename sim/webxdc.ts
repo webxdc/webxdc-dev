@@ -4,6 +4,7 @@ import {
   TransportMessageCallback,
   TransportConnectCallback,
   createWebXdc,
+  Info,
 } from "./create";
 
 if (document.location.search) {
@@ -33,9 +34,14 @@ type SocketMessageListener = (event: Event) => void;
 class DevServerTransport implements Transport {
   socket: WebSocket;
   messageListener: SocketMessageListener | null = null;
+  promise: Promise<Info>;
+  resolveInfo!: (info: Info) => void;
 
   constructor(url: string) {
     this.socket = new WebSocket(url);
+    this.promise = new Promise((resolve, reject) => {
+      this.resolveInfo = resolve;
+    });
   }
 
   send(data: JsonValue): void {
@@ -89,27 +95,35 @@ class DevServerTransport implements Transport {
   name() {
     return `Instance ${document.location.port}`;
   }
+
+  setInfo(info: Info): void {
+    this.resolveInfo(info);
+  }
+
+  async getInfo(): Promise<Info> {
+    return this.promise;
+  }
 }
 
-function alterUi(): void {
+async function alterUi(): Promise<void> {
+  const info = await transport.getInfo();
   let title = document.getElementsByTagName("title")[0];
   if (title == null) {
     title = document.createElement("title");
     document.getElementsByTagName("head")[0].append(title);
   }
-  title.innerText = getWebXdc().selfName;
+  title.innerText = `${getWebXdc().selfName} - ${info.name}`;
 }
 
 function getWebXdc(): WebXdc {
   return (window as any).webxdc;
 }
 
-(window as any).webxdc = createWebXdc(
-  new DevServerTransport(url),
-  (...args) => {
-    console.info(...args);
-  }
-);
+const transport = new DevServerTransport(url);
+
+(window as any).webxdc = createWebXdc(transport, (...args) => {
+  console.info(...args);
+});
 
 window.addEventListener("load", alterUi);
 

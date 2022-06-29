@@ -19,6 +19,7 @@ import {
   Tbody,
   Text,
   Badge,
+  Tooltip,
 } from "@hope-ui/solid";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
@@ -46,12 +47,14 @@ const MessageComponent: Component<{
     >
       <Td>
         <Ellipsis>
-          <Text
-            color={props.message.instanceColor}
-            onClick={() => scrollToDevice(props.message.instanceId)}
-          >
-            {props.message.instanceId}
-          </Text>
+          <Tooltip label="Click to scroll to device">
+            <Text
+              color={props.message.instanceColor}
+              onClick={() => scrollToDevice(props.message.instanceId)}
+            >
+              {props.message.instanceId}
+            </Text>
+          </Tooltip>
         </Ellipsis>
       </Td>
       <TdEllipsis>{props.message.type}</TdEllipsis>
@@ -178,7 +181,7 @@ const Messages: Component<{
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
         <Box width="55vw" maxHeight="40vh" overflow="scroll">
-          <Table striped="even" dense css={{ "table-layout": "fixed" }}>
+          <Table highlightOnHover dense css={{ "table-layout": "fixed" }}>
             <Thead>
               <Th width="10%" minWidth="7em">
                 Id
@@ -240,28 +243,37 @@ const Device: Component<{
         justifyContent="space-between"
         alignItems="center"
       >
-        <Text
-          color={props.instance.color}
-          fontSize="$2xl"
-          fontWeight="bold"
-          onClick={() => props.setSearch({ instanceId: props.instance.id })}
-        >
-          {props.instance.id}
-        </Text>
-        <Badge
-          onClick={() =>
-            props.setSearch({ instanceId: props.instance.id, type: "sent" })
-          }
-        >
-          Sent: {sentCount}
-        </Badge>
-        <Badge
-          onClick={() =>
-            props.setSearch({ instanceId: props.instance.id, type: "received" })
-          }
-        >
-          Received: {receivedCount}
-        </Badge>
+        <Tooltip label="Click to see all messages for this device">
+          <Text
+            color={props.instance.color}
+            fontSize="$2xl"
+            fontWeight="bold"
+            onClick={() => props.setSearch({ instanceId: props.instance.id })}
+          >
+            {props.instance.id}
+          </Text>
+        </Tooltip>
+        <Tooltip label="Click to see all sent messages for this device">
+          <Badge
+            onClick={() =>
+              props.setSearch({ instanceId: props.instance.id, type: "sent" })
+            }
+          >
+            Sent: {sentCount}
+          </Badge>
+        </Tooltip>
+        <Tooltip label="Click to see all received messages for this device">
+          <Badge
+            onClick={() =>
+              props.setSearch({
+                instanceId: props.instance.id,
+                type: "received",
+              })
+            }
+          >
+            Received: {receivedCount}
+          </Badge>
+        </Tooltip>
         <Button onClick={handleReload}>Reload</Button>
       </Flex>
       <iframe

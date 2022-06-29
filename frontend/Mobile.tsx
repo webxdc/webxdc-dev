@@ -66,7 +66,7 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
 
   return (
     <Flex flexDirection="column">
-      <Flex>
+      <Flex id={"device-" + props.instance.id}>
         <Text
           color={props.instance.color}
           style={{

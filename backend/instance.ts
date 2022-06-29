@@ -7,6 +7,8 @@ import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { Location } from "./location";
 import { waitOnUrl } from "./waitOn";
 import { createPeer, InjectExpress } from "./app";
+import { AppInfo } from "./appInfo";
+import { getColorForId } from "./color";
 
 // timeout for open in miliseconds
 const OPEN_TIMEOUT = 500;
@@ -20,6 +22,10 @@ type SendUpdateMessage = {
 type SetUpdateListenerMessage = {
   type: "setUpdateListener";
   serial: number;
+};
+
+type RequestInfoMessage = {
+  type: "requestInfo";
 };
 
 class Instance {
@@ -49,6 +55,7 @@ class Instance {
 
 export class Instances {
   location: Location;
+  appInfo: AppInfo;
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
@@ -56,8 +63,9 @@ export class Instances {
   processor: IProcessor;
   _onMessage: OnMessage | null = null;
 
-  constructor(location: Location, injectSim: InjectExpress, basePort: number) {
-    this.location = location;
+  constructor(appInfo: AppInfo, injectSim: InjectExpress, basePort: number) {
+    this.location = appInfo.location;
+    this.appInfo = appInfo;
     this.basePort = basePort;
     this.currentPort = basePort;
     this.instances = new Map();
@@ -117,6 +125,16 @@ export class Instances {
               broadcast(wss, JSON.stringify({ type: "clear" }));
             }
           );
+        } else if (isRequestInfoMessage(parsed)) {
+          ws.send(
+            JSON.stringify({
+              type: "info",
+              info: {
+                name: this.appInfo.manifest.name,
+                color: getColorForId(instance.id),
+              },
+            })
+          );
         } else {
           throw new Error(`Unknown message: ${JSON.stringify(parsed)}`);
         }
@@ -164,4 +182,8 @@ function isSetUpdateListenerMessage(
   value: any
 ): value is SetUpdateListenerMessage {
   return value.type === "setUpdateListener";
+}
+
+function isRequestInfoMessage(value: any): value is RequestInfoMessage {
+  return value.type === "requestInfo";
 }

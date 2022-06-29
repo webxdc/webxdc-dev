@@ -72,9 +72,11 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
               <>
                 <RecordRow label="descr">{message.descr}</RecordRow>
                 <RecordRow label="serial">{message.update.serial}</RecordRow>
-                <RecordRow label="max serial">
-                  {message.update.max_serial}
-                </RecordRow>
+                <Show when={message.type === "received"}>
+                  <RecordRow label="max serial">
+                    {message.update.max_serial}
+                  </RecordRow>
+                </Show>
                 <RecordRow label="info">{message.update.info}</RecordRow>
                 <RecordRow label="document">
                   {message.update.document}

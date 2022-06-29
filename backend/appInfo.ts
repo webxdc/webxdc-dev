@@ -3,6 +3,7 @@ import fs from "fs";
 import toml from "toml";
 // have to use v2 otherwise end up in config hell because v3 is ESM only
 import nodeFetch from "node-fetch";
+import pkg from "../package.json";
 
 import { Location, UrlLocation } from "./location";
 import { waitOnUrl } from "./waitOn";
@@ -59,7 +60,7 @@ export async function getAppInfoUrl(
 }
 
 export function getToolVersion(): string {
-  return process.env.npm_package_version || "Unknown";
+  return pkg.version || "Unknown";
 }
 
 async function getManifestInfoFromUrl(

@@ -1,9 +1,10 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
-  "include": ["backend", "types"],
+  "include": ["backend", "types", "package.json"],
   "compilerOptions": {
     "target": "ES2016",
     "module": "commonjs",
-    "outDir": "dist"
+    "outDir": "dist",
+    "resolveJsonModule": true
   }
 }

@@ -10,6 +10,7 @@
     "jsxImportSource": "solid-js",
     "noEmit": true,
     "outDir": "dist",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "resolveJsonModule": true
   }
 }

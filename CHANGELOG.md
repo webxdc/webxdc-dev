@@ -7,7 +7,7 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
-## Added
+### Added
 
 - A new mobile tab. This shows the instances in iframes. Console log messages
   are instrumented so that the instance port number and color is shown ahead
@@ -17,9 +17,14 @@ release date when you use `npm version` (see `README.md`).
   tells it basic information about the application. This allows us to set the
   name of the webxdc app in the title of each instance tab.
 
+### Fixed
+
+- The version number in the info tab should now show properly in the released
+  version.
+
 ## [0.11.0][] - 2022-06-28
 
-## Added
+### Added
 
 - Show version number of dev tool in info tab.
 
@@ -36,7 +41,7 @@ release date when you use `npm version` (see `README.md`).
 - Add `--open` option to automatically open instances on startup and as soon as
   they're created.
 
-## Changed
+### Changed
 
 - Better handling of command-line arguments.
 

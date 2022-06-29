@@ -9,6 +9,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## Added
 
+- A new mobile tab. This shows the instances in iframes. Console log messages
+  are instrumented so that the instance port number and color is shown ahead
+  of the log message itself.
+
 - An instance when connecting requests information from the backend, which now
   tells it basic information about the application. This allows us to set the
   name of the webxdc app in the title of each instance tab.

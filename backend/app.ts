@@ -45,6 +45,7 @@ export function createFrontend(
       Array.from(instances.instances.values()).map((instance) => ({
         id: instance.port.toString(),
         url: `http://localhost:${instance.port}`,
+        color: instance.color,
       }))
     );
   });

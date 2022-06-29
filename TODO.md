@@ -1,8 +1,5 @@
 ## UI
 
-- mobile display option for XDC applications. This could try to integrate
-  everything in one page, with mobile windows as iframes in a grid.
-
 - Content security reporting
 
 - Remove instances
@@ -11,6 +8,10 @@
 
 - Opening a tab multiple times results in multiple windows on the same
   instance, which isn't ideal. Perhaps iframes would help control this better?
+
+## Mobile UI
+
+- Open in tab button per instance.
 
 - Sizzy integration to open in a "as real as possible" mobile browser?
   https://sizzy.co/ But for pay software.

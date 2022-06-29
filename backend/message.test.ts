@@ -32,17 +32,23 @@ test("distribute to self", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", instanceId: "3001" },
+    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
     {
       type: "sent",
       instanceId: "3001",
-      update: { payload: "Hello", serial: 1, max_serial: 1 },
+      instanceColor: "#2965CC",
+      update: {
+        payload: "Hello",
+        serial: 1,
+        max_serial: 1,
+      },
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
+      instanceColor: "#2965CC",
       descr: "update",
     },
   ]);
@@ -77,11 +83,12 @@ test("distribute to self and other", () => {
   ]);
 
   expect(getMessages()).toEqual([
-    { type: "clear", instanceId: "3001" },
-    { type: "clear", instanceId: "3002" },
+    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
+    { type: "clear", instanceId: "3002", instanceColor: "#29A634" },
     {
       type: "sent",
       instanceId: "3001",
+      instanceColor: "#2965CC",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
@@ -89,17 +96,20 @@ test("distribute to self and other", () => {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
+      instanceColor: "#2965CC",
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3002",
+      instanceColor: "#29A634",
       descr: "update",
     },
     {
       type: "sent",
       instanceId: "3002",
+      instanceColor: "#29A634",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       descr: "update 2",
     },
@@ -107,12 +117,14 @@ test("distribute to self and other", () => {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3001",
+      instanceColor: "#2965CC",
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3002",
+      instanceColor: "#29A634",
       descr: "update 2",
     },
   ]);
@@ -181,7 +193,7 @@ test("other starts listening later", () => {
     [{ payload: "Bye", serial: 2, max_serial: 2 }, "update 2"],
   ]);
 
-  expect(getMessages()).toEqual([
+  expect(getMessages()).toMatchObject([
     { type: "clear", instanceId: "3001" },
     {
       type: "sent",
@@ -550,7 +562,7 @@ test("connect with clear means catchup only with updates after clear", () => {
     [{ payload: "Aftermath", serial: 1, max_serial: 1 }, "update 3"],
   ]);
 
-  expect(getMessages()).toEqual([
+  expect(getMessages()).toMatchObject([
     { type: "clear", instanceId: "3001" },
     {
       type: "sent",

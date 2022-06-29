@@ -5,6 +5,7 @@ import type {
   SendUpdate,
 } from "../types/webxdc";
 import type { Message } from "../types/message";
+import { getColorForId } from "./color";
 
 type UpdateListenerMulti = (
   updates: [ReceivedUpdate<JsonValue>, string][]
@@ -48,7 +49,11 @@ class Client implements WebXdcMulti {
     clearListener: ClearListener = () => {}
   ): void {
     this.setClearListener(() => {
-      this.processor.onMessage({ type: "clear", instanceId: this.id });
+      this.processor.onMessage({
+        type: "clear",
+        instanceId: this.id,
+        instanceColor: getColorForId(this.id),
+      });
       clearListener();
     });
     const updateListener = (updates: UpdateDescr[]) => {
@@ -57,6 +62,7 @@ class Client implements WebXdcMulti {
           type: "received",
           update: update,
           instanceId: this.id,
+          instanceColor: getColorForId(this.id),
           descr,
         });
       }
@@ -120,6 +126,7 @@ class Processor implements IProcessor {
     this.onMessage({
       type: "sent",
       instanceId: instanceId,
+      instanceColor: getColorForId(instanceId),
       update: receivedUpdate,
       descr,
     });

@@ -31,6 +31,7 @@ type RequestInfoMessage = {
 class Instance {
   id: string;
   url: string;
+  color: string;
 
   constructor(
     public app: expressWs.Application,
@@ -39,6 +40,7 @@ class Instance {
   ) {
     this.id = port.toString();
     this.url = `http://localhost:${port}`;
+    this.color = getColorForId(this.id);
   }
 
   start() {
@@ -131,7 +133,7 @@ export class Instances {
               type: "info",
               info: {
                 name: this.appInfo.manifest.name,
-                color: getColorForId(instance.id),
+                color: instance.color,
               },
             })
           );

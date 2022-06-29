@@ -19,6 +19,7 @@ export { appInfo };
 export type InstanceData = {
   id: string;
   url: string;
+  color: string;
 };
 
 const [instances, { refetch: refetchInstances }] = createResource<

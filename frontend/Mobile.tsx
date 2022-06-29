@@ -6,12 +6,13 @@ import {
   Table,
   Th,
   Tr,
+  Td,
   Thead,
   Tbody,
   Text,
 } from "@hope-ui/solid";
 
-import { TdEllipsis } from "./Messages";
+import { TdEllipsis, Ellipsis } from "./Messages";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { UpdateMessage, Message } from "../types/message";
@@ -31,16 +32,26 @@ const MessageComponent: Component<{
         props.onSelect(props.message);
       }}
     >
-      <TdEllipsis>
-        <Text
-          color={props.message.instanceColor}
-          onClick={() => scrollToDevice(props.message.instanceId)}
-        >
-          {props.message.instanceId}
-        </Text>
-      </TdEllipsis>
+      <Td>
+        <Ellipsis>
+          <Text
+            color={props.message.instanceColor}
+            onClick={() => scrollToDevice(props.message.instanceId)}
+          >
+            {props.message.instanceId}
+          </Text>
+        </Ellipsis>
+      </Td>
       <TdEllipsis>{props.message.descr}</TdEllipsis>
-      <TdEllipsis>{JSON.stringify(props.message.update.payload)}</TdEllipsis>
+      <TdEllipsis
+        tooltip={
+          <pre>
+            <code>{JSON.stringify(props.message.update.payload, null, 2)}</code>
+          </pre>
+        }
+      >
+        {JSON.stringify(props.message.update.payload)}
+      </TdEllipsis>
     </Tr>
   );
 };
@@ -90,12 +101,12 @@ const Messages: Component = () => {
 
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
-      <Box width="33vw" maxHeight="40vh" overflow="scroll">
+      <Box width="50vw" maxHeight="40vh" overflow="scroll">
         <Table striped="even" dense css={{ "table-layout": "fixed" }}>
           <Thead>
             <Th width="10em">Instance id</Th>
-            <Th>Descr</Th>
-            <Th min-width="30em">Payload</Th>
+            <Th width="20em">Descr</Th>
+            <Th minWidth="50%">Payload</Th>
           </Thead>
           <Tbody>
             <For each={getMessages(undefined, "sent")}>

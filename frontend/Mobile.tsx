@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js";
+import { Component, For, createSignal, Show } from "solid-js";
 import {
   Flex,
   Button,
@@ -14,15 +14,22 @@ import {
 import { TdEllipsis } from "./Messages";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
-import { UpdateMessage } from "../types/message";
+import { UpdateMessage, Message } from "../types/message";
 
 const scrollToDevice = (instanceId: string) => {
   document.getElementById("device-" + instanceId)?.scrollIntoView();
 };
 
-const MessageComponent: Component<{ message: UpdateMessage }> = (props) => {
+const MessageComponent: Component<{
+  message: UpdateMessage;
+  onSelect: (message: UpdateMessage) => void;
+}> = (props) => {
   return (
-    <Tr>
+    <Tr
+      onClick={() => {
+        props.onSelect(props.message);
+      }}
+    >
       <TdEllipsis>
         <Text
           color={props.message.instanceColor}
@@ -38,19 +45,45 @@ const MessageComponent: Component<{ message: UpdateMessage }> = (props) => {
 };
 
 const Messages: Component = () => {
+  const [message, setMessage] = createSignal<Message | null>(null);
+
   return (
-    <Table width="33vw" striped="even" dense css={{ "table-layout": "fixed" }}>
-      <Thead>
-        <Th width="10em">Instance id</Th>
-        <Th>Descr</Th>
-        <Th min-width="30em">Payload</Th>
-      </Thead>
-      <Tbody>
-        <For each={getMessages(undefined, "sent")}>
-          {(message) => <MessageComponent message={message as UpdateMessage} />}
-        </For>
-      </Tbody>
-    </Table>
+    <Flex height="100wh" flexDirection="column" justifyContent="space-between">
+      <Table
+        width="33vw"
+        striped="even"
+        dense
+        css={{ "table-layout": "fixed" }}
+      >
+        <Thead>
+          <Th width="10em">Instance id</Th>
+          <Th>Descr</Th>
+          <Th min-width="30em">Payload</Th>
+        </Thead>
+        <Tbody>
+          <For each={getMessages(undefined, "sent")}>
+            {(message) => (
+              <MessageComponent
+                message={message as UpdateMessage}
+                onSelect={setMessage}
+              />
+            )}
+          </For>
+        </Tbody>
+      </Table>
+      <Box>
+        <Show when={message()}>
+          {(message) => (
+            <pre>
+              <code>
+                {message.type !== "clear" &&
+                  JSON.stringify(message.update.payload, null, 2)}
+              </code>
+            </pre>
+          )}
+        </Show>
+      </Box>
+    </Flex>
   );
 };
 
@@ -97,19 +130,19 @@ const Device: Component<{ instance: InstanceData }> = (props) => {
 const Mobile: Component = () => {
   return (
     <>
-      <Box m="$8" ml="$1">
-        <Flex justifyContent="space-between">
-          <Flex flexWrap="wrap" gap="$5">
-            <For each={instances()}>
-              {(instance: InstanceData) => <Device instance={instance} />}
-            </For>
-          </Flex>
-          <Box>
-            <Messages />
+      <Flex justifyContent="space-between">
+        <Flex flexDirection="column">
+          <Box m="$8" ml="$1">
+            <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
+              <For each={instances()}>
+                {(instance: InstanceData) => <Device instance={instance} />}
+              </For>
+            </Flex>
           </Box>
+          <InstancesButtons />
         </Flex>
-      </Box>
-      <InstancesButtons />
+        <Messages />
+      </Flex>
     </>
   );
 };

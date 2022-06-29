@@ -11,26 +11,7 @@
 
 ## Mobile UI
 
-- mobile display option for XDC applications. This could try to integrate
-  everything in one page, with mobile windows as iframes in a grid.
-
 - Open in tab button per instance.
-
-- Sent and received count above each instance.
-
-- Align the messages sidebar to the right
-
-- Let the messages sidebar be responsive to smaller window size
-
-- Make the messages sidebar a drawer
-
-- The sidebar needs a bottom box that shows the details when you click
-  on a message
-
-- [Messages] [Sent] [Received] button above each device adjust filters in the
-  sidebar.
-
-- Filters above the messages to do the same control
 
 - Sizzy integration to open in a "as real as possible" mobile browser?
   https://sizzy.co/ But for pay software.

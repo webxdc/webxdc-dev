@@ -40,6 +40,13 @@ You can see filtered messages by clicking in the "messages", "sent" and
 The "info" tab lets you see basic information about the webxdc application you
 are running.
 
+The "mobile" tab shows webxdc instances in iframes instead. On the right side
+you can see the messages sent. Click on a message to see more information. You
+can also filter messages, and see messages specific to a device by clicking on
+the sent & received counts as well as the port number.
+
+The dev tool console shows messages with the same color prefix as well.
+
 ### Clean state
 
 Instances start with a clean slate: empty `localStorage` and `sessionStorage`.

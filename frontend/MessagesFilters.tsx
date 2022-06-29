@@ -8,7 +8,7 @@ import { instances } from "./store";
 type ParamsType = ReturnType<typeof useSearchParams>[0];
 type SetParamsType = ReturnType<typeof useSearchParams>[1];
 
-const instanceIdEntries = createMemo(() => {
+export const instanceIdEntries = createMemo(() => {
   const resolvedInstances = instances();
   const all_entry = {
     value: "*",

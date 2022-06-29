@@ -13,18 +13,20 @@ import {
 } from "@hope-ui/solid";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
+import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
-import { UpdateMessage, Message } from "../types/message";
+import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
+import { instanceIdEntries } from "./MessagesFilters";
 
 const scrollToDevice = (instanceId: string) => {
   document.getElementById("device-" + instanceId)?.scrollIntoView();
 };
 
 const MessageComponent: Component<{
-  message: UpdateMessage;
-  onSelect: (message: UpdateMessage) => void;
+  message: Message;
+  onSelect: (message: Message) => void;
 }> = (props) => {
   return (
     <Tr
@@ -42,16 +44,23 @@ const MessageComponent: Component<{
           </Text>
         </Ellipsis>
       </Td>
-      <TdEllipsis>{props.message.descr}</TdEllipsis>
-      <TdEllipsis
-        tooltip={
-          <pre>
-            <code>{JSON.stringify(props.message.update.payload, null, 2)}</code>
-          </pre>
-        }
-      >
-        {JSON.stringify(props.message.update.payload)}
-      </TdEllipsis>
+      <TdEllipsis>{props.message.type}</TdEllipsis>
+      <Show when={props.message.type !== "clear" && props.message}>
+        {(message) => (
+          <>
+            <TdEllipsis>{message.descr}</TdEllipsis>
+            <TdEllipsis
+              tooltip={
+                <pre>
+                  <code>{JSON.stringify(message.update.payload, null, 2)}</code>
+                </pre>
+              }
+            >
+              {JSON.stringify(message.update.payload)}
+            </TdEllipsis>
+          </>
+        )}
+      </Show>
     </Tr>
   );
 };
@@ -60,7 +69,7 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
   return (
     <Table dense>
       <Tbody>
-        <RecordRow label="Instance id">
+        <RecordRow label="instance id">
           <Text color={props.message.instanceColor}>
             {props.message.instanceId}
           </Text>
@@ -98,25 +107,79 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
   );
 };
 
+type Search = {
+  instanceId?: string;
+  type?: string;
+};
+
+const Filters: Component<{
+  value: Search;
+  onChange: (search: Search) => void;
+}> = (props) => {
+  return (
+    <Flex justifyContent="flex-start" gap="$5">
+      <Filter
+        label="instanceId"
+        entries={instanceIdEntries()}
+        value={props.value.instanceId || "*"}
+        onChange={(value) => {
+          if (value === "*") {
+            props.onChange({
+              ...props.value,
+              instanceId: undefined,
+            });
+          } else {
+            props.onChange({
+              ...props.value,
+              instanceId: value,
+            });
+          }
+        }}
+      />
+      <Filter
+        label="type"
+        entries={[
+          { value: "*", text: "All types" },
+          { value: "sent", text: "Sent" },
+          { value: "received", text: "Received" },
+          { value: "clear", text: "Clear" },
+        ]}
+        value={props.value.type || "*"}
+        onChange={(value) => {
+          if (value === "*") {
+            props.onChange({ ...props.value, type: undefined });
+          } else {
+            props.onChange({ ...props.value, type: value });
+          }
+        }}
+      />
+    </Flex>
+  );
+};
+
 const Messages: Component = () => {
   const [message, setMessage] = createSignal<Message | null>(null);
+  const [search, setSearch] = createSignal<Search>({
+    type: "sent",
+  });
 
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
-      <Box width="50vw" maxHeight="40vh" overflow="scroll">
+      <Box width="55vw" maxHeight="40vh" overflow="scroll">
+        <Filters value={search()} onChange={setSearch} />
         <Table striped="even" dense css={{ "table-layout": "fixed" }}>
           <Thead>
-            <Th width="10em">Instance id</Th>
-            <Th width="20em">Descr</Th>
-            <Th minWidth="50%">Payload</Th>
+            <Th width="10%" minWidth="7em">
+              Id
+            </Th>
+            <Th width="10%">Type</Th>
+            <Th width="20%">Descr</Th>
+            <Th minWidth="60%">Payload</Th>
           </Thead>
           <Tbody>
-            <For each={getMessages(undefined, "sent")}>
+            <For each={getMessages(search().instanceId, search().type)}>
               {(message) => (
-                <MessageComponent
-                  message={message as UpdateMessage}
-                  onSelect={setMessage}
-                />
+                <MessageComponent message={message} onSelect={setMessage} />
               )}
             </For>
           </Tbody>

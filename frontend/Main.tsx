@@ -4,18 +4,12 @@ import {
   createSignal,
   Show,
   createMemo,
-  Accessor,
   Setter,
-  createEffect,
   JSX,
 } from "solid-js";
 import {
   Flex,
   Box,
-  Table,
-  Th,
-  Thead,
-  Tbody,
   Text,
   Badge,
   Tooltip,
@@ -36,35 +30,7 @@ import InstancesButtons from "./InstancesButtons";
 import { sent, received } from "./store";
 import { scrollToDevice } from "./scroll";
 import Messages, { Search } from "./Messages";
-
-const StoppedFrame: Component<{
-  instance: InstanceData;
-  onStart: () => void;
-}> = (props) => {
-  return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      style={{
-        height: "667px",
-        width: "375px",
-        "border-color": props.instance.color,
-        "border-width": "7px",
-        "border-style": "solid",
-      }}
-    >
-      <Tooltip label="Start">
-        <IconButton
-          size="xl"
-          onClick={props.onStart}
-          aria-label="Start"
-          backgroundColor="lightgrey"
-          icon={<IoPlay size={30} color="#000000" />}
-        />
-      </Tooltip>
-    </Flex>
-  );
-};
+import FrameStopped from "./FrameStopped";
 
 const DeviceButton: Component<{
   label: string;
@@ -185,7 +151,7 @@ const Device: Component<{
       </Flex>
       <Show
         when={isOpen()}
-        fallback={<StoppedFrame instance={props.instance} onStart={onOpen} />}
+        fallback={<FrameStopped instance={props.instance} onStart={onOpen} />}
       >
         <iframe
           ref={iframe_ref}

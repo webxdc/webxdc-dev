@@ -1,6 +1,6 @@
 import { Component, createMemo } from "solid-js";
 import { useSearchParams } from "solid-app-router";
-import { Flex, Box } from "@hope-ui/solid";
+import { Flex } from "@hope-ui/solid";
 
 import Filter from "./Filter";
 import { instances } from "./store";

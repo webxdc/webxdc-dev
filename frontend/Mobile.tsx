@@ -33,7 +33,7 @@ import {
 } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import TdTooltip from "./Messages";
+import TdTooltip from "./TdTooltip";
 import TextDynamic from "./TextDynamic";
 import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";

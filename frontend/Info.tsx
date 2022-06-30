@@ -1,5 +1,5 @@
 import { Show, Component } from "solid-js";
-import { Anchor, Image, Table, Tbody, Tr, Td } from "@hope-ui/solid";
+import { Anchor, Image, Table, Tbody } from "@hope-ui/solid";
 
 import RecordRow from "./RecordRow";
 import { appInfo } from "./store";

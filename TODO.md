@@ -15,6 +15,10 @@
 
 - Open in tab button per instance.
 
+- When clicking a message, show which messages is highlighted in table
+
+- Scroll area for pretty printed json
+
 - Chat messages sidebar, with filter.
 
 - Scroll to bottom of messages when new message arrives.

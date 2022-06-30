@@ -9,8 +9,19 @@ release date when you use `npm version` (see `README.md`).
 
 ### Added
 
+- Main tab is now the mobile tab. Instances and messages are integrated into
+  this.
+
 - Added Content Security Policy for instances - the same one as DeltaChat
   Desktop.
+
+### Fixed
+
+- Reload button is now disabled when instance is not started.
+
+### Changed
+
+- Mobile tab is split into many pieces
 
 ## [0.13.1][] - 2022-06-30
 

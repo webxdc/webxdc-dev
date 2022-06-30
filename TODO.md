@@ -1,7 +1,5 @@
 ## UI
 
-- Remove instances
-
 - Somehow simulate chat messages (description, summary, info).
 
 - Perhaps default message filter should see connect & sent at the same time?

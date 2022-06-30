@@ -9,7 +9,7 @@ Clear both webxdc-dev server state as well as client state.
 This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
 
 const InstancesButtons: Component<{
-  onAfterAdd?: (instanceId: string) => {};
+  onAfterAdd?: (instanceId: string) => void;
 }> = (props) => {
   const handleAddInstance = async () => {
     const { port, id } = await (

@@ -31,6 +31,7 @@ import {
   IoCaretBackOutline,
   IoCaretForwardOutline,
 } from "solid-icons/io";
+import { FiExternalLink } from "solid-icons/fi";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
 import Filter from "./Filter";
@@ -309,6 +310,10 @@ const Device: Component<{
     iframe_ref.contentWindow?.postMessage("reload", props.instance.url);
   };
 
+  const handleOpenInTab = () => {
+    window.open(props.instance.url, "_blank");
+  };
+
   const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
@@ -351,6 +356,11 @@ const Device: Component<{
           </Badge>
         </Tooltip>
         <Flex gap="$1">
+          <DeviceButton
+            label={`Open new browser tab for instance ${props.instance.id}`}
+            onClick={handleOpenInTab}
+            icon={<FiExternalLink size={22} color="#000000" />}
+          />
           <Show
             when={isOpen()}
             fallback={

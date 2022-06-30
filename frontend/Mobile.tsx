@@ -112,11 +112,13 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
                 </RecordRow>
                 <RecordRow label="summary">{message.update.summary}</RecordRow>
                 <RecordRow label="payload">
-                  <pre>
-                    <code>
-                      {JSON.stringify(message.update.payload, null, 2)}
-                    </code>
-                  </pre>
+                  <Box maxHeight="9rem" overflow="auto">
+                    <pre>
+                      <code>
+                        {JSON.stringify(message.update.payload, null, 2)}
+                      </code>
+                    </pre>
+                  </Box>
                 </RecordRow>
               </>
             );
@@ -195,7 +197,7 @@ const Messages: Component<{
     <Flex height="100%" flexDirection="column" justifyContent="space-between">
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
-        <Box width="55vw" maxHeight="39vh" overflow="scroll">
+        <Box width="55vw" maxHeight="36vh" overflow="scroll">
           <Table id="messages" dense css={{ "table-layout": "fixed" }}>
             <Thead>
               <Th width="10%" minWidth="7em">

@@ -8,22 +8,29 @@ const CLEAR_INFO = `\
 Clear both webxdc-dev server state as well as client state.
 This wipes out any localStorage and sessionStorage on each client, and reloads them.`;
 
-const handleAddInstance = async () => {
-  const { port } = await (await fetch(`/instances`, { method: "POST" })).json();
-  refetchInstances();
-  notificationService.show({
-    title: `New instance ${port} added`,
-  });
-};
+const InstancesButtons: Component<{
+  onAfterAdd?: (instanceId: string) => {};
+}> = (props) => {
+  const handleAddInstance = async () => {
+    const { port, id } = await (
+      await fetch(`/instances`, { method: "POST" })
+    ).json();
+    await refetchInstances();
+    if (props.onAfterAdd != null) {
+      props.onAfterAdd(id);
+    }
+    notificationService.show({
+      title: `New instance ${port} added`,
+    });
+  };
 
-const handleClear = async () => {
-  await fetch(`/clear`, { method: "POST" });
-  notificationService.show({
-    title: `Clearing state of dev server & instances`,
-  });
-};
+  const handleClear = async () => {
+    await fetch(`/clear`, { method: "POST" });
+    notificationService.show({
+      title: `Clearing state of dev server & instances`,
+    });
+  };
 
-const InstancesButtons: Component = () => {
   return (
     <Flex direction="row" justifyContent="flex-start" gap="$3">
       <Button onClick={handleAddInstance}>Add Instance</Button>

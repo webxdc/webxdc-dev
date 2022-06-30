@@ -9,7 +9,6 @@ import {
 } from "solid-js";
 import {
   Flex,
-  Button,
   Box,
   Table,
   Th,
@@ -29,7 +28,6 @@ import {
   IoPlay,
   IoCaretBackOutline,
   IoCaretForwardOutline,
-  IoCar,
 } from "solid-icons/io";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
@@ -395,7 +393,11 @@ const Mobile: Component = () => {
               </For>
             </Flex>
           </Box>
-          <InstancesButtons />
+          <InstancesButtons
+            onAfterAdd={(instanceId) => {
+              scrollToDevice(instanceId);
+            }}
+          />
         </Flex>
         <Box>
           <Show

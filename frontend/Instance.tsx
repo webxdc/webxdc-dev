@@ -31,6 +31,7 @@ const Instance: Component<{
 
   const getStyle = () => {
     return {
+      // XXX these dimensions should be configurable somehow
       height: "667px",
       width: "375px",
       "border-color": props.instance.color,

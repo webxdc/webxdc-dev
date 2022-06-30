@@ -6,6 +6,7 @@ import {
   createMemo,
   Accessor,
   Setter,
+  createEffect,
 } from "solid-js";
 import {
   Flex,
@@ -38,10 +39,6 @@ import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./MessagesFilters";
 import { sent, received } from "./store";
-
-const scrollToDevice = (instanceId: string) => {
-  document.getElementById("device-" + instanceId)?.scrollIntoView();
-};
 
 const MessageComponent: Component<{
   message: Message;
@@ -184,12 +181,24 @@ const Messages: Component<{
 }> = (props) => {
   const [message, setMessage] = createSignal<Message | null>(null);
 
+  createEffect(() => {
+    // whenever we get a new message, we should scroll to the last message
+    getMessages(undefined, undefined).length;
+    // we scroll to the last message
+    scrollToLastMessage();
+  });
+
   return (
     <Flex height="100wh" flexDirection="column" justifyContent="space-between">
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
         <Box width="55vw" maxHeight="40vh" overflow="scroll">
-          <Table highlightOnHover dense css={{ "table-layout": "fixed" }}>
+          <Table
+            id="messages"
+            highlightOnHover
+            dense
+            css={{ "table-layout": "fixed" }}
+          >
             <Thead>
               <Th width="10%" minWidth="7em">
                 Id
@@ -442,6 +451,14 @@ const Mobile: Component = () => {
       </Flex>
     </>
   );
+};
+
+const scrollToDevice = (instanceId: string) => {
+  document.getElementById("device-" + instanceId)?.scrollIntoView();
+};
+
+const scrollToLastMessage = () => {
+  document.querySelector("#messages > tbody > tr:last-child")?.scrollIntoView();
 };
 
 export default Mobile;

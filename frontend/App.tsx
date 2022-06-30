@@ -3,8 +3,8 @@ import { JSX, createSignal, createEffect } from "solid-js";
 import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 import { Route, Routes, useNavigate, useLocation } from "solid-app-router";
 
+import Main from "./Main";
 import Info from "./Info";
-import Mobile from "./Mobile";
 
 const Panel: Component<{ children: JSX.Element }> = (props) => {
   return (
@@ -17,7 +17,7 @@ const Panel: Component<{ children: JSX.Element }> = (props) => {
 const AppRoutes: Component = () => {
   return (
     <Routes>
-      <Route path="/" element={<Mobile />} />
+      <Route path="/" element={<Main />} />
       <Route path="/info" element={<Info />} />
     </Routes>
   );

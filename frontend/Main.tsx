@@ -407,7 +407,7 @@ const Device: Component<{
   );
 };
 
-const Mobile: Component = () => {
+const Main: Component = () => {
   const [search, setSearch] = createSignal<Search>({
     type: "sent",
   });
@@ -490,4 +490,4 @@ const scrollToLastMessage = () => {
   document.querySelector("#messages > tbody > tr:last-child")?.scrollIntoView();
 };
 
-export default Mobile;
+export default Main;

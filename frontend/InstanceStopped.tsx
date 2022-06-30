@@ -4,7 +4,7 @@ import { IoPlay } from "solid-icons/io";
 
 import { InstanceData } from "./store";
 
-const FrameStopped: Component<{
+const InstanceStopped: Component<{
   instance: InstanceData;
   onStart: () => void;
 }> = (props) => {
@@ -33,4 +33,4 @@ const FrameStopped: Component<{
   );
 };
 
-export default FrameStopped;
+export default InstanceStopped;

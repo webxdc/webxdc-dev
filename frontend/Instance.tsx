@@ -3,7 +3,7 @@ import { Flex, createDisclosure } from "@hope-ui/solid";
 
 import { InstanceData } from "./store";
 import { Search } from "./Messages";
-import FrameStopped from "./FrameStopped";
+import InstanceStopped from "./InstanceStopped";
 import InstanceHeader from "./InstanceHeader";
 
 const Instance: Component<{
@@ -36,7 +36,9 @@ const Instance: Component<{
       />
       <Show
         when={isOpen()}
-        fallback={<FrameStopped instance={props.instance} onStart={onOpen} />}
+        fallback={
+          <InstanceStopped instance={props.instance} onStart={onOpen} />
+        }
       >
         <iframe
           ref={iframe_ref}

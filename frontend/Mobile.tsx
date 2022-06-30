@@ -226,7 +226,7 @@ const Messages: Component<{
 
 const StoppedFrame: Component<{
   instance: InstanceData;
-  onPlay: () => void;
+  onStart: () => void;
 }> = (props) => {
   return (
     <Flex
@@ -240,11 +240,11 @@ const StoppedFrame: Component<{
         "border-style": "solid",
       }}
     >
-      <Tooltip label="Play">
+      <Tooltip label="Start">
         <IconButton
           size="xl"
-          onClick={props.onPlay}
-          aria-label="Play"
+          onClick={props.onStart}
+          aria-label="Start"
           backgroundColor="lightgrey"
           icon={<IoPlay size={30} color="#000000" />}
         />
@@ -317,16 +317,32 @@ const Device: Component<{
           </Badge>
         </Tooltip>
         <Flex gap="$1">
-          <Tooltip label="Stop">
-            <IconButton
-              size="sm"
-              compact
-              onClick={onClose}
-              aria-label="Stop"
-              backgroundColor="lightgrey"
-              icon={<IoStop size={22} color="#000000" />}
-            />
-          </Tooltip>
+          <Show
+            when={isOpen()}
+            fallback={
+              <Tooltip label="Start">
+                <IconButton
+                  size="sm"
+                  compact
+                  onClick={onOpen}
+                  aria-label="Start"
+                  backgroundColor="lightgrey"
+                  icon={<IoPlay size={22} color="#000000" />}
+                />
+              </Tooltip>
+            }
+          >
+            <Tooltip label="Stop">
+              <IconButton
+                size="sm"
+                compact
+                onClick={onClose}
+                aria-label="Stop"
+                backgroundColor="lightgrey"
+                icon={<IoStop size={22} color="#000000" />}
+              />
+            </Tooltip>
+          </Show>
           <Tooltip label="Reload">
             <IconButton
               size="sm"
@@ -341,7 +357,7 @@ const Device: Component<{
       </Flex>
       <Show
         when={isOpen()}
-        fallback={<StoppedFrame instance={props.instance} onPlay={onOpen} />}
+        fallback={<StoppedFrame instance={props.instance} onStart={onOpen} />}
       >
         <iframe
           ref={iframe_ref}

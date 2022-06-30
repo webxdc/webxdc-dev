@@ -10,14 +10,14 @@ const Instance: Component<{
   instance: InstanceData;
   setSearch: (search: Search) => void;
 }> = (props) => {
-  let iframe_ref: HTMLIFrameElement | undefined = undefined;
+  let iframeRef: HTMLIFrameElement | undefined = undefined;
 
   const handleReload = () => {
-    if (iframe_ref == null) {
+    if (iframeRef == null) {
       return;
     }
 
-    iframe_ref.contentWindow?.postMessage("reload", props.instance.url);
+    iframeRef.contentWindow?.postMessage("reload", props.instance.url);
   };
 
   const { isOpen, onOpen, onClose } = createDisclosure({
@@ -41,7 +41,7 @@ const Instance: Component<{
         }
       >
         <iframe
-          ref={iframe_ref}
+          ref={iframeRef}
           src={props.instance.url}
           style={{
             height: "667px",

@@ -9,11 +9,21 @@ release date when you use `npm version` (see `README.md`).
 
 ### Added
 
-- The ability to turn off a device in mobile
+- The ability to turn on and off a device in mobile
 
-- Nicer icons
+- The ability to open a device in an external tab in mobile
+
+- Icon buttons
 
 - Sidebar with messages is collapsible
+
+- Scroll to new device when added
+
+- Scroll to last new message when a message appears
+
+- Show currently selected message in sidebar
+
+- Allow for large contents of JSON in details panel
 
 ## [0.12.1][] - 2022-06-29
 

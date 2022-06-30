@@ -19,6 +19,8 @@
 
 - Chat messages sidebar for "info" messages, with same filters in separate tab.
 
+- Special boolean search filter "since last connect of each client".
+
 - Sizzy integration to open in a "as real as possible" mobile browser?
   https://sizzy.co/ But for pay software.
 

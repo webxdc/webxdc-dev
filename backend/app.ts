@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import expressWs from "express-ws";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import bodyParser from "body-parser";
 
 import { Location } from "./location";
 import { AppInfo } from "./appInfo";
@@ -23,6 +24,8 @@ export function createFrontend(
   // inject how to serve the frontend; this is
   // different in dev mode and in production
   injectFrontend(app as unknown as Express);
+
+  app.use(bodyParser.json());
 
   app.get("/app-info", (req, res) => {
     res.json({

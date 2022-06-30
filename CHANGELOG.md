@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.13.0][] - 2022-06-30
+
 ### Added
 
 - The ability to turn on and off a device in mobile
@@ -275,3 +277,7 @@ release date when you use `npm version` (see `README.md`).
 [0.12.0]: https://github.com/webxdc/webxdc-dev/tree/v0.12.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.1...HEAD
 [0.12.1]: https://github.com/webxdc/webxdc-dev/tree/v0.12.1
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/webxdc/webxdc-dev/tree/v0.13.0

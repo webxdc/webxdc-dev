@@ -40,7 +40,7 @@ import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { Message, UpdateMessage } from "../types/message";
 import RecordRow from "./RecordRow";
-import { instanceIdEntries } from "./MessagesFilters";
+import { instanceIdEntries } from "./instanceIdEntries";
 import { sent, received } from "./store";
 
 const MessageComponent: Component<{

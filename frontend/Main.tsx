@@ -1,4 +1,4 @@
-import { Component, For, createSignal, Show, Setter } from "solid-js";
+import { Component, For, createSignal, Show, Setter, JSX } from "solid-js";
 import {
   Flex,
   Box,
@@ -49,39 +49,51 @@ const Main: Component = () => {
           <Show
             when={isOpen()}
             fallback={
-              <Tooltip label="Open messages">
-                <IconButton
-                  variant="ghost"
-                  size="sm"
-                  position="relative"
-                  top="2rem"
-                  right="-2rem"
-                  onClick={onOpen}
-                  aria-label="Open messages"
-                  backgroundColor="white"
-                  icon={<IoCaretBackOutline size={22} color="#000000" />}
-                />
-              </Tooltip>
+              <SidebarButton
+                label="Open messages"
+                onClick={onOpen}
+                top="2rem"
+                right="-2rem"
+                icon={<IoCaretBackOutline size={22} color="#000000" />}
+              />
             }
           >
-            <Tooltip label="Close messages">
-              <IconButton
-                variant="ghost"
-                size="sm"
-                position="relative"
-                top="2rem"
-                right="2rem"
-                onClick={onClose}
-                aria-label="Close messages"
-                backgroundColor="white"
-                icon={<IoCaretForwardOutline size={22} color="#000000" />}
-              />
-            </Tooltip>
+            <SidebarButton
+              label="Close messages"
+              onClick={onClose}
+              top="2rem"
+              right="2rem"
+              icon={<IoCaretForwardOutline size={22} color="#000000" />}
+            />
             <Messages search={search} setSearch={setSearchAndOpen} />
           </Show>
         </Box>
       </Flex>
     </>
+  );
+};
+
+const SidebarButton: Component<{
+  label: string;
+  onClick: () => void;
+  icon: JSX.Element;
+  top: string;
+  right: string;
+}> = (props) => {
+  return (
+    <Tooltip label={props.label}>
+      <IconButton
+        variant="ghost"
+        size="sm"
+        position="relative"
+        top={props.top}
+        right={props.right}
+        onClick={props.onClick}
+        aria-label={props.label}
+        backgroundColor="white"
+        icon={props.icon}
+      />
+    </Tooltip>
   );
 };
 

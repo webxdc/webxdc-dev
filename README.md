@@ -37,7 +37,8 @@ all instance state and messages by pressing the "Reset" button.
 
 The sidebar to the right lets you see all updates sent and received from the
 dev server. Hover over the fields to see the complete text. Click on a message
-to see full information. You can also filter messages.
+to see full information. You can also filter messages. You can collapse the
+sidebar with the arrow.
 
 Each instance header also contains additional information: the port number on
 which the instance was opened, the amount of updates this instance sent and

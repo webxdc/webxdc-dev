@@ -12,12 +12,7 @@ export type Inject = {
   getIndexHtml: () => string;
 };
 
-function actualRun(
-  appInfo: AppInfo,
-  basePort: number,
-  inject: Inject,
-  autoOpen: boolean
-): void {
+function actualRun(appInfo: AppInfo, basePort: number, inject: Inject): void {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
 
   const instances = new Instances(appInfo, injectSim, basePort);
@@ -31,8 +26,7 @@ function actualRun(
     appInfo,
     instances,
     injectFrontend,
-    getIndexHtml,
-    autoOpen
+    getIndexHtml
   );
 
   frontend.listen(basePort, () => {
@@ -42,18 +36,9 @@ function actualRun(
   instances.start();
 
   open("http://localhost:" + basePort);
-
-  if (autoOpen) {
-    instances.open();
-  }
 }
 
-export function run(
-  locationStr: string,
-  basePort: number,
-  inject: Inject,
-  autoOpen: boolean
-) {
+export function run(locationStr: string, basePort: number, inject: Inject) {
   let location: Location;
   try {
     location = getLocation(locationStr);
@@ -75,7 +60,7 @@ export function run(
 
   getAppInfo(location)
     .then((appInfo) => {
-      actualRun(appInfo, basePort, inject, autoOpen);
+      actualRun(appInfo, basePort, inject);
     })
     .catch((e) => {
       if (e instanceof AppInfoError) {

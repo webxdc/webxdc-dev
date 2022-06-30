@@ -1,157 +1,86 @@
-import { Component } from "solid-js";
-import { For, Show, JSX } from "solid-js";
-import { Table, Thead, Tbody, Tr, Th, Td, Tooltip, Text } from "@hope-ui/solid";
-import { useSearchParams } from "solid-app-router";
+import {
+  Component,
+  For,
+  createSignal,
+  Show,
+  Accessor,
+  Setter,
+  createEffect,
+} from "solid-js";
+import { Flex, Box, Table, Th, Thead, Tbody } from "@hope-ui/solid";
 
+import { Message } from "../types/message";
+import MessageDetails from "./MessageDetails";
+import MessageRow from "./MessageRow";
+import Filters from "./Filters";
 import { getMessages } from "./store";
-import type { Message, UpdateMessage } from "../types/message";
-import Filters from "./MessagesFilters";
 
-const COLUMN_WIDTHS = {
-  instanceId: "4%",
-  type: "5%",
-  descr: "8%",
-  serial: "4%",
-  maxSerial: "4%",
-  info: "5%",
-  document: "5%",
-  summary: "5%",
-  payload: "20%",
+export type Search = {
+  instanceId?: string;
+  type?: string;
 };
 
-export const Ellipsis: Component<{ children: JSX.Element }> = (props) => {
-  return (
-    <Text
-      noOfLines={1}
-      fontSize={{
-        "@initial": "8px",
-        "@sm": "8px",
-        "@md": "10px",
-        "@lg": "12px",
-      }}
-    >
-      {props.children}
-    </Text>
-  );
-};
-
-const TooltipEllipsis: Component<{
-  children: JSX.Element;
-  tooltip?: JSX.Element;
+const Messages: Component<{
+  search: Accessor<Search>;
+  setSearch: Setter<Search>;
 }> = (props) => {
+  const [message, setMessage] = createSignal<Message | null>(null);
+  const [messageIndex, setMessageIndex] = createSignal<number | null>(null);
+
+  createEffect(() => {
+    // whenever we get a new message, we should scroll to the last message
+    getMessages(undefined, undefined).length;
+    // we scroll to the last message
+    scrollToLastMessage();
+  });
+
   return (
-    <Tooltip label={props.tooltip || props.children}>
-      <Ellipsis>{props.children}</Ellipsis>
-    </Tooltip>
+    <Flex height="100%" flexDirection="column" justifyContent="space-between">
+      <Box>
+        <Filters value={props.search()} onChange={props.setSearch} />
+        <Box width="55vw" maxHeight="36vh" overflow="scroll">
+          <Table id="messages" dense css={{ "table-layout": "fixed" }}>
+            <Thead>
+              <Th width="10%" minWidth="7em">
+                Id
+              </Th>
+              <Th width="10%">Type</Th>
+              <Th width="20%">Descr</Th>
+              <Th minWidth="60%">Payload</Th>
+            </Thead>
+            <Tbody>
+              <For
+                each={getMessages(
+                  props.search().instanceId,
+                  props.search().type
+                )}
+              >
+                {(message, index) => (
+                  <MessageRow
+                    isSelected={messageIndex() === index()}
+                    message={message}
+                    onSelect={(message) => {
+                      setMessageIndex(index());
+                      setMessage(message);
+                    }}
+                  />
+                )}
+              </For>
+            </Tbody>
+          </Table>
+        </Box>
+      </Box>
+      <Box>
+        <Show when={message()}>
+          {(message) => <MessageDetails message={message} />}
+        </Show>
+      </Box>
+    </Flex>
   );
 };
 
-export const TdEllipsis: Component<{
-  children: JSX.Element;
-  numeric?: boolean;
-  tooltip?: JSX.Element;
-}> = (props) => {
-  return (
-    <Td numeric={props.numeric}>
-      <TooltipEllipsis tooltip={props.tooltip}>
-        {props.children}
-      </TooltipEllipsis>
-    </Td>
-  );
-};
-
-const UpdateMessageComponent: Component<{ message: UpdateMessage }> = (
-  props
-) => {
-  return (
-    <>
-      <TdEllipsis>{props.message.descr}</TdEllipsis>
-      <TdEllipsis numeric>{props.message.update.serial}</TdEllipsis>
-      <TdEllipsis numeric>{props.message.update.max_serial}</TdEllipsis>
-      <TdEllipsis>{props.message.update.info}</TdEllipsis>
-      <TdEllipsis>{props.message.update.document}</TdEllipsis>
-      <TdEllipsis>{props.message.update.summary}</TdEllipsis>
-      <TdEllipsis
-        tooltip={
-          <pre>
-            <code>{JSON.stringify(props.message.update.payload, null, 2)}</code>
-          </pre>
-        }
-      >
-        <code>{JSON.stringify(props.message.update.payload)}</code>
-      </TdEllipsis>
-    </>
-  );
-};
-
-const FallbackMessageComponent: Component = (props) => {
-  return <></>;
-};
-
-const MessageComponent: Component<{ message: Message }> = (props) => {
-  return (
-    <Tr>
-      <TdEllipsis>{props.message.instanceId}</TdEllipsis>
-      <TdEllipsis>{props.message.type}</TdEllipsis>
-      <Show
-        when={props.message.type !== "clear"}
-        fallback={<FallbackMessageComponent />}
-      >
-        <UpdateMessageComponent message={props.message as UpdateMessage} />
-      </Show>
-    </Tr>
-  );
-};
-
-const Messages: Component = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  return (
-    <>
-      <Filters searchParams={searchParams} setSearchParams={setSearchParams} />
-      <Table
-        width="100%"
-        striped="even"
-        dense
-        css={{ "table-layout": "fixed" }}
-      >
-        <Thead>
-          <Th width={COLUMN_WIDTHS.instanceId}>
-            <TooltipEllipsis>instance id</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.type}>
-            <TooltipEllipsis>type</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.descr}>
-            <TooltipEllipsis>descr</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.serial} numeric>
-            <TooltipEllipsis>serial</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.maxSerial} numeric>
-            <TooltipEllipsis>max serial</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.info}>
-            <TooltipEllipsis>info</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.document}>
-            <TooltipEllipsis>document</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.summary}>
-            <TooltipEllipsis>summary</TooltipEllipsis>
-          </Th>
-          <Th width={COLUMN_WIDTHS.payload}>
-            <TooltipEllipsis>payload</TooltipEllipsis>
-          </Th>
-        </Thead>
-        <Tbody>
-          <For each={getMessages(searchParams.instanceId, searchParams.type)}>
-            {(message) => <MessageComponent message={message} />}
-          </For>
-        </Tbody>
-      </Table>
-    </>
-  );
-};
+function scrollToLastMessage() {
+  document.querySelector("#messages > tbody > tr:last-child")?.scrollIntoView();
+}
 
 export default Messages;

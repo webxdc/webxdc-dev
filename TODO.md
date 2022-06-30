@@ -1,14 +1,12 @@
 ## UI
 
-- Remove instances
-
 - Somehow simulate chat messages (description, summary, info).
 
 - Perhaps default message filter should see connect & sent at the same time?
 
-## Mobile UI
-
 - Summary should go below the device.
+
+- Instances filter should use colors
 
 - Chat messages sidebar for "info" messages, with same filters in separate tab.
 

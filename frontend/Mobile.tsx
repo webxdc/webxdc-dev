@@ -42,6 +42,7 @@ import { sent, received } from "./store";
 
 const MessageComponent: Component<{
   message: Message;
+  isSelected: boolean;
   onSelect: (message: Message) => void;
 }> = (props) => {
   return (
@@ -49,6 +50,7 @@ const MessageComponent: Component<{
       onClick={() => {
         props.onSelect(props.message);
       }}
+      bgColor={props.isSelected ? "$primary4" : undefined}
     >
       <Td>
         <Ellipsis>
@@ -180,6 +182,7 @@ const Messages: Component<{
   setSearch: Setter<Search>;
 }> = (props) => {
   const [message, setMessage] = createSignal<Message | null>(null);
+  const [messageIndex, setMessageIndex] = createSignal<number | null>(null);
 
   createEffect(() => {
     // whenever we get a new message, we should scroll to the last message
@@ -189,16 +192,11 @@ const Messages: Component<{
   });
 
   return (
-    <Flex height="100wh" flexDirection="column" justifyContent="space-between">
+    <Flex height="100%" flexDirection="column" justifyContent="space-between">
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
-        <Box width="55vw" maxHeight="40vh" overflow="scroll">
-          <Table
-            id="messages"
-            highlightOnHover
-            dense
-            css={{ "table-layout": "fixed" }}
-          >
+        <Box width="55vw" maxHeight="39vh" overflow="scroll">
+          <Table id="messages" dense css={{ "table-layout": "fixed" }}>
             <Thead>
               <Th width="10%" minWidth="7em">
                 Id
@@ -214,8 +212,15 @@ const Messages: Component<{
                   props.search().type
                 )}
               >
-                {(message) => (
-                  <MessageComponent message={message} onSelect={setMessage} />
+                {(message, index) => (
+                  <MessageComponent
+                    isSelected={messageIndex() === index()}
+                    message={message}
+                    onSelect={(message) => {
+                      setMessageIndex(index());
+                      setMessage(message);
+                    }}
+                  />
                 )}
               </For>
             </Tbody>
@@ -413,7 +418,7 @@ const Mobile: Component = () => {
             }}
           />
         </Flex>
-        <Box>
+        <Box height="100wh">
           <Show
             when={isOpen()}
             fallback={

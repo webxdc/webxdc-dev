@@ -33,60 +33,15 @@ import {
 } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import TdTooltip from "./TdTooltip";
-import TextDynamic from "./TextDynamic";
 import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
-import { Message, UpdateMessage } from "../types/message";
+import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./instanceIdEntries";
-import { sent, received } from "./store";
-
-const MessageComponent: Component<{
-  message: Message;
-  isSelected: boolean;
-  onSelect: (message: Message) => void;
-}> = (props) => {
-  return (
-    <Tr
-      onClick={() => {
-        props.onSelect(props.message);
-      }}
-      bgColor={props.isSelected ? "$primary4" : undefined}
-    >
-      <Td>
-        <TextDynamic>
-          <Tooltip label="Click to scroll to device">
-            <Text
-              color={props.message.instanceColor}
-              onClick={() => scrollToDevice(props.message.instanceId)}
-            >
-              {props.message.instanceId}
-            </Text>
-          </Tooltip>
-        </TextDynamic>
-      </Td>
-      <TdTooltip>{props.message.type}</TdTooltip>
-      <Show when={isUpdateMessage(props.message) && props.message}>
-        {(message) => (
-          <>
-            <TdTooltip>{message.descr}</TdTooltip>
-            <TdTooltip
-              tooltip={
-                <pre>
-                  <code>{JSON.stringify(message.update.payload, null, 2)}</code>
-                </pre>
-              }
-            >
-              {JSON.stringify(message.update.payload)}
-            </TdTooltip>
-          </>
-        )}
-      </Show>
-    </Tr>
-  );
-};
+import { sent, received, isUpdateMessage } from "./store";
+import MessageRow from "./Message";
+import { scrollToLastMessage, scrollToDevice } from "./scroll";
 
 const MessageDetails: Component<{ message: Message }> = (props) => {
   return (
@@ -218,7 +173,7 @@ const Messages: Component<{
                 )}
               >
                 {(message, index) => (
-                  <MessageComponent
+                  <MessageRow
                     isSelected={messageIndex() === index()}
                     message={message}
                     onSelect={(message) => {
@@ -476,18 +431,6 @@ const Main: Component = () => {
       </Flex>
     </>
   );
-};
-
-function isUpdateMessage(message: Message): message is UpdateMessage {
-  return message.type === "sent" || message.type === "received";
-}
-
-const scrollToDevice = (instanceId: string) => {
-  document.getElementById("device-" + instanceId)?.scrollIntoView();
-};
-
-const scrollToLastMessage = () => {
-  document.querySelector("#messages > tbody > tr:last-child")?.scrollIntoView();
 };
 
 export default Main;

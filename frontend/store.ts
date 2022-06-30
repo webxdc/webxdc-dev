@@ -1,6 +1,6 @@
 import { createStore, produce } from "solid-js/store";
 import { createResource } from "solid-js";
-import type { Message } from "../types/message";
+import type { Message, UpdateMessage } from "../types/message";
 
 export type AppInfo = {
   name: string;
@@ -76,4 +76,8 @@ export function getMessages(
       (instanceId == null || message.instanceId === instanceId) &&
       (type == null || message.type === type)
   );
+}
+
+export function isUpdateMessage(message: Message): message is UpdateMessage {
+  return message.type === "sent" || message.type === "received";
 }

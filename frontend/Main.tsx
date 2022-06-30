@@ -14,8 +14,6 @@ import {
   Box,
   Table,
   Th,
-  Tr,
-  Td,
   Thead,
   Tbody,
   Text,
@@ -33,64 +31,18 @@ import {
 } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { Message } from "../types/message";
 import MessageDetails from "./MessageDetails";
-import { instanceIdEntries } from "./instanceIdEntries";
 import { sent, received } from "./store";
 import MessageRow from "./MessageRow";
 import { scrollToLastMessage, scrollToDevice } from "./scroll";
+import Filters from "./Filters";
 
 type Search = {
   instanceId?: string;
   type?: string;
-};
-
-const Filters: Component<{
-  value: Search;
-  onChange: (search: Search) => void;
-}> = (props) => {
-  return (
-    <Flex justifyContent="flex-start" gap="$5">
-      <Filter
-        label="instanceId"
-        entries={instanceIdEntries()}
-        value={props.value.instanceId || "*"}
-        onChange={(value) => {
-          if (value === "*") {
-            props.onChange({
-              ...props.value,
-              instanceId: undefined,
-            });
-          } else {
-            props.onChange({
-              ...props.value,
-              instanceId: value,
-            });
-          }
-        }}
-      />
-      <Filter
-        label="type"
-        entries={[
-          { value: "*", text: "All types" },
-          { value: "sent", text: "Sent" },
-          { value: "received", text: "Received" },
-          { value: "clear", text: "Clear" },
-        ]}
-        value={props.value.type || "*"}
-        onChange={(value) => {
-          if (value === "*") {
-            props.onChange({ ...props.value, type: undefined });
-          } else {
-            props.onChange({ ...props.value, type: value });
-          }
-        }}
-      />
-    </Flex>
-  );
 };
 
 const Messages: Component<{

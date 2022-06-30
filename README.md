@@ -28,24 +28,27 @@ can also install `webxdc-dev` in just your development project as a
 ## Usage
 
 When you start `webxdc-dev`, it opens a browser window with the webxdc-dev UI.
-Two webxdc application instances are already running. You can click on
-instances to open them in new tab. You can also add new instances.
+Two webxdc application instances are already running. You can start the
+instance in the embedded UI with the start button in each instance header. You
+can reload any instance with the reload button.
 
-The "messages" tab lets you see all updates sent and received from the dev
-server. Hover over the fields to see the complete text.
+You can add new instances by pressing the "Add instance" button. You can reset
+all instance state and messages by pressing the "Reset" button.
 
-You can see filtered messages by clicking in the "messages", "sent" and
-"received" columns. You can use your browser back button to go back.
+The sidebar to the right lets you see all updates sent and received from the
+dev server. Hover over the fields to see the complete text. Click on a message
+to see full information. You can also filter messages.
+
+Each instance header also contains additional information: the port number on
+which the instance was opened, the amount of updates this instance sent and
+received since last reset. You can click on this information to control
+the filters in the messages sidebar.
 
 The "info" tab lets you see basic information about the webxdc application you
 are running.
 
-The "mobile" tab shows webxdc instances in iframes instead. On the right side
-you can see the messages sent. Click on a message to see more information. You
-can also filter messages, and see messages specific to a device by clicking on
-the sent & received counts as well as the port number.
-
-The dev tool console shows messages with the same color prefix as well.
+The dev tool console shows messages with the same color prefix as the instance
+UIs.
 
 ### Clean state
 
@@ -53,8 +56,8 @@ Instances start with a clean slate: empty `localStorage` and `sessionStorage`.
 This means an instance may flash briefly with old state when it is opened for
 the first time after startup.
 
-The UI also lets you clear the state - this refreshes both server and client
-state, and is as if you restarted `webxdc-dev`.
+The UI also lets you clear the state with the `reset` button - this refreshes
+both server and client state, and is as if you restarted `webxdc-dev`.
 
 ### Running a directory
 

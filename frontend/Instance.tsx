@@ -1,35 +1,18 @@
-import {
-  Component,
-  For,
-  createSignal,
-  Show,
-  createMemo,
-  Setter,
-  JSX,
-} from "solid-js";
+import { Component, Show, createMemo, JSX } from "solid-js";
 import {
   Flex,
-  Box,
   Text,
   Badge,
   Tooltip,
   IconButton,
   createDisclosure,
 } from "@hope-ui/solid";
-import {
-  IoRefreshOutline,
-  IoStop,
-  IoPlay,
-  IoCaretBackOutline,
-  IoCaretForwardOutline,
-} from "solid-icons/io";
+import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import { instances, InstanceData } from "./store";
-import InstancesButtons from "./InstancesButtons";
+import { InstanceData } from "./store";
 import { sent, received } from "./store";
-import { scrollToDevice } from "./scroll";
-import Messages, { Search } from "./Messages";
+import { Search } from "./Messages";
 import FrameStopped from "./FrameStopped";
 
 const InstanceButton: Component<{

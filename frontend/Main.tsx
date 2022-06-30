@@ -40,7 +40,7 @@ import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./instanceIdEntries";
 import { sent, received, isUpdateMessage } from "./store";
-import MessageRow from "./Message";
+import MessageRow from "./MessageRow";
 import { scrollToLastMessage, scrollToDevice } from "./scroll";
 
 const MessageDetails: Component<{ message: Message }> = (props) => {

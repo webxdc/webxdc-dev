@@ -1,47 +1,9 @@
-import {
-  Component,
-  For,
-  createSignal,
-  Show,
-  createMemo,
-  Accessor,
-  Setter,
-  createEffect,
-  JSX,
-} from "solid-js";
-import {
-  Flex,
-  Box,
-  Table,
-  Th,
-  Tr,
-  Td,
-  Thead,
-  Tbody,
-  Text,
-  Badge,
-  Tooltip,
-  IconButton,
-  createDisclosure,
-} from "@hope-ui/solid";
-import {
-  IoRefreshOutline,
-  IoStop,
-  IoPlay,
-  IoCaretBackOutline,
-  IoCaretForwardOutline,
-} from "solid-icons/io";
-import { FiExternalLink } from "solid-icons/fi";
+import { Component, Show } from "solid-js";
+import { Tr, Td, Text, Tooltip } from "@hope-ui/solid";
 
 import TdTooltip from "./TdTooltip";
 import TextDynamic from "./TextDynamic";
-import Filter from "./Filter";
-import { instances, InstanceData, getMessages } from "./store";
-import InstancesButtons from "./InstancesButtons";
-import { Message, UpdateMessage } from "../types/message";
-import RecordRow from "./RecordRow";
-import { instanceIdEntries } from "./instanceIdEntries";
-import { sent, received } from "./store";
+import { Message } from "../types/message";
 import { scrollToDevice } from "./scroll";
 import { isUpdateMessage } from "./store";
 

@@ -90,7 +90,7 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
     <Table dense>
       <Tbody>
         <RecordRow label="instance id">
-          <Text color={props.message.instanceColor}>
+          <Text as="span" color={props.message.instanceColor}>
             {props.message.instanceId}
           </Text>
         </RecordRow>

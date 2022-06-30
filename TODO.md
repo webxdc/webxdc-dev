@@ -1,17 +1,10 @@
 ## UI
 
-- Content security reporting
-
 - Remove instances
-
-- Option to open tabs automatically upon startup and when you add an instance.
-
-- Opening a tab multiple times results in multiple windows on the same
-  instance, which isn't ideal. Perhaps iframes would help control this better?
 
 - Somehow simulate chat messages (description, summary, info).
 
-- Perhaps see connect & sent at the same time?
+- Perhaps default message filter should see connect & sent at the same time?
 
 ## Mobile UI
 
@@ -36,14 +29,7 @@
 - When an instance opens it flashes with old state. Is it worthwhile to prevent
   the flash by temporaly blanking everything out upon initial load?
 
-- Inject name of webxdc app after page title, like "Instance 7001 - Arkanoid".
-  To this end instances need to get some information about themselves in a
-  special message upon connection.
-
-- Inject favicon for instances.
-
-- content security policy, disallow anything except local images,
-  and (shared, see below) websocket.
+- Inject favicon for instances. Or should the instances just have their own?
 
 - simulate slow message sending, out of order message sending (with correct
   serial). Does out of order really happen?
@@ -70,6 +56,11 @@
   broadcast to all clients at once. The drawbacks of this are that the client
   becomes dependent on more than just its own backend, and that we cannot
   easily distinguish between instances and make one of them broken in some way.
+
+## Other
+
+- Message on browser console: computations created outside a `createRoot` or
+  `render` will never be disposed. What am I doing wrong with solid?
 
 ## CLI / config
 

@@ -1,7 +1,7 @@
 import { Component, JSX } from "solid-js";
 import { Td, Tooltip, Text } from "@hope-ui/solid";
 
-export const Ellipsis: Component<{ children: JSX.Element }> = (props) => {
+export const TextDynamic: Component<{ children: JSX.Element }> = (props) => {
   return (
     <Text
       noOfLines={1}
@@ -17,27 +17,27 @@ export const Ellipsis: Component<{ children: JSX.Element }> = (props) => {
   );
 };
 
-const TooltipEllipsis: Component<{
+const TextDynamicTooltip: Component<{
   children: JSX.Element;
   tooltip?: JSX.Element;
 }> = (props) => {
   return (
     <Tooltip label={props.tooltip || props.children}>
-      <Ellipsis>{props.children}</Ellipsis>
+      <TextDynamic>{props.children}</TextDynamic>
     </Tooltip>
   );
 };
 
-export const TdEllipsis: Component<{
+export const TdTooltip: Component<{
   children: JSX.Element;
   numeric?: boolean;
   tooltip?: JSX.Element;
 }> = (props) => {
   return (
     <Td numeric={props.numeric}>
-      <TooltipEllipsis tooltip={props.tooltip}>
+      <TextDynamicTooltip tooltip={props.tooltip}>
         {props.children}
-      </TooltipEllipsis>
+      </TextDynamicTooltip>
     </Td>
   );
 };

@@ -33,7 +33,7 @@ import {
 } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import { TdEllipsis, Ellipsis } from "./Messages";
+import { TdTooltip, TextDynamic } from "./Messages";
 import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
@@ -55,7 +55,7 @@ const MessageComponent: Component<{
       bgColor={props.isSelected ? "$primary4" : undefined}
     >
       <Td>
-        <Ellipsis>
+        <TextDynamic>
           <Tooltip label="Click to scroll to device">
             <Text
               color={props.message.instanceColor}
@@ -64,14 +64,14 @@ const MessageComponent: Component<{
               {props.message.instanceId}
             </Text>
           </Tooltip>
-        </Ellipsis>
+        </TextDynamic>
       </Td>
-      <TdEllipsis>{props.message.type}</TdEllipsis>
+      <TdTooltip>{props.message.type}</TdTooltip>
       <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
-            <TdEllipsis>{message.descr}</TdEllipsis>
-            <TdEllipsis
+            <TdTooltip>{message.descr}</TdTooltip>
+            <TdTooltip
               tooltip={
                 <pre>
                   <code>{JSON.stringify(message.update.payload, null, 2)}</code>
@@ -79,7 +79,7 @@ const MessageComponent: Component<{
               }
             >
               {JSON.stringify(message.update.payload)}
-            </TdEllipsis>
+            </TdTooltip>
           </>
         )}
       </Show>

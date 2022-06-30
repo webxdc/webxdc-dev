@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.13.1][] - 2022-06-30
+
 ### Changed
 
 - The mobile tab devices now default to opening closed. This way the user can
@@ -290,3 +292,7 @@ release date when you use `npm version` (see `README.md`).
 [0.12.1]: https://github.com/webxdc/webxdc-dev/tree/v0.12.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.13.0...HEAD
 [0.13.0]: https://github.com/webxdc/webxdc-dev/tree/v0.13.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.13.1...HEAD
+[0.13.1]: https://github.com/webxdc/webxdc-dev/tree/v0.13.1

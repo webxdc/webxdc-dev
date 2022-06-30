@@ -33,12 +33,11 @@ export function createProgram(inject: Inject): Command {
       parsePort,
       7000
     )
-    .option("-o, --open", "Automatically open instance tabs", false)
     .description(
       "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
     )
     .action((location, options) => {
-      run(location, options.port, inject, options.open);
+      run(location, options.port, inject);
     });
   return program;
 }

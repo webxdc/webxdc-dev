@@ -23,6 +23,11 @@ release date when you use `npm version` (see `README.md`).
 
 - Refactored implementation of mobile tab and cleaned it up.
 
+## Removed
+
+- Remove `--open` automatic open option as it makes little sense with the
+  new UI.
+
 ## [0.13.1][] - 2022-06-30
 
 ### Added

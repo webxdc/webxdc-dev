@@ -1,11 +1,9 @@
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
-import open from "open";
 
 import { JsonValue, ReceivedUpdate } from "../types/webxdc";
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { Location } from "./location";
-import { waitOnUrl } from "./waitOn";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
@@ -47,11 +45,6 @@ class Instance {
     this.app.listen(this.port, () => {
       console.log(`Starting webxdc instance at port ${this.port}`);
     });
-  }
-
-  async open(): Promise<void> {
-    await waitOnUrl(this.url, OPEN_TIMEOUT);
-    await open(this.url);
   }
 }
 
@@ -149,13 +142,6 @@ export class Instances {
   start() {
     for (const instance of this.instances.values()) {
       instance.start();
-    }
-  }
-
-  async open() {
-    // open the URLs
-    for (const instance of this.instances.values()) {
-      await instance.open();
     }
   }
 

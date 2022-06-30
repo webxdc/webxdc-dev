@@ -20,8 +20,7 @@ export function createFrontend(
   appInfo: AppInfo,
   instances: Instances,
   injectFrontend: InjectExpress,
-  getIndexHtml: () => string,
-  autoOpen: boolean
+  getIndexHtml: () => string
 ): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -60,9 +59,6 @@ export function createFrontend(
   app.post("/instances", (req, res) => {
     const instance = instances.add();
     instance.start();
-    if (autoOpen) {
-      instance.open();
-    }
     res.json({
       status: "ok",
       id: instance.id,

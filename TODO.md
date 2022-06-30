@@ -13,8 +13,6 @@
 
 ## Mobile UI
 
-- Open in tab button per instance.
-
 - Chat messages sidebar, with filter.
 
 - Sizzy integration to open in a "as real as possible" mobile browser?

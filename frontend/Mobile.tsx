@@ -314,7 +314,9 @@ const Device: Component<{
     window.open(props.instance.url, "_blank");
   };
 
-  const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
+  const { isOpen, onOpen, onClose } = createDisclosure({
+    defaultIsOpen: false,
+  });
 
   return (
     <Flex flexDirection="column">

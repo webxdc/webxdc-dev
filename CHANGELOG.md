@@ -9,8 +9,8 @@ release date when you use `npm version` (see `README.md`).
 
 ### Added
 
-- Main tab is now the mobile tab. Instances and messages are integrated into
-  this.
+- Main tab is now completely renewed (based on what was the mobile tab).
+  Instances and messages are integrated into this.
 
 - Added Content Security Policy for instances - the same one as DeltaChat
   Desktop.

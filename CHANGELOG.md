@@ -7,7 +7,16 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- Added Content Security Policy for instances - the same one as DeltaChat
+  Desktop.
+
 ## [0.13.1][] - 2022-06-30
+
+### Added
+
+- There is now a connect message when you first connect or reload an instance.
 
 ### Changed
 
@@ -17,8 +26,6 @@ release date when you use `npm version` (see `README.md`).
 
 - Rename the 'clear' button to 'reset'. It also wipes out messages in the
   messages panel.
-
-- There is now a connect message when you first connect or reload an instance.
 
 ## [0.13.0][] - 2022-06-30
 
@@ -39,8 +46,6 @@ release date when you use `npm version` (see `README.md`).
 - Show currently selected message in sidebar
 
 - Allow for large contents of JSON in details panel
-
-- Added Content Security Policy - the same one as on DeltaChat Desktop.
 
 ## [0.12.1][] - 2022-06-29
 

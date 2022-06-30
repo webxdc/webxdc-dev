@@ -2,7 +2,7 @@
 
 webxdc-dev is a development server for [webxdc apps](https://webxdc.org). It
 allows you to open multiple independent instances of a webxdc application in
-different browser tabs or indows. It simulates how your app will run when
+different browser tabs or windows. It simulates how your app will run when
 "shared in a chat" and allows you to test and debug webxdc with very fast
 turn-around times. Each webxdc browser app instance is connected to a different
 port number of the webxdc-dev server so that it gets its own isolated state

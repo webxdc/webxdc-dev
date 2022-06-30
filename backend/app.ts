@@ -8,6 +8,11 @@ import { AppInfo } from "./appInfo";
 import { Instances } from "./instance";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
+const CONTENT_SECURITY_POLICY = `default-src 'self';\
+style-src 'self' 'unsafe-inline' blob: ;\
+font-src 'self' data: blob: ;\
+script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: ;\
+img-src 'self' data: blob: ;`;
 
 export type InjectExpress = (app: Express) => void;
 
@@ -94,6 +99,11 @@ export function createPeer(
   // layer the simulated directory with webxdc tooling in front of webxdc path
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
+
+  wsInstance.app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+    next();
+  });
 
   if (location.type === "url") {
     // serve webxdc project from URL by proxying

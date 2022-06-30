@@ -1,5 +1,4 @@
 import type { Component } from "solid-js";
-
 import { Button, notificationService, Flex, Tooltip } from "@hope-ui/solid";
 
 import { clearMessages, refetchInstances } from "./store";

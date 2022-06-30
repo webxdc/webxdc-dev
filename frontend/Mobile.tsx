@@ -7,6 +7,7 @@ import {
   Accessor,
   Setter,
   createEffect,
+  JSX,
 } from "solid-js";
 import {
   Flex,
@@ -267,6 +268,25 @@ const StoppedFrame: Component<{
   );
 };
 
+const DeviceButton: Component<{
+  label: string;
+  onClick: () => void;
+  icon: JSX.Element;
+}> = (props) => {
+  return (
+    <Tooltip label={props.label}>
+      <IconButton
+        size="sm"
+        compact
+        onClick={props.onClick}
+        aria-label={props.label}
+        backgroundColor="lightgrey"
+        icon={props.icon}
+      />
+    </Tooltip>
+  );
+};
+
 const Device: Component<{
   instance: InstanceData;
   setSearch: (search: Search) => void;
@@ -334,39 +354,24 @@ const Device: Component<{
           <Show
             when={isOpen()}
             fallback={
-              <Tooltip label="Start">
-                <IconButton
-                  size="sm"
-                  compact
-                  onClick={onOpen}
-                  aria-label="Start"
-                  backgroundColor="lightgrey"
-                  icon={<IoPlay size={22} color="#000000" />}
-                />
-              </Tooltip>
+              <DeviceButton
+                label="Start"
+                onClick={onOpen}
+                icon={<IoPlay size={22} color="#000000" />}
+              />
             }
           >
-            <Tooltip label="Stop">
-              <IconButton
-                size="sm"
-                compact
-                onClick={onClose}
-                aria-label="Stop"
-                backgroundColor="lightgrey"
-                icon={<IoStop size={22} color="#000000" />}
-              />
-            </Tooltip>
-          </Show>
-          <Tooltip label="Reload">
-            <IconButton
-              size="sm"
-              compact
-              onClick={handleReload}
-              aria-label="Reload"
-              backgroundColor="lightgrey"
-              icon={<IoRefreshOutline size={22} color="#000000" />}
+            <DeviceButton
+              label="Stop"
+              onClick={onClose}
+              icon={<IoStop size={22} color="#000000" />}
             />
-          </Tooltip>
+          </Show>
+          <DeviceButton
+            label="Reload"
+            onClick={handleReload}
+            icon={<IoRefreshOutline size={22} color="#000000" />}
+          />
         </Flex>
       </Flex>
       <Show

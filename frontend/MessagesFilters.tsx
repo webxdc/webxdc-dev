@@ -10,15 +10,15 @@ type SetParamsType = ReturnType<typeof useSearchParams>[1];
 
 export const instanceIdEntries = createMemo(() => {
   const resolvedInstances = instances();
-  const all_entry = {
+  const allEntry = {
     value: "*",
     text: "All instance ids",
   };
   if (resolvedInstances == null) {
-    return [all_entry];
+    return [allEntry];
   }
   return [
-    all_entry,
+    allEntry,
     ...resolvedInstances.map((instance) => ({
       value: instance.id,
       text: instance.id,

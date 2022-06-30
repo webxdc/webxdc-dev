@@ -378,6 +378,11 @@ const Mobile: Component = () => {
     type: "sent",
   });
 
+  const setSearchAndOpen: Setter<Search> = (value) => {
+    onOpen();
+    return setSearch(value);
+  };
+
   const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
@@ -388,7 +393,7 @@ const Mobile: Component = () => {
             <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
               <For each={instances()}>
                 {(instance: InstanceData) => (
-                  <Device instance={instance} setSearch={setSearch} />
+                  <Device instance={instance} setSearch={setSearchAndOpen} />
                 )}
               </For>
             </Flex>
@@ -431,7 +436,7 @@ const Mobile: Component = () => {
                 icon={<IoCaretForwardOutline size={22} color="#000000" />}
               />
             </Tooltip>
-            <Messages search={search} setSearch={setSearch} />
+            <Messages search={search} setSearch={setSearchAndOpen} />
           </Show>
         </Box>
       </Flex>

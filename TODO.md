@@ -15,7 +15,9 @@
 
 ## Mobile UI
 
-- Chat messages sidebar, with filter.
+- Summary should go below the device.
+
+- Chat messages sidebar for "info" messages, with same filters in separate tab.
 
 - Sizzy integration to open in a "as real as possible" mobile browser?
   https://sizzy.co/ But for pay software.

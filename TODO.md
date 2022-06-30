@@ -12,6 +12,8 @@
   won't stop people from copying the URL), and that you can't open an external
   tab if you've started the embedded UI, to prevent confusion.
 
+- Let the user remove instances.
+
 - BUG: adding an instance turns off all existing instances. This is because
   instances is reloaded from the server completely, and open/closed state isn't
   retained. We could change this having `/instances POST` return the new

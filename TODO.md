@@ -13,11 +13,7 @@
 
 ## Mobile UI
 
-- Open in tab button per instance.
-
-- Scroll to bottom of messages when new message arrives.
-
-- Scroll to instance when adding an instance.
+- Chat messages sidebar, with filter.
 
 - Sizzy integration to open in a "as real as possible" mobile browser?
   https://sizzy.co/ But for pay software.

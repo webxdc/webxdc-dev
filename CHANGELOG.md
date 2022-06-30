@@ -7,6 +7,24 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- The ability to turn on and off a device in mobile
+
+- The ability to open a device in an external tab in mobile
+
+- Icon buttons
+
+- Sidebar with messages is collapsible
+
+- Scroll to new device when added
+
+- Scroll to last new message when a message appears
+
+- Show currently selected message in sidebar
+
+- Allow for large contents of JSON in details panel
+
 ## [0.12.1][] - 2022-06-29
 
 ### Added
@@ -255,7 +273,5 @@ release date when you use `npm version` (see `README.md`).
 [0.11.0]: https://github.com/webxdc/webxdc-dev/tree/v0.11.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.0...HEAD
 [0.12.0]: https://github.com/webxdc/webxdc-dev/tree/v0.12.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.1...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.12.1...HEAD
 [0.12.1]: https://github.com/webxdc/webxdc-dev/tree/v0.12.1

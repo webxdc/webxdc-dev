@@ -6,10 +6,11 @@ import {
   createMemo,
   Accessor,
   Setter,
+  createEffect,
+  JSX,
 } from "solid-js";
 import {
   Flex,
-  Button,
   Box,
   Table,
   Th,
@@ -20,7 +21,17 @@ import {
   Text,
   Badge,
   Tooltip,
+  IconButton,
+  createDisclosure,
 } from "@hope-ui/solid";
+import {
+  IoRefreshOutline,
+  IoStop,
+  IoPlay,
+  IoCaretBackOutline,
+  IoCaretForwardOutline,
+} from "solid-icons/io";
+import { FiExternalLink } from "solid-icons/fi";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
 import Filter from "./Filter";
@@ -31,12 +42,9 @@ import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./MessagesFilters";
 import { sent, received } from "./store";
 
-const scrollToDevice = (instanceId: string) => {
-  document.getElementById("device-" + instanceId)?.scrollIntoView();
-};
-
 const MessageComponent: Component<{
   message: Message;
+  isSelected: boolean;
   onSelect: (message: Message) => void;
 }> = (props) => {
   return (
@@ -44,6 +52,7 @@ const MessageComponent: Component<{
       onClick={() => {
         props.onSelect(props.message);
       }}
+      bgColor={props.isSelected ? "$primary4" : undefined}
     >
       <Td>
         <Ellipsis>
@@ -83,7 +92,7 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
     <Table dense>
       <Tbody>
         <RecordRow label="instance id">
-          <Text color={props.message.instanceColor}>
+          <Text as="span" color={props.message.instanceColor}>
             {props.message.instanceId}
           </Text>
         </RecordRow>
@@ -105,11 +114,13 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
                 </RecordRow>
                 <RecordRow label="summary">{message.update.summary}</RecordRow>
                 <RecordRow label="payload">
-                  <pre>
-                    <code>
-                      {JSON.stringify(message.update.payload, null, 2)}
-                    </code>
-                  </pre>
+                  <Box maxHeight="9rem" overflow="auto">
+                    <pre>
+                      <code>
+                        {JSON.stringify(message.update.payload, null, 2)}
+                      </code>
+                    </pre>
+                  </Box>
                 </RecordRow>
               </>
             );
@@ -175,13 +186,21 @@ const Messages: Component<{
   setSearch: Setter<Search>;
 }> = (props) => {
   const [message, setMessage] = createSignal<Message | null>(null);
+  const [messageIndex, setMessageIndex] = createSignal<number | null>(null);
+
+  createEffect(() => {
+    // whenever we get a new message, we should scroll to the last message
+    getMessages(undefined, undefined).length;
+    // we scroll to the last message
+    scrollToLastMessage();
+  });
 
   return (
-    <Flex height="100wh" flexDirection="column" justifyContent="space-between">
+    <Flex height="100%" flexDirection="column" justifyContent="space-between">
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
-        <Box width="55vw" maxHeight="40vh" overflow="scroll">
-          <Table highlightOnHover dense css={{ "table-layout": "fixed" }}>
+        <Box width="55vw" maxHeight="36vh" overflow="scroll">
+          <Table id="messages" dense css={{ "table-layout": "fixed" }}>
             <Thead>
               <Th width="10%" minWidth="7em">
                 Id
@@ -197,8 +216,15 @@ const Messages: Component<{
                   props.search().type
                 )}
               >
-                {(message) => (
-                  <MessageComponent message={message} onSelect={setMessage} />
+                {(message, index) => (
+                  <MessageComponent
+                    isSelected={messageIndex() === index()}
+                    message={message}
+                    onSelect={(message) => {
+                      setMessageIndex(index());
+                      setMessage(message);
+                    }}
+                  />
                 )}
               </For>
             </Tbody>
@@ -211,6 +237,54 @@ const Messages: Component<{
         </Show>
       </Box>
     </Flex>
+  );
+};
+
+const StoppedFrame: Component<{
+  instance: InstanceData;
+  onStart: () => void;
+}> = (props) => {
+  return (
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      style={{
+        height: "667px",
+        width: "375px",
+        "border-color": props.instance.color,
+        "border-width": "7px",
+        "border-style": "solid",
+      }}
+    >
+      <Tooltip label="Start">
+        <IconButton
+          size="xl"
+          onClick={props.onStart}
+          aria-label="Start"
+          backgroundColor="lightgrey"
+          icon={<IoPlay size={30} color="#000000" />}
+        />
+      </Tooltip>
+    </Flex>
+  );
+};
+
+const DeviceButton: Component<{
+  label: string;
+  onClick: () => void;
+  icon: JSX.Element;
+}> = (props) => {
+  return (
+    <Tooltip label={props.label}>
+      <IconButton
+        size="sm"
+        compact
+        onClick={props.onClick}
+        aria-label={props.label}
+        backgroundColor="lightgrey"
+        icon={props.icon}
+      />
+    </Tooltip>
   );
 };
 
@@ -232,8 +306,15 @@ const Device: Component<{
     if (iframe_ref == null) {
       return;
     }
+
     iframe_ref.contentWindow?.postMessage("reload", props.instance.url);
   };
+
+  const handleOpenInTab = () => {
+    window.open(props.instance.url, "_blank");
+  };
+
+  const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
     <Flex flexDirection="column">
@@ -274,19 +355,51 @@ const Device: Component<{
             Received: {receivedCount}
           </Badge>
         </Tooltip>
-        <Button onClick={handleReload}>Reload</Button>
+        <Flex gap="$1">
+          <DeviceButton
+            label={`Open new browser tab for instance ${props.instance.id}`}
+            onClick={handleOpenInTab}
+            icon={<FiExternalLink size={22} color="#000000" />}
+          />
+          <Show
+            when={isOpen()}
+            fallback={
+              <DeviceButton
+                label="Start"
+                onClick={onOpen}
+                icon={<IoPlay size={22} color="#000000" />}
+              />
+            }
+          >
+            <DeviceButton
+              label="Stop"
+              onClick={onClose}
+              icon={<IoStop size={22} color="#000000" />}
+            />
+          </Show>
+          <DeviceButton
+            label="Reload"
+            onClick={handleReload}
+            icon={<IoRefreshOutline size={22} color="#000000" />}
+          />
+        </Flex>
       </Flex>
-      <iframe
-        ref={iframe_ref}
-        src={props.instance.url}
-        style={{
-          height: "667px",
-          width: "375px",
-          "border-color": props.instance.color,
-          "border-width": "7px",
-          "border-style": "solid",
-        }}
-      ></iframe>
+      <Show
+        when={isOpen()}
+        fallback={<StoppedFrame instance={props.instance} onStart={onOpen} />}
+      >
+        <iframe
+          ref={iframe_ref}
+          src={props.instance.url}
+          style={{
+            height: "667px",
+            width: "375px",
+            "border-color": props.instance.color,
+            "border-width": "7px",
+            "border-style": "solid",
+          }}
+        ></iframe>
+      </Show>
     </Flex>
   );
 };
@@ -296,6 +409,13 @@ const Mobile: Component = () => {
     type: "sent",
   });
 
+  const setSearchAndOpen: Setter<Search> = (value) => {
+    onOpen();
+    return setSearch(value);
+  };
+
+  const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
+
   return (
     <>
       <Flex justifyContent="space-between">
@@ -304,17 +424,63 @@ const Mobile: Component = () => {
             <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
               <For each={instances()}>
                 {(instance: InstanceData) => (
-                  <Device instance={instance} setSearch={setSearch} />
+                  <Device instance={instance} setSearch={setSearchAndOpen} />
                 )}
               </For>
             </Flex>
           </Box>
-          <InstancesButtons />
+          <InstancesButtons
+            onAfterAdd={(instanceId) => {
+              scrollToDevice(instanceId);
+            }}
+          />
         </Flex>
-        <Messages search={search} setSearch={setSearch} />
+        <Box height="100wh">
+          <Show
+            when={isOpen()}
+            fallback={
+              <Tooltip label="Open messages">
+                <IconButton
+                  variant="ghost"
+                  size="sm"
+                  position="relative"
+                  top="2rem"
+                  right="-2rem"
+                  onClick={onOpen}
+                  aria-label="Open messages"
+                  backgroundColor="white"
+                  icon={<IoCaretBackOutline size={22} color="#000000" />}
+                />
+              </Tooltip>
+            }
+          >
+            <Tooltip label="Close messages">
+              <IconButton
+                variant="ghost"
+                size="sm"
+                position="relative"
+                top="2rem"
+                right="2rem"
+                onClick={onClose}
+                aria-label="Close messages"
+                backgroundColor="white"
+                icon={<IoCaretForwardOutline size={22} color="#000000" />}
+              />
+            </Tooltip>
+            <Messages search={search} setSearch={setSearchAndOpen} />
+          </Show>
+        </Box>
       </Flex>
     </>
   );
+};
+
+const scrollToDevice = (instanceId: string) => {
+  document.getElementById("device-" + instanceId)?.scrollIntoView();
+};
+
+const scrollToLastMessage = () => {
+  document.querySelector("#messages > tbody > tr:last-child")?.scrollIntoView();
 };
 
 export default Mobile;

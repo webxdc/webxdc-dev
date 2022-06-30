@@ -57,6 +57,7 @@ export function createFrontend(
     }
     res.json({
       status: "ok",
+      id: instance.id,
       port: instance.port,
     });
   });

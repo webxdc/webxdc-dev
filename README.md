@@ -106,15 +106,6 @@ the base port number using `--port`, so for instance:
 webxdc-dev run --port 4000 /path/to/webxdc/project
 ```
 
-### Automatically opening tabs.
-
-By using the `--open` command line option you can cause `webxdc-dev` to
-automatically open tabs for each instance upon startup and when you add one.
-
-```shell
-webxdc-dev run --open /path/to/webxdc/project
-```
-
 ## `webxdc` as a `package.json` script
 
 If your project has a `package.json`, you can also install `webxdc-dev` locally

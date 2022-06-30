@@ -10,7 +10,7 @@ import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 
 import { instances, InstanceData } from "./store";
 import InstancesButtons from "./InstancesButtons";
-import { scrollToDevice } from "./scroll";
+import { scrollToInstance } from "./Instance";
 import Messages, { Search } from "./Messages";
 import Instance from "./Instance";
 
@@ -41,7 +41,7 @@ const Main: Component = () => {
           </Box>
           <InstancesButtons
             onAfterAdd={(instanceId) => {
-              scrollToDevice(instanceId);
+              scrollToInstance(instanceId);
             }}
           />
         </Flex>

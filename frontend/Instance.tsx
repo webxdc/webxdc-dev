@@ -15,25 +15,6 @@ import { sent, received } from "./store";
 import { Search } from "./Messages";
 import FrameStopped from "./FrameStopped";
 
-const InstanceButton: Component<{
-  label: string;
-  onClick: () => void;
-  icon: JSX.Element;
-}> = (props) => {
-  return (
-    <Tooltip label={props.label}>
-      <IconButton
-        size="sm"
-        compact
-        onClick={props.onClick}
-        aria-label={props.label}
-        backgroundColor="lightgrey"
-        icon={props.icon}
-      />
-    </Tooltip>
-  );
-};
-
 const Instance: Component<{
   instance: InstanceData;
   setSearch: (search: Search) => void;
@@ -150,6 +131,29 @@ const Instance: Component<{
       </Show>
     </Flex>
   );
+};
+
+const InstanceButton: Component<{
+  label: string;
+  onClick: () => void;
+  icon: JSX.Element;
+}> = (props) => {
+  return (
+    <Tooltip label={props.label}>
+      <IconButton
+        size="sm"
+        compact
+        onClick={props.onClick}
+        aria-label={props.label}
+        backgroundColor="lightgrey"
+        icon={props.icon}
+      />
+    </Tooltip>
+  );
+};
+
+export const scrollToInstance = (instanceId: string) => {
+  document.getElementById("instance-" + instanceId)?.scrollIntoView();
 };
 
 export default Instance;

@@ -4,7 +4,7 @@ import { Tr, Td, Text, Tooltip } from "@hope-ui/solid";
 import TdTooltip from "./TdTooltip";
 import TextDynamic from "./TextDynamic";
 import { Message } from "../types/message";
-import { scrollToDevice } from "./scroll";
+import { scrollToInstance } from "./Instance";
 import { isUpdateMessage } from "./store";
 
 const MessageRow: Component<{
@@ -24,7 +24,7 @@ const MessageRow: Component<{
           <Tooltip label="Click to scroll to device">
             <Text
               color={props.message.instanceColor}
-              onClick={() => scrollToDevice(props.message.instanceId)}
+              onClick={() => scrollToInstance(props.message.instanceId)}
             >
               {props.message.instanceId}
             </Text>

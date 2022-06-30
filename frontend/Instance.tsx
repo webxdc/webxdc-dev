@@ -14,7 +14,6 @@ const Instance: Component<{
   let iframeRef: HTMLIFrameElement | undefined = undefined;
 
   const handleReload = () => {
-    console.log(iframeRef);
     if (iframeRef == null) {
       return;
     }
@@ -30,6 +29,16 @@ const Instance: Component<{
     defaultIsOpen: false,
   });
 
+  const getStyle = () => {
+    return {
+      height: "667px",
+      width: "375px",
+      "border-color": props.instance.color,
+      "border-width": "7px",
+      "border-style": "solid",
+    };
+  };
+
   return (
     <Flex id={"instance-" + props.instance.id} flexDirection="column">
       <InstanceHeader
@@ -43,10 +52,18 @@ const Instance: Component<{
       <Show
         when={isOpen()}
         fallback={
-          <InstanceStopped instance={props.instance} onStart={onOpen} />
+          <InstanceStopped
+            instance={props.instance}
+            onStart={onOpen}
+            style={getStyle()}
+          />
         }
       >
-        <InstanceStarted instance={props.instance} ref={iframeRef} />
+        <InstanceStarted
+          instance={props.instance}
+          ref={iframeRef}
+          style={getStyle()}
+        />
       </Show>
     </Flex>
   );

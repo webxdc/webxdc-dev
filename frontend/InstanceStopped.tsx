@@ -1,4 +1,4 @@
-import { Component } from "solid-js";
+import { Component, JSX } from "solid-js";
 import { Flex, Tooltip, IconButton } from "@hope-ui/solid";
 import { IoPlay } from "solid-icons/io";
 
@@ -7,19 +7,10 @@ import { InstanceData } from "./store";
 const InstanceStopped: Component<{
   instance: InstanceData;
   onStart: () => void;
+  style: string | JSX.CSSProperties | undefined;
 }> = (props) => {
   return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      style={{
-        height: "667px",
-        width: "375px",
-        "border-color": props.instance.color,
-        "border-width": "7px",
-        "border-style": "solid",
-      }}
-    >
+    <Flex justifyContent="center" alignItems="center" style={props.style}>
       <Tooltip label="Start">
         <IconButton
           size="xl"

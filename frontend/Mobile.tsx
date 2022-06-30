@@ -23,7 +23,14 @@ import {
   IconButton,
   createDisclosure,
 } from "@hope-ui/solid";
-import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
+import {
+  IoRefreshOutline,
+  IoStop,
+  IoPlay,
+  IoCaretBackOutline,
+  IoCaretForwardOutline,
+  IoCar,
+} from "solid-icons/io";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
 import Filter from "./Filter";
@@ -357,6 +364,8 @@ const Mobile: Component = () => {
     type: "sent",
   });
 
+  const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
+
   return (
     <>
       <Flex justifyContent="space-between">
@@ -372,7 +381,41 @@ const Mobile: Component = () => {
           </Box>
           <InstancesButtons />
         </Flex>
-        <Messages search={search} setSearch={setSearch} />
+        <Box>
+          <Show
+            when={isOpen()}
+            fallback={
+              <Tooltip label="Open messages">
+                <IconButton
+                  variant="ghost"
+                  size="sm"
+                  position="relative"
+                  top="2rem"
+                  right="-2rem"
+                  onClick={onOpen}
+                  aria-label="Open messages"
+                  backgroundColor="white"
+                  icon={<IoCaretBackOutline size={22} color="#000000" />}
+                />
+              </Tooltip>
+            }
+          >
+            <Tooltip label="Close messages">
+              <IconButton
+                variant="ghost"
+                size="sm"
+                position="relative"
+                top="2rem"
+                right="2rem"
+                onClick={onClose}
+                aria-label="Close messages"
+                backgroundColor="white"
+                icon={<IoCaretForwardOutline size={22} color="#000000" />}
+              />
+            </Tooltip>
+            <Messages search={search} setSearch={setSearch} />
+          </Show>
+        </Box>
       </Flex>
     </>
   );

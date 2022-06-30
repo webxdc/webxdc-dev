@@ -15,6 +15,12 @@
 
 - Open in tab button per instance.
 
+- Turn off / turn on
+
+- Sidebar expands and retracts
+
+- Chat messages sidebar, with filter.
+
 - Scroll to bottom of messages when new message arrives.
 
 - Scroll to instance when adding an instance.

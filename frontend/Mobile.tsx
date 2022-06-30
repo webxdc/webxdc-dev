@@ -20,7 +20,10 @@ import {
   Text,
   Badge,
   Tooltip,
+  IconButton,
+  createDisclosure,
 } from "@hope-ui/solid";
+import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
 
 import { TdEllipsis, Ellipsis } from "./Messages";
 import Filter from "./Filter";
@@ -214,6 +217,35 @@ const Messages: Component<{
   );
 };
 
+const StoppedFrame: Component<{
+  instance: InstanceData;
+  onPlay: () => void;
+}> = (props) => {
+  return (
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      style={{
+        height: "667px",
+        width: "375px",
+        "border-color": props.instance.color,
+        "border-width": "7px",
+        "border-style": "solid",
+      }}
+    >
+      <Tooltip label="Play">
+        <IconButton
+          size="xl"
+          onClick={props.onPlay}
+          aria-label="Play"
+          backgroundColor="lightgrey"
+          icon={<IoPlay size={30} color="#000000" />}
+        />
+      </Tooltip>
+    </Flex>
+  );
+};
+
 const Device: Component<{
   instance: InstanceData;
   setSearch: (search: Search) => void;
@@ -232,8 +264,11 @@ const Device: Component<{
     if (iframe_ref == null) {
       return;
     }
+
     iframe_ref.contentWindow?.postMessage("reload", props.instance.url);
   };
+
+  const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
     <Flex flexDirection="column">
@@ -274,19 +309,45 @@ const Device: Component<{
             Received: {receivedCount}
           </Badge>
         </Tooltip>
-        <Button onClick={handleReload}>Reload</Button>
+        <Flex gap="$1">
+          <Tooltip label="Stop">
+            <IconButton
+              size="sm"
+              compact
+              onClick={onClose}
+              aria-label="Stop"
+              backgroundColor="lightgrey"
+              icon={<IoStop size={22} color="#000000" />}
+            />
+          </Tooltip>
+          <Tooltip label="Reload">
+            <IconButton
+              size="sm"
+              compact
+              onClick={handleReload}
+              aria-label="Reload"
+              backgroundColor="lightgrey"
+              icon={<IoRefreshOutline size={22} color="#000000" />}
+            />
+          </Tooltip>
+        </Flex>
       </Flex>
-      <iframe
-        ref={iframe_ref}
-        src={props.instance.url}
-        style={{
-          height: "667px",
-          width: "375px",
-          "border-color": props.instance.color,
-          "border-width": "7px",
-          "border-style": "solid",
-        }}
-      ></iframe>
+      <Show
+        when={isOpen()}
+        fallback={<StoppedFrame instance={props.instance} onPlay={onOpen} />}
+      >
+        <iframe
+          ref={iframe_ref}
+          src={props.instance.url}
+          style={{
+            height: "667px",
+            width: "375px",
+            "border-color": props.instance.color,
+            "border-width": "7px",
+            "border-style": "solid",
+          }}
+        ></iframe>
+      </Show>
     </Flex>
   );
 };

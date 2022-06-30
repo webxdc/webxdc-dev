@@ -85,6 +85,7 @@ const InstanceHeader: Component<{
         <InstanceButton
           label="Reload"
           onClick={props.onReload}
+          disabled={!props.isStarted()}
           icon={<IoRefreshOutline size={22} color="#000000" />}
         />
       </Flex>
@@ -96,6 +97,7 @@ const InstanceButton: Component<{
   label: string;
   onClick: () => void;
   icon: JSX.Element;
+  disabled?: boolean;
 }> = (props) => {
   return (
     <Tooltip label={props.label}>
@@ -106,6 +108,7 @@ const InstanceButton: Component<{
         aria-label={props.label}
         backgroundColor="lightgrey"
         icon={props.icon}
+        disabled={props.disabled}
       />
     </Tooltip>
   );

@@ -40,6 +40,10 @@ export function addMessage(message: Message): void {
   );
 }
 
+export function clearMessages(): void {
+  setState([]);
+}
+
 export function sent(instanceId: string): number {
   let result = 0;
   for (const message of state) {

@@ -11,6 +11,8 @@
 
 - Somehow simulate chat messages (description, summary, info).
 
+- When setUpdateListener is called, generate a reload event for the log?
+
 ## Mobile UI
 
 - Chat messages sidebar, with filter.

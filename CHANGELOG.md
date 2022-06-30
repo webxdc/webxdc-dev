@@ -11,7 +11,10 @@ release date when you use `npm version` (see `README.md`).
 
 - The mobile tab devices now default to opening closed. This way the user can
   determine when to first open them or open them externally. This makes the
-  behavior closer to what the instances tab does.
+  behavior closer to what the old instances tab does.
+
+- Rename the 'clear' button to 'reset'. It also wipes out messages in the
+  messages panel.
 
 ## [0.13.0][] - 2022-06-30
 

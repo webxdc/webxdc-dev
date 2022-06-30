@@ -1,13 +1,20 @@
 import { ReceivedUpdate, JsonValue } from "./webxdc";
 
-export type UpdateMessage = {
+export type InstanceMessage = {
   instanceId: string;
   instanceColor: string;
-  update: ReceivedUpdate<JsonValue>;
-  descr: string;
 };
 
+export type BaseUpdateMessage = {
+  update: ReceivedUpdate<JsonValue>;
+  descr: string;
+} & InstanceMessage;
+
+export type UpdateMessage =
+  | (BaseUpdateMessage & { type: "sent" })
+  | (BaseUpdateMessage & { type: "received" });
+
 export type Message =
-  | (UpdateMessage & { type: "sent" })
-  | (UpdateMessage & { type: "received" })
-  | { type: "clear"; instanceId: string; instanceColor: string };
+  | UpdateMessage
+  | ({ type: "clear" } & InstanceMessage)
+  | ({ type: "connect" } & InstanceMessage);

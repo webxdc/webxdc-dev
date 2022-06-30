@@ -11,7 +11,7 @@
 
 - Somehow simulate chat messages (description, summary, info).
 
-- When setUpdateListener is called, generate a reload event for the log?
+- Perhaps see connect & sent at the same time?
 
 ## Mobile UI
 
@@ -68,6 +68,8 @@
   easily distinguish between instances and make one of them broken in some way.
 
 ## CLI / config
+
+- Suppress the log messages in the terminal unless --verbose is chosen.
 
 - CLI start with a number of peers (default 2?)
 

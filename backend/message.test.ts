@@ -32,6 +32,7 @@ test("distribute to self", () => {
   ]);
 
   expect(getMessages()).toEqual([
+    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
     { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
     {
       type: "sent",
@@ -83,7 +84,9 @@ test("distribute to self and other", () => {
   ]);
 
   expect(getMessages()).toEqual([
+    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
     { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
+    { type: "connect", instanceId: "3002", instanceColor: "#29A634" },
     { type: "clear", instanceId: "3002", instanceColor: "#29A634" },
     {
       type: "sent",
@@ -194,6 +197,7 @@ test("other starts listening later", () => {
   ]);
 
   expect(getMessages()).toMatchObject([
+    { type: "connect", instanceId: "3001" },
     { type: "clear", instanceId: "3001" },
     {
       type: "sent",
@@ -219,6 +223,7 @@ test("other starts listening later", () => {
       instanceId: "3001",
       descr: "update 2",
     },
+    { type: "connect", instanceId: "3002" },
     { type: "clear", instanceId: "3002" },
     {
       type: "received",
@@ -563,6 +568,7 @@ test("connect with clear means catchup only with updates after clear", () => {
   ]);
 
   expect(getMessages()).toMatchObject([
+    { type: "connect", instanceId: "3001" },
     { type: "clear", instanceId: "3001" },
     {
       type: "sent",
@@ -601,6 +607,7 @@ test("connect with clear means catchup only with updates after clear", () => {
       instanceId: "3001",
       descr: "update 3",
     },
+    { type: "connect", instanceId: "3002" },
     { type: "clear", instanceId: "3002" },
     {
       type: "received",

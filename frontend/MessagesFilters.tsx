@@ -62,6 +62,7 @@ const Filters: Component<{
           { value: "*", text: "All types" },
           { value: "sent", text: "Sent" },
           { value: "received", text: "Received" },
+          { value: "connect", text: "Connect" },
           { value: "clear", text: "Clear" },
         ]}
         value={props.searchParams.type || "*"}

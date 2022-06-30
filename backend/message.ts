@@ -48,6 +48,11 @@ class Client implements WebXdcMulti {
     serial: number,
     clearListener: ClearListener = () => {}
   ): void {
+    this.processor.onMessage({
+      type: "connect",
+      instanceId: this.id,
+      instanceColor: getColorForId(this.id),
+    });
     this.setClearListener(() => {
       this.processor.onMessage({
         type: "clear",

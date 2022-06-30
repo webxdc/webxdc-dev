@@ -37,7 +37,7 @@ import { TdEllipsis, Ellipsis } from "./Messages";
 import Filter from "./Filter";
 import { instances, InstanceData, getMessages } from "./store";
 import InstancesButtons from "./InstancesButtons";
-import { Message } from "../types/message";
+import { Message, UpdateMessage } from "../types/message";
 import RecordRow from "./RecordRow";
 import { instanceIdEntries } from "./MessagesFilters";
 import { sent, received } from "./store";
@@ -67,7 +67,7 @@ const MessageComponent: Component<{
         </Ellipsis>
       </Td>
       <TdEllipsis>{props.message.type}</TdEllipsis>
-      <Show when={props.message.type !== "clear" && props.message}>
+      <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
             <TdEllipsis>{message.descr}</TdEllipsis>
@@ -97,7 +97,7 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
           </Text>
         </RecordRow>
         <RecordRow label="type">{props.message.type}</RecordRow>
-        <Show when={props.message.type !== "clear" && props.message}>
+        <Show when={isUpdateMessage(props.message) && props.message}>
           {(message) => {
             return (
               <>
@@ -476,6 +476,10 @@ const Mobile: Component = () => {
     </>
   );
 };
+
+function isUpdateMessage(message: Message): message is UpdateMessage {
+  return message.type === "sent" || message.type === "received";
+}
 
 const scrollToDevice = (instanceId: string) => {
   document.getElementById("device-" + instanceId)?.scrollIntoView();

@@ -16,6 +16,8 @@ release date when you use `npm version` (see `README.md`).
 - Rename the 'clear' button to 'reset'. It also wipes out messages in the
   messages panel.
 
+- There is now a connect message when you first connect or reload an instance.
+
 ## [0.13.0][] - 2022-06-30
 
 ### Added

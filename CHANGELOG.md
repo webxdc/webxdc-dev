@@ -21,7 +21,7 @@ release date when you use `npm version` (see `README.md`).
 
 ### Changed
 
-- Mobile tab is split into many pieces
+- Refactored implementation of mobile tab and cleaned it up.
 
 ## [0.13.1][] - 2022-06-30
 

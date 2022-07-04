@@ -3,7 +3,7 @@ import { Flex, Text, Badge, Tooltip, IconButton } from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
-import { InstanceData } from "./store";
+import type { Instance as InstanceData } from "../types/instance";
 import { sent, received } from "./store";
 import { Search } from "./Messages";
 

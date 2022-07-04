@@ -1,6 +1,6 @@
 import { Component, JSX } from "solid-js";
 
-import { InstanceData } from "./store";
+import type { Instance as InstanceData } from "../types/instance";
 
 const InstanceStarted: Component<{
   instance: InstanceData;

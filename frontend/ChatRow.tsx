@@ -1,5 +1,5 @@
 import { Component, Show } from "solid-js";
-import { Tr, Td, Text, Tooltip } from "@hope-ui/solid";
+import { Tr, Td, Text, Tooltip, Badge } from "@hope-ui/solid";
 
 import TdTooltip from "./TdTooltip";
 import TextDynamic from "./TextDynamic";
@@ -34,7 +34,9 @@ const ChatRow: Component<{
       <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
-            <TdTooltip>{message.update.info}</TdTooltip>
+            <TdTooltip>
+              <Badge variant="solid">{message.update.info}</Badge>
+            </TdTooltip>
           </>
         )}
       </Show>

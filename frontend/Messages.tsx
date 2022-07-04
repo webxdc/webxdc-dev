@@ -18,7 +18,7 @@ const Messages: Component<{
 
   createEffect(() => {
     // whenever we get a new message, we should scroll to the last message
-    getMessages(undefined, undefined).length;
+    getMessages({}).length;
     // we scroll to the last message
     scrollToLastMessage();
   });
@@ -36,7 +36,10 @@ const Messages: Component<{
         </Thead>
         <Tbody>
           <For
-            each={getMessages(props.search().instanceId, props.search().type)}
+            each={getMessages({
+              instanceId: props.search().instanceId,
+              type: props.search().type,
+            })}
           >
             {(message, index) => (
               <MessageRow

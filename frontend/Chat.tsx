@@ -18,7 +18,7 @@ const Chat: Component<{
 
   createEffect(() => {
     // whenever we get a new message, we should scroll to the last message
-    getMessages(undefined, undefined).length;
+    getMessages({}).length;
     // we scroll to the last message
     scrollToLastChat();
   });
@@ -33,7 +33,13 @@ const Chat: Component<{
           <Th>Info</Th>
         </Thead>
         <Tbody>
-          <For each={getMessages(props.search().instanceId, "sent")}>
+          <For
+            each={getMessages({
+              instanceId: props.search().instanceId,
+              type: "sent",
+              info: true,
+            })}
+          >
             {(message, index) => (
               <ChatRow
                 isSelected={chatIndex() === index()}

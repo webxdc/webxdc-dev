@@ -6,6 +6,7 @@ import MessageDetails from "./MessageDetails";
 
 import Filters from "./Filters";
 import Messages from "./Messages";
+import Chat from "./Chat";
 
 export type Search = {
   instanceId?: string;
@@ -31,9 +32,7 @@ const Sidebar: Component<{
             <Messages search={props.search} onSelectMessage={setMessage} />
           </TabPanel>
           <TabPanel>
-            <Box width="53vw" maxHeight="36vh" overflow="scroll">
-              Chat!
-            </Box>
+            <Chat search={props.search} onSelectMessage={setMessage} />
           </TabPanel>
         </Tabs>
       </Box>

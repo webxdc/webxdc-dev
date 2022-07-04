@@ -1,10 +1,9 @@
 import { Component, Show } from "solid-js";
-import { Tr, Td, Text, Tooltip, Badge } from "@hope-ui/solid";
+import { Badge } from "@hope-ui/solid";
 
+import type { Message } from "../types/message";
 import TdTooltip from "./TdTooltip";
-import TextDynamic from "./TextDynamic";
-import { Message } from "../types/message";
-import { scrollToInstance } from "./Instance";
+import SidebarRow from "./SidebarRow";
 import { isUpdateMessage } from "./store";
 
 const ChatRow: Component<{
@@ -13,24 +12,11 @@ const ChatRow: Component<{
   onSelect: (message: Message) => void;
 }> = (props) => {
   return (
-    <Tr
-      onClick={() => {
-        props.onSelect(props.message);
-      }}
-      bgColor={props.isSelected ? "$primary4" : undefined}
+    <SidebarRow
+      message={props.message}
+      isSelected={props.isSelected}
+      onSelect={props.onSelect}
     >
-      <Td>
-        <TextDynamic>
-          <Tooltip label="Click to scroll to device">
-            <Text
-              color={props.message.instanceColor}
-              onClick={() => scrollToInstance(props.message.instanceId)}
-            >
-              {props.message.instanceId}
-            </Text>
-          </Tooltip>
-        </TextDynamic>
-      </Td>
       <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
@@ -40,7 +26,7 @@ const ChatRow: Component<{
           </>
         )}
       </Show>
-    </Tr>
+    </SidebarRow>
   );
 };
 

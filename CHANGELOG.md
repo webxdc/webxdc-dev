@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.15.1][] - 2022-07-04
+
 ### Fixed
 
 - Previously when a instance was connected and then disconnected, received and
@@ -369,3 +371,7 @@ release date when you use `npm version` (see `README.md`).
 [0.14.2]: https://github.com/webxdc/webxdc-dev/tree/v0.14.2
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.0...HEAD
 [0.15.0]: https://github.com/webxdc/webxdc-dev/tree/v0.15.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.1...HEAD
+[0.15.1]: https://github.com/webxdc/webxdc-dev/tree/v0.15.1

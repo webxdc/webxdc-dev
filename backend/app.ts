@@ -6,6 +6,8 @@ import bodyParser from "body-parser";
 import { Location } from "./location";
 import { AppInfo } from "./appInfo";
 import { Instances } from "./instance";
+import type { Info } from "../types/info";
+import type { Instance } from "../types/instance";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
 const CONTENT_SECURITY_POLICY = `default-src 'self';\
@@ -31,7 +33,7 @@ export function createFrontend(
 
   app.use(bodyParser.json());
 
-  app.get("/app-info", (req, res) => {
+  app.get<{}, Info>("/app-info", (req, res) => {
     res.json({
       name: appInfo.manifest.name,
       iconUrl: appInfo.icon ? "/icon" : null,
@@ -40,32 +42,34 @@ export function createFrontend(
       toolVersion: appInfo.toolVersion,
     });
   });
-  app.get("/icon", (req, res) => {
+  app.get<{}>("/icon", (req, res) => {
     if (appInfo.icon == null) {
       res.sendStatus(404);
       return;
     }
     res.send(appInfo.icon.buffer);
   });
-  app.get("/instances", (req, res) => {
+  app.get<{}, Instance[]>("/instances", (req, res) => {
     res.json(
       Array.from(instances.instances.values()).map((instance) => ({
-        id: instance.port.toString(),
-        url: `http://localhost:${instance.port}`,
+        id: instance.id,
+        port: instance.port,
+        url: instance.url,
         color: instance.color,
       }))
     );
   });
-  app.post("/instances", (req, res) => {
+  app.post<{}, Instance>("/instances", (req, res) => {
     const instance = instances.add();
     instance.start();
     res.json({
-      status: "ok",
       id: instance.id,
       port: instance.port,
+      url: instance.url,
+      color: instance.color,
     });
   });
-  app.post("/clear", (req, res) => {
+  app.post<{}, {}>("/clear", (req, res) => {
     instances.clear();
     res.json({
       status: "ok",

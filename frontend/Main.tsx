@@ -8,11 +8,12 @@ import {
 } from "@hope-ui/solid";
 import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 
-import { instances, InstanceData } from "./store";
+import { instances } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { scrollToInstance } from "./Instance";
 import Messages, { Search } from "./Messages";
 import Instance from "./Instance";
+import type { Instance as InstanceData } from "../types/instance";
 
 const Main: Component = () => {
   const [search, setSearch] = createSignal<Search>({

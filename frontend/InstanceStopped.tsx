@@ -2,10 +2,7 @@ import { Component, JSX } from "solid-js";
 import { Flex, Tooltip, IconButton } from "@hope-ui/solid";
 import { IoPlay } from "solid-icons/io";
 
-import { InstanceData } from "./store";
-
 const InstanceStopped: Component<{
-  instance: InstanceData;
   onStart: () => void;
   style: string | JSX.CSSProperties | undefined;
 }> = (props) => {

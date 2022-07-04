@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import { Button, notificationService, Flex, Tooltip } from "@hope-ui/solid";
 
+import type { Instance } from "../types/instance";
 import { clearMessages, refetchInstances } from "./store";
 
 const CLEAR_INFO = `\
@@ -11,15 +12,15 @@ const InstancesButtons: Component<{
   onAfterAdd?: (instanceId: string) => void;
 }> = (props) => {
   const handleAddInstance = async () => {
-    const { port, id } = await (
+    const instanceData: Instance = await (
       await fetch(`/instances`, { method: "POST" })
     ).json();
     await refetchInstances();
     if (props.onAfterAdd != null) {
-      props.onAfterAdd(id);
+      props.onAfterAdd(instanceData.id);
     }
     notificationService.show({
-      title: `New instance ${port} added`,
+      title: `New instance ${instanceData.port} added`,
     });
   };
 

@@ -1,26 +1,14 @@
 import { createStore, produce } from "solid-js/store";
 import { createResource } from "solid-js";
 import type { Message, UpdateMessage } from "../types/message";
+import type { Instance as InstanceData } from "../types/instance";
+import type { Info } from "../types/info";
 
-export type AppInfo = {
-  name: string;
-  iconUrl: string;
-  sourceCodeUrl: string;
-  manifestFound: boolean;
-  toolVersion: string;
-};
-
-const [appInfo] = createResource<AppInfo>(async () => {
+const [appInfo] = createResource<Info>(async () => {
   return await (await fetch("/app-info")).json();
 });
 
 export { appInfo };
-
-export type InstanceData = {
-  id: string;
-  url: string;
-  color: string;
-};
 
 const [instances, { refetch: refetchInstances }] = createResource<
   InstanceData[]

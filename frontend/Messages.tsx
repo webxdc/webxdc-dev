@@ -7,7 +7,18 @@ import {
   Setter,
   createEffect,
 } from "solid-js";
-import { Flex, Box, Table, Th, Thead, Tbody } from "@hope-ui/solid";
+import {
+  Flex,
+  Box,
+  Table,
+  Th,
+  Thead,
+  Tbody,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+} from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import MessageDetails from "./MessageDetails";
@@ -38,37 +49,50 @@ const Messages: Component<{
     <Flex height="100%" flexDirection="column" justifyContent="space-between">
       <Box>
         <Filters value={props.search()} onChange={props.setSearch} />
-        <Box width="55vw" maxHeight="36vh" overflow="scroll">
-          <Table id="messages" dense css={{ "table-layout": "fixed" }}>
-            <Thead>
-              <Th width="10%" minWidth="7em">
-                Id
-              </Th>
-              <Th width="10%">Type</Th>
-              <Th width="20%">Descr</Th>
-              <Th minWidth="60%">Payload</Th>
-            </Thead>
-            <Tbody>
-              <For
-                each={getMessages(
-                  props.search().instanceId,
-                  props.search().type
-                )}
-              >
-                {(message, index) => (
-                  <MessageRow
-                    isSelected={messageIndex() === index()}
-                    message={message}
-                    onSelect={(message) => {
-                      setMessageIndex(index());
-                      setMessage(message);
-                    }}
-                  />
-                )}
-              </For>
-            </Tbody>
-          </Table>
-        </Box>
+        <Tabs>
+          <TabList>
+            <Tab>Messages</Tab>
+            <Tab>Chat</Tab>
+          </TabList>
+          <TabPanel>
+            <Box width="53vw" maxHeight="36vh" overflow="scroll">
+              <Table id="messages" dense css={{ "table-layout": "fixed" }}>
+                <Thead>
+                  <Th width="10%" minWidth="7em">
+                    Id
+                  </Th>
+                  <Th width="10%">Type</Th>
+                  <Th width="20%">Descr</Th>
+                  <Th minWidth="60%">Payload</Th>
+                </Thead>
+                <Tbody>
+                  <For
+                    each={getMessages(
+                      props.search().instanceId,
+                      props.search().type
+                    )}
+                  >
+                    {(message, index) => (
+                      <MessageRow
+                        isSelected={messageIndex() === index()}
+                        message={message}
+                        onSelect={(message) => {
+                          setMessageIndex(index());
+                          setMessage(message);
+                        }}
+                      />
+                    )}
+                  </For>
+                </Tbody>
+              </Table>
+            </Box>
+          </TabPanel>
+          <TabPanel>
+            <Box width="53vw" maxHeight="36vh" overflow="scroll">
+              Chat!
+            </Box>
+          </TabPanel>
+        </Tabs>
       </Box>
       <Box>
         <Show when={message()}>

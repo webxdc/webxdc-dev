@@ -67,7 +67,7 @@ const Info: Component = () => {
                   </p>
                 }
               >
-                <Image src={appInfo.iconUrl} />
+                {(url) => <Image src={url} />}
               </Show>
             </RecordRow>
           </Tbody>

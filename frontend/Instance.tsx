@@ -2,7 +2,7 @@ import { Component, Show } from "solid-js";
 import { Flex, createDisclosure, notificationService } from "@hope-ui/solid";
 
 import { Instance as InstanceData } from "../types/instance";
-import { Search } from "./Messages";
+import { Search } from "./Sidebar";
 import InstanceStarted from "./InstanceStarted";
 import InstanceStopped from "./InstanceStopped";
 import InstanceHeader from "./InstanceHeader";

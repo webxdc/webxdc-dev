@@ -5,7 +5,7 @@ import { FiExternalLink } from "solid-icons/fi";
 
 import type { Instance as InstanceData } from "../types/instance";
 import { sent, received } from "./store";
-import { Search } from "./Messages";
+import { Search } from "./Sidebar";
 
 const InstanceHeader: Component<{
   instance: InstanceData;

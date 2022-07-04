@@ -7,6 +7,13 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Fixed
+
+- Previously when a instance was connected and then disconnected, received and
+  clear messages for that instance would still show up in the messages tab. Now
+  we detect that the message could not be sent to this client and we don't
+  record it.
+
 ## [0.15.0][] - 2022-07-04
 
 ### Added
@@ -360,7 +367,5 @@ release date when you use `npm version` (see `README.md`).
 [0.14.1]: https://github.com/webxdc/webxdc-dev/tree/v0.14.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.2...HEAD
 [0.14.2]: https://github.com/webxdc/webxdc-dev/tree/v0.14.2
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.0...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.0...HEAD
 [0.15.0]: https://github.com/webxdc/webxdc-dev/tree/v0.15.0

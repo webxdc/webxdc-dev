@@ -23,6 +23,7 @@ test("distribute to self", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -66,10 +67,12 @@ test("distribute to self and other", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client1.connect((updates) => {
     client1Heard.push(...updates);
+    return true;
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -143,10 +146,12 @@ test("setUpdateListener serial should skip older", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client1.connect((updates) => {
     client1Heard.push(...updates);
+    return true;
   }, 1);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -171,6 +176,7 @@ test("other starts listening later", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -185,6 +191,7 @@ test("other starts listening later", () => {
 
   client1.connect((updates) => {
     client1Heard.push(...updates);
+    return true;
   }, 0);
 
   expect(client0Heard).toMatchObject([
@@ -249,6 +256,7 @@ test("client is created later and needs to catch up", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -265,6 +273,7 @@ test("client is created later and needs to catch up", () => {
 
   client1.connect((updates) => {
     client1Heard.push(...updates);
+    return true;
   }, 0);
 
   expect(client0Heard).toMatchObject([
@@ -287,6 +296,7 @@ test("other starts listening later but is partially caught up", () => {
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
+    return true;
   }, 0);
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -301,6 +311,7 @@ test("other starts listening later but is partially caught up", () => {
   // start at 1, as we're already partially caught up
   client1.connect((updates) => {
     client1Heard.push(...updates);
+    return true;
   }, 1);
 
   expect(client0Heard).toMatchObject([
@@ -319,10 +330,11 @@ test("clear single client", () => {
   const client0Cleared: string[] = [];
 
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
   // we always clear on first connection with a new processor
@@ -334,10 +346,11 @@ test("clear single client", () => {
 
   // reconnecting shouldn't have an effect as it was cleared already
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
   expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
@@ -352,18 +365,20 @@ test("clear multiple clients", () => {
   const client1Cleared: string[] = [];
 
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
 
   client1.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client1Cleared.push("cleared");
+      return true;
     }
   );
 
@@ -377,10 +392,11 @@ test("clear multiple clients", () => {
 
   // reconnecting doesn't have any effect as it was already Cleared
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
   expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
@@ -394,10 +410,11 @@ test("clear client that is created later", () => {
   const client1Cleared: string[] = [];
 
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
 
@@ -408,10 +425,11 @@ test("clear client that is created later", () => {
 
   const client1 = processor.createClient("3002");
   client1.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client1Cleared.push("cleared");
+      return true;
     }
   );
 
@@ -429,18 +447,20 @@ test("clear multiple clients, multiple times", () => {
   const client1Cleared: string[] = [];
 
   client0.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client0Cleared.push("cleared");
+      return true;
     }
   );
 
   client1.connect(
-    () => {},
+    () => true,
     0,
     () => {
       client1Cleared.push("cleared");
+      return true;
     }
   );
 
@@ -464,10 +484,12 @@ test("connect with clear means we get no catchup if no new updates", () => {
   client0.connect(
     (updates) => {
       client0Heard.push(...updates);
+      return true;
     },
     0,
     () => {
       client0Heard.push("cleared");
+      return true;
     }
   );
 
@@ -491,10 +513,12 @@ test("connect with clear means we get no catchup if no new updates", () => {
   client1.connect(
     (updates) => {
       client1Heard.push(...updates);
+      return true;
     },
     0,
     () => {
       client1Heard.push("cleared");
+      return true;
     }
   );
 
@@ -518,10 +542,12 @@ test("connect with clear means catchup only with updates after clear", () => {
   client0.connect(
     (updates) => {
       client0Heard.push(...updates);
+      return true;
     },
     0,
     () => {
       client0Heard.push("cleared");
+      return true;
     }
   );
 
@@ -548,10 +574,12 @@ test("connect with clear means catchup only with updates after clear", () => {
   client1.connect(
     (updates) => {
       client1Heard.push(...updates);
+      return true;
     },
     0,
     () => {
       client1Heard.push("cleared");
+      return true;
     }
   );
 
@@ -615,5 +643,91 @@ test("connect with clear means catchup only with updates after clear", () => {
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
       descr: "update 3",
     },
+  ]);
+});
+
+test("distribute to self and other, but other was disconnected", () => {
+  const [getMessages, onMessage] = track();
+  const processor = createProcessor(onMessage);
+  const client0 = processor.createClient("3001");
+  const client1 = processor.createClient("3002");
+
+  const client0Heard: UpdateDescr[] = [];
+  const client1Heard: UpdateDescr[] = [];
+
+  client0.connect((updates) => {
+    client0Heard.push(...updates);
+    return true;
+  }, 0);
+
+  client1.connect((updates) => {
+    // disconnected status, so message was never received
+    return false;
+  }, 0);
+
+  client0.sendUpdate({ payload: "Hello" }, "update");
+  expect(client0Heard).toMatchObject([
+    [{ payload: "Hello", serial: 1, max_serial: 1 }, "update"],
+  ]);
+  expect(client1Heard).toMatchObject([]);
+
+  expect(getMessages()).toEqual([
+    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
+    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
+    { type: "connect", instanceId: "3002", instanceColor: "#29A634" },
+    { type: "clear", instanceId: "3002", instanceColor: "#29A634" },
+    {
+      type: "sent",
+      instanceId: "3001",
+      instanceColor: "#2965CC",
+      update: { payload: "Hello", serial: 1, max_serial: 1 },
+      descr: "update",
+    },
+    {
+      type: "received",
+      update: { payload: "Hello", serial: 1, max_serial: 1 },
+      instanceId: "3001",
+      instanceColor: "#2965CC",
+      descr: "update",
+    },
+  ]);
+});
+
+test("clear other client but was disconnected", () => {
+  const [getMessages, onMessage] = track();
+  const processor = createProcessor(onMessage);
+
+  const client0 = processor.createClient("3001");
+  const client1 = processor.createClient("3002");
+
+  const client0Cleared: string[] = [];
+  const client1Cleared: string[] = [];
+
+  client0.connect(
+    () => true,
+    0,
+    () => {
+      client0Cleared.push("cleared");
+      return true;
+    }
+  );
+
+  client1.connect(
+    () => true,
+    0,
+    () => {
+      // we never got the clear
+      return false;
+    }
+  );
+
+  expect(client0Cleared).toMatchObject(["cleared"]);
+  expect(client1Cleared).toMatchObject([]);
+
+  expect(getMessages()).toMatchObject([
+    { type: "connect", instanceId: "3001" },
+    { type: "clear", instanceId: "3001" },
+    { type: "connect", instanceId: "3002" },
+    // but never got the clear message
   ]);
 });

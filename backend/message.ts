@@ -9,8 +9,9 @@ import { getColorForId } from "./color";
 
 type UpdateListenerMulti = (
   updates: [ReceivedUpdate<JsonValue>, string][]
-) => void;
-type ClearListener = () => void;
+) => boolean;
+
+type ClearListener = () => boolean;
 
 type Connect = (
   updateListener: UpdateListenerMulti,
@@ -46,7 +47,7 @@ class Client implements WebXdcMulti {
   connect(
     listener: UpdateListenerMulti,
     serial: number,
-    clearListener: ClearListener = () => {}
+    clearListener: ClearListener = () => true
   ): void {
     this.processor.onMessage({
       type: "connect",
@@ -54,24 +55,30 @@ class Client implements WebXdcMulti {
       instanceColor: getColorForId(this.id),
     });
     this.setClearListener(() => {
-      this.processor.onMessage({
-        type: "clear",
-        instanceId: this.id,
-        instanceColor: getColorForId(this.id),
-      });
-      clearListener();
-    });
-    const updateListener = (updates: UpdateDescr[]) => {
-      for (const [update, descr] of updates) {
+      const hasReceived = clearListener();
+      if (hasReceived) {
         this.processor.onMessage({
-          type: "received",
-          update: update,
+          type: "clear",
           instanceId: this.id,
           instanceColor: getColorForId(this.id),
-          descr,
         });
       }
-      return listener(updates);
+      return hasReceived;
+    });
+    const updateListener = (updates: UpdateDescr[]) => {
+      const hasReceived = listener(updates);
+      if (hasReceived) {
+        for (const [update, descr] of updates) {
+          this.processor.onMessage({
+            type: "received",
+            update: update,
+            instanceId: this.id,
+            instanceColor: getColorForId(this.id),
+            descr,
+          });
+        }
+      }
+      return hasReceived;
     };
     this.updateListener = updateListener;
     this.updateSerial = serial;

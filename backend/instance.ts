@@ -122,7 +122,7 @@ export class Instances {
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
-              broadcast(
+              return broadcast(
                 wss,
                 JSON.stringify({
                   type: "updates",
@@ -132,7 +132,7 @@ export class Instances {
             },
             parsed.serial,
             () => {
-              broadcast(wss, JSON.stringify({ type: "clear" }));
+              return broadcast(wss, JSON.stringify({ type: "clear" }));
             }
           );
         } else if (isRequestInfoMessage(parsed)) {
@@ -169,12 +169,17 @@ export class Instances {
   }
 }
 
-function broadcast(wss: Server<WebSocket>, data: string) {
+function broadcast(wss: Server<WebSocket>, data: string): boolean {
+  let result = false;
+
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(data);
+      result = true;
     }
   });
+
+  return result;
 }
 
 function isSendUpdateMessage(value: any): value is SendUpdateMessage {

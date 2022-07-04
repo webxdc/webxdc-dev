@@ -26,7 +26,7 @@
     "dev": "ts-node-dev --project tsconfig-backend.json backend/dev-cli.ts",
     "cli": "node dist/backend/cli.js",
     "test": "jest",
-    "typecheck": "tsc",
+    "typecheck": "tsc --noEmit",
     "build-backend": "tsc --project tsconfig-backend.json",
     "build-frontend": "webpack --config webpack.prod.js",
     "build": "npm run clean && npm run build-backend && npm run build-frontend",

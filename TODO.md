@@ -64,14 +64,6 @@
 - Make typescript types for webxdc available as a standalone package so that
   developers can use this in their own projects.
 
-## Architecture
-
-- can we have only a single web socket that handles all frontends? We could
-  broadcast to all clients at once. The drawbacks of this are that the client
-  becomes dependent on more than just its own backend, and that we cannot
-  easily distinguish between instances and make one of them broken in some way.
-  It might also break CSP.
-
 ## Other
 
 - Update webxdc specification based on what I learned about it.

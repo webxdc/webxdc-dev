@@ -1,11 +1,12 @@
 import { Component, Show } from "solid-js";
+import { Badge } from "@hope-ui/solid";
 
 import type { Message } from "../types/message";
 import TdTooltip from "./TdTooltip";
 import SidebarRow from "./SidebarRow";
 import { isUpdateMessage } from "./store";
 
-const MessageRow: Component<{
+const ChatRow: Component<{
   message: Message;
   isSelected: boolean;
   onSelect: (message: Message) => void;
@@ -16,19 +17,11 @@ const MessageRow: Component<{
       isSelected={props.isSelected}
       onSelect={props.onSelect}
     >
-      <TdTooltip>{props.message.type}</TdTooltip>
       <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
-            <TdTooltip>{message.descr}</TdTooltip>
-            <TdTooltip
-              tooltip={
-                <pre>
-                  <code>{JSON.stringify(message.update.payload, null, 2)}</code>
-                </pre>
-              }
-            >
-              {JSON.stringify(message.update.payload)}
+            <TdTooltip>
+              <Badge variant="solid">{message.update.info}</Badge>
             </TdTooltip>
           </>
         )}
@@ -37,4 +30,4 @@ const MessageRow: Component<{
   );
 };
 
-export default MessageRow;
+export default ChatRow;

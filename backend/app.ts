@@ -85,21 +85,30 @@ export function createFrontend(
   return app;
 }
 
-export function createPeer(
-  location: Location,
-  injectSim: InjectExpress,
-  csp: boolean
-): expressWs.Instance {
+type PeerOptions = {
+  location: Location;
+  injectSim: InjectExpress;
+  csp: boolean;
+  instanceUrl: string;
+};
+
+export function createPeer(options: PeerOptions): expressWs.Instance {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
 
   // layer the simulated directory with webxdc tooling in front of webxdc path
   // this has to be injected as it differs between dev and production
-  injectSim(wsInstance.app as unknown as Express);
+  options.injectSim(wsInstance.app as unknown as Express);
 
-  if (csp) {
+  const location = options.location;
+
+  if (options.csp) {
     wsInstance.app.use((req, res, next) => {
-      res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+      const contentSecurityPolicy = getContentSecurityPolicy(
+        location,
+        options.instanceUrl
+      );
+      res.setHeader("Content-Security-Policy", contentSecurityPolicy);
       next();
     });
   }
@@ -122,4 +131,36 @@ export function createPeer(
     wsInstance.app.use(express.static(location.path));
   }
   return wsInstance;
+}
+
+function getContentSecurityPolicy(
+  location: Location,
+  instanceUrl: string
+): string {
+  const connectSrcUrls = [];
+
+  // Safari/webkit at least up to version 15.5 has a bug that makes
+  // "connect-src 'self'" incorrectly not allow access for web sockets
+  // https://github.com/w3c/webappsec-csp/issues/7
+  // we work around it by explicitly adding the instance URL to connect-src
+  // When this has been fixed in Safara, this line can be removed
+  connectSrcUrls.push(wsUrl(instanceUrl));
+
+  if (location.type === "url") {
+    // allow connection to websockets on proxied host, so that we
+    // support HMR with systems like vite
+    connectSrcUrls.push(wsUrl(location.url));
+  }
+
+  let policy = CONTENT_SECURITY_POLICY;
+
+  if (connectSrcUrls.length === 0) {
+    return policy;
+  }
+
+  return policy + `connect-src ${connectSrcUrls.join(" ")} ;`;
+}
+
+function wsUrl(httpUrl: string): string {
+  return httpUrl.replace("http://", "ws://");
 }

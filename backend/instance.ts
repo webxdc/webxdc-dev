@@ -30,16 +30,15 @@ type RequestInfoMessage = {
 
 class Instance {
   id: string;
-  url: string;
   color: string;
 
   constructor(
     public app: expressWs.Application,
     public port: number,
+    public url: string,
     public webXdc: WebXdcMulti
   ) {
     this.id = port.toString();
-    this.url = `http://localhost:${port}`;
     this.color = getColorForId(this.id);
   }
 
@@ -83,15 +82,25 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const wsInstance = createPeer(this.location, this.injectSim, this.csp);
-    const app = wsInstance.app;
-    const wss = wsInstance.getWss();
 
+    const instanceUrl = `http://localhost:${port}`;
+
+    const wsInstance = createPeer({
+      location: this.location,
+      injectSim: this.injectSim,
+      csp: this.csp,
+      instanceUrl: instanceUrl,
+    });
+
+    const app = wsInstance.app;
     const instance = new Instance(
       app,
       port,
+      instanceUrl,
       this.processor.createClient(port.toString())
     );
+
+    const wss = wsInstance.getWss();
 
     app.ws("/webxdc", (ws, req) => {
       // when receiving an update from this peer

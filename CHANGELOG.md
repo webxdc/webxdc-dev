@@ -11,6 +11,13 @@ release date when you use `npm version` (see `README.md`).
 
 ### Added
 
+- Fix to CSP issue on Safari - Safari's CSP implementation does not
+  implement `connect-src` `self` correctly yet so introduce a workaround. https://github.com/w3c/webappsec-csp/issues/7
+
+- CSP was inadvertently blocking hot module reloading in systems like Vite
+  which use a websocket to a proxied host. Now make special exception in CSP
+  for this use case.
+
 - Added `--no-csp` command-line option to disable the CSP. Turn off CSP in
   early development before you've removed all access to external resources. Or
   turn it off if things aren't working for you correctly, and think about
@@ -330,7 +337,5 @@ release date when you use `npm version` (see `README.md`).
 [0.13.1]: https://github.com/webxdc/webxdc-dev/tree/v0.13.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.0...HEAD
 [0.14.0]: https://github.com/webxdc/webxdc-dev/tree/v0.14.0
-
-
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.1...HEAD
+[unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.1...HEAD
 [0.14.1]: https://github.com/webxdc/webxdc-dev/tree/v0.14.1

@@ -11,7 +11,7 @@ import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 import { instances } from "./store";
 import InstancesButtons from "./InstancesButtons";
 import { scrollToInstance } from "./Instance";
-import Messages, { Search } from "./Messages";
+import Sidebar, { Search } from "./Sidebar";
 import Instance from "./Instance";
 import type { Instance as InstanceData } from "../types/instance";
 
@@ -66,7 +66,7 @@ const Main: Component = () => {
               right="2rem"
               icon={<IoCaretForwardOutline size={22} color="#000000" />}
             />
-            <Messages search={search} setSearch={setSearchAndOpen} />
+            <Sidebar search={search} setSearch={setSearchAndOpen} />
           </Show>
         </Box>
       </Flex>

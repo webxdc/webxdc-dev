@@ -7,9 +7,7 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
-## [0.14.1][] - 2022-07-04
-
-### Added
+### Fixed
 
 - Fix to CSP issue on Safari - Safari's CSP implementation does not
   implement `connect-src` `self` correctly yet so introduce a workaround. https://github.com/w3c/webappsec-csp/issues/7
@@ -17,6 +15,10 @@ release date when you use `npm version` (see `README.md`).
 - CSP was inadvertently blocking hot module reloading in systems like Vite
   which use a websocket to a proxied host. Now make special exception in CSP
   for this use case.
+
+## [0.14.1][] - 2022-07-04
+
+### Added
 
 - Added `--no-csp` command-line option to disable the CSP. Turn off CSP in
   early development before you've removed all access to external resources. Or

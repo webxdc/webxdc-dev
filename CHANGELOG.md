@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.15.0][] - 2022-07-04
+
 ### Added
 
 - A new "chat" panel is introduced in the sidebar. This contains any `summary`
@@ -358,3 +360,7 @@ release date when you use `npm version` (see `README.md`).
 [0.14.1]: https://github.com/webxdc/webxdc-dev/tree/v0.14.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.2...HEAD
 [0.14.2]: https://github.com/webxdc/webxdc-dev/tree/v0.14.2
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/webxdc/webxdc-dev/tree/v0.15.0

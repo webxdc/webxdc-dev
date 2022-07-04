@@ -81,10 +81,6 @@
 
 ## CLI / config
 
-- Base the log messages on `onMessage`
-
-- Suppress the log messages in the terminal unless --verbose is chosen.
-
 - CLI start with a number of peers (default 2?)
 
 - CLI configure dimensions of embedded UI

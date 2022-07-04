@@ -34,11 +34,20 @@ export function createProgram(inject: Inject): Command {
       7000
     )
     .option("--no-csp", "run instances without CSP applied")
+    .option(
+      "-v, --verbose",
+      "Print all messages sent and received by instances",
+      false
+    )
     .description(
       "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
     )
     .action((location, options) => {
-      run(location, { basePort: options.port, csp: options.csp }, inject);
+      run(
+        location,
+        { basePort: options.port, csp: options.csp, verbose: options.verbose },
+        inject
+      );
     });
   return program;
 }

@@ -7,6 +7,11 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- By default, the command-line does not show messages anymore. If you
+  turn on `-v` then it prints all the messages.
+
 ### Fixed
 
 - Fix to CSP issue on Safari - Safari's CSP implementation does not

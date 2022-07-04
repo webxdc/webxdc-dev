@@ -11,6 +11,7 @@ import { getColorForId } from "./color";
 export type Options = {
   basePort: number;
   csp: boolean;
+  verbose: boolean;
 };
 
 type SendUpdateMessage = {
@@ -72,6 +73,9 @@ export class Instances {
       if (this._onMessage == null) {
         return;
       }
+      if (options.verbose) {
+        console.info(message);
+      }
       this._onMessage(message);
     });
   }
@@ -118,7 +122,6 @@ export class Instances {
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
-              console.info("gossip", updates);
               broadcast(
                 wss,
                 JSON.stringify({
@@ -129,7 +132,6 @@ export class Instances {
             },
             parsed.serial,
             () => {
-              console.info("clear");
               broadcast(wss, JSON.stringify({ type: "clear" }));
             }
           );

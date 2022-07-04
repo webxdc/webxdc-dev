@@ -10,13 +10,12 @@ const [appInfo] = createResource<Info>(async () => {
 
 export { appInfo };
 
-const [instances, { refetch: refetchInstances }] = createResource<
-  InstanceData[]
->(async () => {
-  return (await fetch(`/instances`)).json();
-});
+const [instances, { refetch: refetchInstances, mutate: mutateInstances }] =
+  createResource<InstanceData[]>(async () => {
+    return (await fetch(`/instances`)).json();
+  });
 
-export { instances, refetchInstances };
+export { instances, refetchInstances, mutateInstances };
 
 const [state, setState] = createStore<Message[]>([]);
 

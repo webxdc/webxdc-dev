@@ -16,6 +16,9 @@ release date when you use `npm version` (see `README.md`).
   which use a websocket to a proxied host. Now make special exception in CSP
   for this use case.
 
+- Fixed a bug where all instances in the UI would be set to stopped each time a
+  new instances was added.
+
 ## [0.14.1][] - 2022-07-04
 
 ### Added

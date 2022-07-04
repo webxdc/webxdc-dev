@@ -14,11 +14,6 @@
 
 - Let the user remove instances.
 
-- BUG: adding an instance turns off all existing instances. This is because
-  instances is reloaded from the server completely, and open/closed state isn't
-  retained. We could change this having `/instances POST` return the new
-  instance data, without reloading the existing instances.
-
 - BUG: Messages scrolling is triggered even when a filter doesn't see a new message.
 
 - Can messages scrolling be made to use CSS somehow? Or should we use a

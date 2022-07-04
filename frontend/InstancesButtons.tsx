@@ -1,7 +1,8 @@
 import type { Component } from "solid-js";
 import { Button, notificationService, Flex, Tooltip } from "@hope-ui/solid";
 
-import { clearMessages, refetchInstances } from "./store";
+import type { Instance } from "../types/instance";
+import { instances, clearMessages, mutateInstances } from "./store";
 
 const CLEAR_INFO = `\
 Reset both webxdc-dev server state as well as client state.
@@ -11,15 +12,21 @@ const InstancesButtons: Component<{
   onAfterAdd?: (instanceId: string) => void;
 }> = (props) => {
   const handleAddInstance = async () => {
-    const { port, id } = await (
+    const instanceData: Instance = await (
       await fetch(`/instances`, { method: "POST" })
     ).json();
-    await refetchInstances();
+    // add the new instance to the end of the array
+    const current = instances();
+    if (current == null) {
+      throw new Error("instances unexpectedly undefined");
+    }
+    mutateInstances([...current, instanceData]);
+
     if (props.onAfterAdd != null) {
-      props.onAfterAdd(id);
+      props.onAfterAdd(instanceData.id);
     }
     notificationService.show({
-      title: `New instance ${port} added`,
+      title: `New instance ${instanceData.port} added`,
     });
   };
 

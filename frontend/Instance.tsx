@@ -1,7 +1,7 @@
 import { Component, Show } from "solid-js";
 import { Flex, createDisclosure, notificationService } from "@hope-ui/solid";
 
-import { InstanceData } from "./store";
+import { Instance as InstanceData } from "../types/instance";
 import { Search } from "./Messages";
 import InstanceStarted from "./InstanceStarted";
 import InstanceStopped from "./InstanceStopped";
@@ -52,13 +52,7 @@ const Instance: Component<{
       />
       <Show
         when={isOpen()}
-        fallback={
-          <InstanceStopped
-            instance={props.instance}
-            onStart={onOpen}
-            style={getStyle()}
-          />
-        }
+        fallback={<InstanceStopped onStart={onOpen} style={getStyle()} />}
       >
         <InstanceStarted
           instance={props.instance}

@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.14.1][] - 2022-07-04
+
 ### Added
 
 - Added `--no-csp` command-line option to disable the CSP. Turn off CSP in
@@ -328,3 +330,7 @@ release date when you use `npm version` (see `README.md`).
 [0.13.1]: https://github.com/webxdc/webxdc-dev/tree/v0.13.1
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.0...HEAD
 [0.14.0]: https://github.com/webxdc/webxdc-dev/tree/v0.14.0
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.1...HEAD
+[0.14.1]: https://github.com/webxdc/webxdc-dev/tree/v0.14.1

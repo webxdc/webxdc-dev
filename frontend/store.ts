@@ -1,5 +1,6 @@
+import { createResource, createSignal } from "solid-js";
 import { createStore, produce } from "solid-js/store";
-import { createResource } from "solid-js";
+
 import type { Message, UpdateMessage } from "../types/message";
 import type { Instance as InstanceData } from "../types/instance";
 import type { Info } from "../types/info";
@@ -25,7 +26,18 @@ export { instances, refetchInstances, mutateInstances };
 
 const [state, setState] = createStore<Message[]>([]);
 
+const [summary, setSummary] = createSignal<string | undefined>(undefined);
+
+export { summary };
+
 export function addMessage(message: Message): void {
+  if (isUpdateMessage(message) && message.type === "received") {
+    const summary = message.update.summary;
+    if (hasText(summary)) {
+      setSummary(summary);
+    }
+  }
+
   setState(
     produce((s) => {
       s.push(message);
@@ -68,11 +80,12 @@ export function getMessages(search: Search): Message[] {
     (message) =>
       (instanceId == null || message.instanceId === instanceId) &&
       (type == null || message.type === type) &&
-      (!info ||
-        (isUpdateMessage(message) &&
-          message.update.info != null &&
-          message.update.info.length > 0))
+      (!info || (isUpdateMessage(message) && hasText(message.update.info)))
   );
+}
+
+function hasText(s: string | undefined): s is string {
+  return s != null && s.length > 0;
 }
 
 export function isUpdateMessage(message: Message): message is UpdateMessage {

@@ -1,9 +1,16 @@
-import { Component, For, Accessor, createSignal, createEffect } from "solid-js";
-import { Box, Table, Thead, Tbody, Th } from "@hope-ui/solid";
+import {
+  Component,
+  For,
+  Accessor,
+  createSignal,
+  createEffect,
+  Show,
+} from "solid-js";
+import { Flex, Box, Table, Thead, Tbody, Th, Badge } from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import ChatRow from "./ChatRow";
-import { getMessages } from "./store";
+import { getMessages, summary } from "./store";
 
 export type Search = {
   instanceId?: string;
@@ -24,36 +31,41 @@ const Chat: Component<{
   });
 
   return (
-    <Box width="53vw" maxHeight="36vh" overflow="scroll">
-      <Table id="chat" dense css={{ "table-layout": "fixed" }}>
-        <Thead>
-          <Th width="10%" minWidth="7em">
-            Id
-          </Th>
-          <Th>Info</Th>
-        </Thead>
-        <Tbody>
-          <For
-            each={getMessages({
-              instanceId: props.search().instanceId,
-              type: "sent",
-              info: true,
-            })}
-          >
-            {(message, index) => (
-              <ChatRow
-                isSelected={chatIndex() === index()}
-                message={message}
-                onSelect={(message) => {
-                  setChatIndex(index());
-                  props.onSelectMessage(message);
-                }}
-              />
-            )}
-          </For>
-        </Tbody>
-      </Table>
-    </Box>
+    <Flex flexDirection="column">
+      <Show when={summary()}>
+        {(summary) => <Badge>Summary: {summary}</Badge>}
+      </Show>
+      <Box width="53vw" maxHeight="36vh" overflow="scroll">
+        <Table id="chat" dense css={{ "table-layout": "fixed" }}>
+          <Thead>
+            <Th width="10%" minWidth="7em">
+              Id
+            </Th>
+            <Th>Info</Th>
+          </Thead>
+          <Tbody>
+            <For
+              each={getMessages({
+                instanceId: props.search().instanceId,
+                type: "sent",
+                info: true,
+              })}
+            >
+              {(message, index) => (
+                <ChatRow
+                  isSelected={chatIndex() === index()}
+                  message={message}
+                  onSelect={(message) => {
+                    setChatIndex(index());
+                    props.onSelectMessage(message);
+                  }}
+                />
+              )}
+            </For>
+          </Tbody>
+        </Table>
+      </Box>
+    </Flex>
   );
 };
 

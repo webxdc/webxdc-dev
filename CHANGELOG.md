@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.14.2][] - 2022-07-04
+
 ### Changed
 
 - By default, the command-line does not show messages anymore. If you
@@ -349,3 +351,7 @@ release date when you use `npm version` (see `README.md`).
 [0.14.0]: https://github.com/webxdc/webxdc-dev/tree/v0.14.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.1...HEAD
 [0.14.1]: https://github.com/webxdc/webxdc-dev/tree/v0.14.1
+
+
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.14.2...HEAD
+[0.14.2]: https://github.com/webxdc/webxdc-dev/tree/v0.14.2

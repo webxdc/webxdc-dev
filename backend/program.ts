@@ -33,11 +33,12 @@ export function createProgram(inject: Inject): Command {
       parsePort,
       7000
     )
+    .option("--no-csp", "run instances without CSP applied")
     .description(
       "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
     )
     .action((location, options) => {
-      run(location, options.port, inject);
+      run(location, { basePort: options.port, csp: options.csp }, inject);
     });
   return program;
 }

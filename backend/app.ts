@@ -87,7 +87,8 @@ export function createFrontend(
 
 export function createPeer(
   location: Location,
-  injectSim: InjectExpress
+  injectSim: InjectExpress,
+  csp: boolean
 ): expressWs.Instance {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -96,10 +97,12 @@ export function createPeer(
   // this has to be injected as it differs between dev and production
   injectSim(wsInstance.app as unknown as Express);
 
-  wsInstance.app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
-    next();
-  });
+  if (csp) {
+    wsInstance.app.use((req, res, next) => {
+      res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+      next();
+    });
+  }
 
   if (location.type === "url") {
     // serve webxdc project from URL by proxying

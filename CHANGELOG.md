@@ -7,6 +7,13 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- Added `--no-csp` command-line option to disable the CSP. Turn off CSP in
+  early development before you've removed all access to external resources. Or
+  turn it off if things aren't working for you correctly, and think about
+  filing an issue with `webxdc-dev`.
+
 ## [0.14.0][] - 2022-06-30
 
 ### Added

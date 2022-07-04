@@ -8,8 +8,10 @@ import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
 
-// timeout for open in miliseconds
-const OPEN_TIMEOUT = 500;
+export type Options = {
+  basePort: number;
+  csp: boolean;
+};
 
 type SendUpdateMessage = {
   type: "sendUpdate";
@@ -54,15 +56,17 @@ export class Instances {
   instances: Map<number, Instance>;
   basePort: number;
   currentPort: number;
+  csp: boolean;
   injectSim: InjectExpress;
   processor: IProcessor;
   _onMessage: OnMessage | null = null;
 
-  constructor(appInfo: AppInfo, injectSim: InjectExpress, basePort: number) {
+  constructor(appInfo: AppInfo, injectSim: InjectExpress, options: Options) {
     this.location = appInfo.location;
     this.appInfo = appInfo;
-    this.basePort = basePort;
-    this.currentPort = basePort;
+    this.basePort = options.basePort;
+    this.csp = options.csp;
+    this.currentPort = options.basePort;
     this.instances = new Map();
     this.injectSim = injectSim;
     this.processor = createProcessor((message) => {
@@ -79,7 +83,7 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    const wsInstance = createPeer(this.location, this.injectSim);
+    const wsInstance = createPeer(this.location, this.injectSim, this.csp);
     const app = wsInstance.app;
     const wss = wsInstance.getWss();
 

@@ -2,12 +2,6 @@
 
 ## UI
 
-- Have a 'chat' tab in the messages tab. This filter shows the "info" messages.
-  It's prefixed by instance id (as a colored badge), but you can filter by
-  instance id to see only those.
-
-- Have a "summary" should be shown near the instance.
-
 - We could make it so that you can't open an external tab twice (though that
   won't stop people from copying the URL), and that you can't open an external
   tab if you've started the embedded UI, to prevent confusion.
@@ -59,7 +53,7 @@
   with collaborative apps before users start noticing them.
 
 - open URL to external hosts. Is this already happening? Show ip number at
-  least.
+  least. Currently localhost is hardcoded in some places.
 
 - State breaks down if you have multiple browser window pointing at the same
   port: for instance, if you open an instance again the server doesn't know to
@@ -85,3 +79,7 @@
 
 - config file with things such as base port, timing info defaults (also
   configurable through CLI)
+
+## Build
+
+- Run typecheck and tests before release in github action.

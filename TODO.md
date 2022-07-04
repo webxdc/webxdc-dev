@@ -19,8 +19,10 @@
   retained. We could change this having `/instances POST` return the new
   instance data, without reloading the existing instances.
 
-- Sizzy integration to open in a "as real as possible" mobile browser?
-  https://sizzy.co/ But for pay software.
+- BUG: Messages scrolling is triggered even when a filter doesn't see a new message.
+
+- Can messages scrolling be made to use CSS somehow? Or should we use a
+  virtualized view and then see?
 
 ## Messages
 

@@ -31,11 +31,7 @@
 
 ## Simulator
 
-- A disconnected client continues to receive updates according to the server
-  and thus in the messages panel. This is incorrect. The server should become
-  aware that a message cannot be sent (triggering an implicit disconnection?),
-  or alternatively of disconnect events (but how to know all clients are
-  disconnected?)
+- IndexedDb should be cleaned when the user presses reset.
 
 - When an instance opens it flashes with old state. Is it worthwhile to prevent
   the flash by temporaly blanking everything out upon initial load? Getting

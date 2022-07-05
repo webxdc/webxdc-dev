@@ -38,12 +38,14 @@ class FakeTransport implements Transport {
               updates: updates.map(([update]) => update),
             });
           }
+          return true;
         },
         data.serial,
         () => {
           if (this.messageCallback != null) {
             this.messageCallback({ type: "clear" });
           }
+          return true;
         }
       );
     } else if (data.type === "requestInfo") {

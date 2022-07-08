@@ -9,6 +9,9 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
   return (
     <Table dense>
       <Tbody>
+        <RecordRow label="time">
+          {new Date(props.message.timestamp).toISOString()}
+        </RecordRow>
         <RecordRow label="instance id">
           <Text as="span" color={props.message.instanceColor}>
             {props.message.instanceId}

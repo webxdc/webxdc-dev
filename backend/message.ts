@@ -53,6 +53,7 @@ class Client implements WebXdcMulti {
       type: "connect",
       instanceId: this.id,
       instanceColor: getColorForId(this.id),
+      timestamp: Date.now(),
     });
     this.setClearListener(() => {
       const hasReceived = clearListener();
@@ -61,6 +62,7 @@ class Client implements WebXdcMulti {
           type: "clear",
           instanceId: this.id,
           instanceColor: getColorForId(this.id),
+          timestamp: Date.now(),
         });
       }
       return hasReceived;
@@ -74,6 +76,7 @@ class Client implements WebXdcMulti {
             update: update,
             instanceId: this.id,
             instanceColor: getColorForId(this.id),
+            timestamp: Date.now(),
             descr,
           });
         }
@@ -140,6 +143,7 @@ class Processor implements IProcessor {
       instanceId: instanceId,
       instanceColor: getColorForId(instanceId),
       update: receivedUpdate,
+      timestamp: Date.now(),
       descr,
     });
     for (const client of this.clients) {

@@ -3,6 +3,7 @@ import { ReceivedUpdate, JsonValue } from "./webxdc";
 export type InstanceMessage = {
   instanceId: string;
   instanceColor: string;
+  timestamp: number;
 };
 
 export type BaseUpdateMessage = {

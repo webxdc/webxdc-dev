@@ -32,13 +32,12 @@ test("distribute to self", () => {
     [{ payload: "Hello", serial: 1, max_serial: 1 }, "update"],
   ]);
 
-  expect(getMessages()).toEqual([
-    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
-    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
+  expect(prepare(getMessages())).toEqual([
+    { type: "connect", instanceId: "3001" },
+    { type: "clear", instanceId: "3001" },
     {
       type: "sent",
       instanceId: "3001",
-      instanceColor: "#2965CC",
       update: {
         payload: "Hello",
         serial: 1,
@@ -50,7 +49,6 @@ test("distribute to self", () => {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      instanceColor: "#2965CC",
       descr: "update",
     },
   ]);
@@ -86,15 +84,14 @@ test("distribute to self and other", () => {
     [{ payload: "Bye", serial: 2, max_serial: 2 }, "update 2"],
   ]);
 
-  expect(getMessages()).toEqual([
-    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
-    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
-    { type: "connect", instanceId: "3002", instanceColor: "#29A634" },
-    { type: "clear", instanceId: "3002", instanceColor: "#29A634" },
+  expect(prepare(getMessages())).toEqual([
+    { type: "connect", instanceId: "3001" },
+    { type: "clear", instanceId: "3001" },
+    { type: "connect", instanceId: "3002" },
+    { type: "clear", instanceId: "3002" },
     {
       type: "sent",
       instanceId: "3001",
-      instanceColor: "#2965CC",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
@@ -102,20 +99,17 @@ test("distribute to self and other", () => {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      instanceColor: "#2965CC",
       descr: "update",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3002",
-      instanceColor: "#29A634",
       descr: "update",
     },
     {
       type: "sent",
       instanceId: "3002",
-      instanceColor: "#29A634",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       descr: "update 2",
     },
@@ -123,14 +117,12 @@ test("distribute to self and other", () => {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3001",
-      instanceColor: "#2965CC",
       descr: "update 2",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3002",
-      instanceColor: "#29A634",
       descr: "update 2",
     },
   ]);
@@ -203,7 +195,7 @@ test("other starts listening later", () => {
     [{ payload: "Bye", serial: 2, max_serial: 2 }, "update 2"],
   ]);
 
-  expect(getMessages()).toMatchObject([
+  expect(prepare(getMessages())).toEqual([
     { type: "connect", instanceId: "3001" },
     { type: "clear", instanceId: "3001" },
     {
@@ -671,15 +663,14 @@ test("distribute to self and other, but other was disconnected", () => {
   ]);
   expect(client1Heard).toMatchObject([]);
 
-  expect(getMessages()).toEqual([
-    { type: "connect", instanceId: "3001", instanceColor: "#2965CC" },
-    { type: "clear", instanceId: "3001", instanceColor: "#2965CC" },
-    { type: "connect", instanceId: "3002", instanceColor: "#29A634" },
-    { type: "clear", instanceId: "3002", instanceColor: "#29A634" },
+  expect(prepare(getMessages())).toEqual([
+    { type: "connect", instanceId: "3001" },
+    { type: "clear", instanceId: "3001" },
+    { type: "connect", instanceId: "3002" },
+    { type: "clear", instanceId: "3002" },
     {
       type: "sent",
       instanceId: "3001",
-      instanceColor: "#2965CC",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       descr: "update",
     },
@@ -687,7 +678,6 @@ test("distribute to self and other, but other was disconnected", () => {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      instanceColor: "#2965CC",
       descr: "update",
     },
   ]);
@@ -724,10 +714,89 @@ test("clear other client but was disconnected", () => {
   expect(client0Cleared).toMatchObject(["cleared"]);
   expect(client1Cleared).toMatchObject([]);
 
-  expect(getMessages()).toMatchObject([
+  expect(prepare(getMessages())).toEqual([
     { type: "connect", instanceId: "3001" },
     { type: "clear", instanceId: "3001" },
     { type: "connect", instanceId: "3002" },
     // but never got the clear message
   ]);
+});
+
+type PreparedMessage = Omit<Message, "timestamp" | "instanceColor">;
+
+function prepare(messages: Message[]): PreparedMessage[] {
+  return messages.map((message) => {
+    const cloned = message as any;
+    delete cloned.instanceColor;
+    delete cloned.timestamp;
+    return cloned;
+  });
+}
+
+test("instanceColor", () => {
+  const [getMessages, onMessage] = track();
+  const processor = createProcessor(onMessage);
+  const client0 = processor.createClient("3001");
+  const client1 = processor.createClient("3002");
+
+  client0.connect((updates) => {
+    return true;
+  }, 0);
+
+  client1.connect((updates) => {
+    return true;
+  }, 0);
+
+  client0.sendUpdate({ payload: "Hello" }, "update");
+
+  const instanceColors = getMessages().map((message) => message.instanceColor);
+  expect(instanceColors).toEqual([
+    "#2965CC",
+    "#2965CC",
+    "#29A634",
+    "#29A634",
+    "#2965CC",
+    "#2965CC",
+    "#29A634",
+  ]);
+});
+
+async function waitFor(s: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    });
+  });
+}
+
+test("timestamp", async () => {
+  const [getMessages, onMessage] = track();
+  const processor = createProcessor(onMessage);
+  const client0 = processor.createClient("3001");
+  const client1 = processor.createClient("3002");
+
+  const before = Date.now();
+
+  await waitFor(10);
+
+  client0.connect((updates) => {
+    return true;
+  }, 0);
+
+  client1.connect((updates) => {
+    return true;
+  }, 0);
+
+  await waitFor(10);
+
+  client0.sendUpdate({ payload: "Hello" }, "update");
+
+  await waitFor(10);
+
+  const after = Date.now();
+
+  const timestamps = getMessages().map((message) => message.timestamp);
+
+  expect(timestamps.every((t) => t >= before)).toBeTruthy();
+  expect(timestamps.every((t) => t <= after)).toBeTruthy();
 });

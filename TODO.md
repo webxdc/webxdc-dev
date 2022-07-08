@@ -1,5 +1,11 @@
 # TODO
 
+## Dexie integration
+
+- Dexie compound indices?
+
+- On first startup, the database should be cleared, but not on reload.
+
 ## UI
 
 - We could make it so that you can't open an external tab twice (though that

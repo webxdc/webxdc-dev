@@ -2,7 +2,8 @@ import type { Component } from "solid-js";
 import { Button, notificationService, Flex, Tooltip } from "@hope-ui/solid";
 
 import type { Instance } from "../types/instance";
-import { instances, clearMessages, mutateInstances } from "./store";
+import { instances, mutateInstances } from "./store";
+import { clearMessages } from "./db";
 
 const CLEAR_INFO = `\
 Reset both webxdc-dev server state as well as client state.
@@ -32,7 +33,7 @@ const InstancesButtons: Component<{
 
   const handleClear = async () => {
     await fetch(`/clear`, { method: "POST" });
-    clearMessages();
+    await clearMessages();
     notificationService.show({
       title: `Resetting state of dev server & instances`,
     });

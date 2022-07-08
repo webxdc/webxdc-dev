@@ -7,7 +7,7 @@ import type { Message, UpdateMessage } from "../types/message";
 export type Search = {
   instanceId?: string;
   type?: string;
-  info?: boolean;
+  hasInfo?: boolean;
 };
 
 export type Info = {
@@ -15,17 +15,18 @@ export type Info = {
 };
 
 export class Db extends Dexie {
-  messages!: Table<Message>;
+  messages!: Table<Message & { hasInfo: number }>;
   infos!: Table<Info>;
 
   constructor() {
     super("webxdc-dev");
-    this.version(1).stores({
+    this.version(2).stores({
       infos: "++id",
-      messages: "++id, timestamp, instanceId, type",
+      messages: "++id, timestamp, instanceId, type, hasInfo",
     });
   }
 }
+
 export const db = new Db();
 
 export async function addMessage(message: Message): Promise<void> {
@@ -35,7 +36,10 @@ export async function addMessage(message: Message): Promise<void> {
       await updateInfo({ lastSummary: summary });
     }
   }
-  await db.messages.add(message);
+  await db.messages.add({
+    ...message,
+    hasInfo: isUpdateMessage(message) && hasText(message.update.info) ? 1 : 0,
+  });
 }
 
 export async function clearMessages(): Promise<void> {
@@ -90,7 +94,10 @@ export function createMessagesQuery(search: Accessor<Search>) {
     if (s.instanceId != null) {
       where.instanceId = s.instanceId;
     }
-    if (s.type == null && s.instanceId == null) {
+    if (s.hasInfo != null) {
+      where.hasInfo = s.hasInfo ? 1 : 0;
+    }
+    if (s.type == null && s.instanceId == null && s.hasInfo == null) {
       return db.messages.toArray();
     }
     return db.messages.where(where).toArray();

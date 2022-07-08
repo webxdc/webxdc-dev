@@ -3,7 +3,7 @@ import { Box, Table, Tbody, Text } from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import RecordRow from "./RecordRow";
-import { isUpdateMessage } from "./store";
+import { isUpdateMessage } from "./db";
 
 const MessageDetails: Component<{ message: Message }> = (props) => {
   return (

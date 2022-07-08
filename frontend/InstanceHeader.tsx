@@ -4,7 +4,7 @@ import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
 import { FiExternalLink } from "solid-icons/fi";
 
 import type { Instance as InstanceData } from "../types/instance";
-import { sent, received } from "./store";
+import { createSentSignal, createReceivedSignal } from "./db";
 import { Search } from "./Sidebar";
 
 const InstanceHeader: Component<{
@@ -15,13 +15,8 @@ const InstanceHeader: Component<{
   onStop: () => void;
   isStarted: Accessor<boolean>;
 }> = (props) => {
-  const sentCount = createMemo(() => {
-    return sent(props.instance.id);
-  });
-
-  const receivedCount = createMemo(() => {
-    return received(props.instance.id);
-  });
+  const sentCount = createSentSignal(props.instance.id);
+  const receivedCount = createReceivedSignal(props.instance.id);
 
   const handleOpenInTab = () => {
     window.open(props.instance.url, "_blank");

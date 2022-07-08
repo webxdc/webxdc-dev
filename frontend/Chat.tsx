@@ -10,7 +10,7 @@ import { Flex, Box, Table, Thead, Tbody, Th, Badge } from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import ChatRow from "./ChatRow";
-import { getMessages, summary } from "./store";
+import { createMessagesQuery, summary } from "./db";
 
 export type Search = {
   instanceId?: string;
@@ -23,9 +23,15 @@ const Chat: Component<{
 }> = (props) => {
   const [chatIndex, setChatIndex] = createSignal<number | null>(null);
 
+  const messages = createMessagesQuery(() => ({
+    instanceId: props.search().instanceId,
+    type: "sent",
+    hasInfo: true,
+  }));
+
   createEffect(() => {
     // whenever we get a new message, we should scroll to the last message
-    getMessages({}).length;
+    messages.length;
     // we scroll to the last message
     scrollToLastChat();
   });
@@ -44,13 +50,7 @@ const Chat: Component<{
             <Th>Info</Th>
           </Thead>
           <Tbody>
-            <For
-              each={getMessages({
-                instanceId: props.search().instanceId,
-                type: "sent",
-                info: true,
-              })}
-            >
+            <For each={messages}>
               {(message, index) => (
                 <ChatRow
                   isSelected={chatIndex() === index()}

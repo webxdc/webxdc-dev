@@ -3,7 +3,7 @@ import { Component, Show } from "solid-js";
 import type { Message } from "../types/message";
 import TdTooltip from "./TdTooltip";
 import SidebarRow from "./SidebarRow";
-import { isUpdateMessage } from "./store";
+import { isUpdateMessage } from "./db";
 
 const MessageRow: Component<{
   message: Message;

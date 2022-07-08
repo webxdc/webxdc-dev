@@ -3,7 +3,8 @@ import { HopeProvider, NotificationsProvider } from "@hope-ui/solid";
 import { Router } from "solid-app-router";
 
 import { Message } from "../types/message";
-import { addMessage } from "./store";
+import { addMessage } from "./db";
+
 import App from "./App";
 
 const url = `ws://${document.location.host}/webxdc-message`;

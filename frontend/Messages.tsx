@@ -3,7 +3,7 @@ import { Box, Table, Thead, Tbody, Th } from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import MessageRow from "./MessageRow";
-import { getMessages } from "./store";
+import { createMessagesQuery } from "./db";
 
 export type Search = {
   instanceId?: string;
@@ -16,9 +16,14 @@ const Messages: Component<{
 }> = (props) => {
   const [messageIndex, setMessageIndex] = createSignal<number | null>(null);
 
+  const messages = createMessagesQuery(() => ({
+    instanceId: props.search().instanceId,
+    type: props.search().type,
+  }));
+
   createEffect(() => {
     // whenever we get a new message, we should scroll to the last message
-    getMessages({}).length;
+    messages.length;
     // we scroll to the last message
     scrollToLastMessage();
   });
@@ -35,12 +40,7 @@ const Messages: Component<{
           <Th minWidth="60%">Payload</Th>
         </Thead>
         <Tbody>
-          <For
-            each={getMessages({
-              instanceId: props.search().instanceId,
-              type: props.search().type,
-            })}
-          >
+          <For each={messages}>
             {(message, index) => (
               <MessageRow
                 isSelected={messageIndex() === index()}

@@ -13,6 +13,10 @@
 - Can messages scrolling be made to use CSS somehow? Or should we use a
   virtualized view and then see?
 
+## Node version
+
+- Can I warn when the node version is too old upon installation.
+	
 ## Messages
 
 - Perhaps default message filter should see connect & sent at the same time?

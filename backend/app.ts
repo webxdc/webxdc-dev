@@ -69,8 +69,17 @@ export function createFrontend(
       color: instance.color,
     });
   });
-  app.post<{}, {}>("/clear", (req, res) => {
+  app.post<{}, { status: string }>("/clear", (req, res) => {
     instances.clear();
+    res.json({
+      status: "ok",
+    });
+  });
+
+  app.post<any, { status: string }>("/fake-update", (req, res) => {
+    const instanceId = Array.from(instances.instances.keys())[0];
+    const instance = instances.instances.get(instanceId);
+    instance?.webXdc.sendUpdate({ payload: req.body }, "fake update");
     res.json({
       status: "ok",
     });

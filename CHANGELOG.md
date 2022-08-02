@@ -11,6 +11,9 @@ release date when you use `npm version` (see `README.md`).
 
 - Add a timestamp to messages.
 
+- Add a `fake-update` endpoint to the backend. This can be used to send fake
+  delta-chat client generated updates. There is no UI yet.
+
 ## [0.15.1][] - 2022-07-04
 
 ### Fixed

@@ -24,15 +24,13 @@ const Messages: Component<{
   });
 
   return (
-    <Box width="53vw" maxHeight="36vh" overflow="scroll">
+    <Box overflow="auto">
       <Table id="messages" dense css={{ "table-layout": "fixed" }}>
         <Thead>
-          <Th width="10%" minWidth="7em">
-            Id
-          </Th>
-          <Th width="10%">Type</Th>
-          <Th width="20%">Descr</Th>
-          <Th minWidth="60%">Payload</Th>
+          <Th maxW="70px"> Id </Th>
+          <Th maxW="70px">Type</Th>
+          <Th maxW="70px">Descr</Th>
+          <Th>Payload</Th>
         </Thead>
         <Tbody>
           <For

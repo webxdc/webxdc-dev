@@ -5,6 +5,7 @@ import {
   Tooltip,
   IconButton,
   createDisclosure,
+  Heading,
 } from "@hope-ui/solid";
 import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 
@@ -14,6 +15,7 @@ import { scrollToInstance } from "./Instance";
 import Sidebar, { Search } from "./Sidebar";
 import Instance from "./Instance";
 import type { Instance as InstanceData } from "../types/instance";
+import SplitView from "./SplitView";
 
 const Main: Component = () => {
   const [search, setSearch] = createSignal<Search>({
@@ -29,47 +31,36 @@ const Main: Component = () => {
 
   return (
     <>
-      <Flex justifyContent="space-between">
-        <Flex flexDirection="column">
-          <Box m="$8" ml="$1">
-            <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
-              <For each={instances()}>
-                {(instance: InstanceData) => (
-                  <Instance instance={instance} setSearch={setSearchAndOpen} />
-                )}
-              </For>
-            </Flex>
-          </Box>
-          <InstancesButtons
-            onAfterAdd={(instanceId) => {
-              scrollToInstance(instanceId);
-            }}
-          />
-        </Flex>
-        <Box height="100wh">
-          <Show
-            when={isOpen()}
-            fallback={
-              <SidebarButton
-                label="Open messages"
-                onClick={onOpen}
-                top="2rem"
-                right="-2rem"
-                icon={<IoCaretBackOutline size={22} color="#000000" />}
+      {
+        <SplitView>
+          <Flex flexDirection="column">
+            <Flex mb="$1" justifyContent="space-between">
+              <Heading level="1">Devices</Heading>
+              <InstancesButtons
+                onAfterAdd={(instanceId) => {
+                  scrollToInstance(instanceId);
+                }}
               />
-            }
-          >
-            <SidebarButton
-              label="Close messages"
-              onClick={onClose}
-              top="2rem"
-              right="2rem"
-              icon={<IoCaretForwardOutline size={22} color="#000000" />}
-            />
-            <Sidebar search={search} setSearch={setSearchAndOpen} />
-          </Show>
-        </Box>
-      </Flex>
+            </Flex>
+            <Box>
+              <Flex flexWrap="wrap" gap="$5">
+                <For each={instances()}>
+                  {(instance: InstanceData) => (
+                    <Instance instance={instance} setSearch={setSearchAndOpen} />
+                  )}
+                </For>
+              </Flex>
+            </Box>
+          </Flex>
+          <Box>
+            <Box position="sticky" top="20px">
+              <Heading level="1" mb="1">Messages</Heading>
+              <Sidebar search={search} setSearch={setSearchAndOpen} />
+            </Box>
+          </Box>
+        </SplitView>
+
+      }
     </>
   );
 };

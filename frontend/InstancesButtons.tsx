@@ -40,9 +40,9 @@ const InstancesButtons: Component<{
 
   return (
     <Flex direction="row" justifyContent="flex-start" gap="$3">
-      <Button onClick={handleAddInstance}>Add Instance</Button>
+      <Button colorScheme="neutral" size="xs" onClick={handleAddInstance}>Add Instance</Button>
       <Tooltip label={CLEAR_INFO}>
-        <Button onClick={handleClear}>Reset</Button>
+        <Button colorScheme="neutral" size="xs" onClick={handleClear}>Reset</Button>
       </Tooltip>
     </Flex>
   );

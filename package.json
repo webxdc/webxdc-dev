@@ -72,6 +72,8 @@
   "dependencies": {
     "@hope-ui/solid": "^0.6.2",
     "@stitches/core": "^1.2.8",
+    "@types/body-parser": "^1.19.2",
+    "@types/ws": "^8.5.3",
     "adm-zip": "^0.5.9",
     "body-parser": "^1.20.0",
     "commander": "^9.3.0",

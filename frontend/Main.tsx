@@ -42,8 +42,8 @@ const Main: Component = () => {
                 }}
               />
             </Flex>
-            <Box>
-              <Flex flexWrap="wrap" gap="$5">
+            <Box overflow="auto" >
+              <Flex flexWrap="wrap" gap="$5" justifyContent="center">
                 <For each={instances()}>
                   {(instance: InstanceData) => (
                     <Instance instance={instance} setSearch={setSearchAndOpen} />
@@ -53,7 +53,7 @@ const Main: Component = () => {
             </Box>
           </Flex>
           <Box>
-            <Box position="sticky" top="20px">
+            <Box>
               <Heading level="1" mb="1">Messages</Heading>
               <Sidebar search={search} setSearch={setSearchAndOpen} />
             </Box>

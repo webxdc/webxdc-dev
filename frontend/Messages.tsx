@@ -24,35 +24,33 @@ const Messages: Component<{
   });
 
   return (
-    <Box overflow="auto">
-      <Table id="messages" dense css={{ "table-layout": "fixed" }}>
-        <Thead>
-          <Th maxW="70px"> Id </Th>
-          <Th maxW="70px">Type</Th>
-          <Th maxW="70px">Descr</Th>
-          <Th>Payload</Th>
-        </Thead>
-        <Tbody>
-          <For
-            each={getMessages({
-              instanceId: props.search().instanceId,
-              type: props.search().type,
-            })}
-          >
-            {(message, index) => (
-              <MessageRow
-                isSelected={messageIndex() === index()}
-                message={message}
-                onSelect={(message) => {
-                  setMessageIndex(index());
-                  props.onSelectMessage(message);
-                }}
-              />
-            )}
-          </For>
-        </Tbody>
-      </Table>
-    </Box>
+    <Table id="messages" dense css={{ "table-layout": "fixed" }}>
+      <Thead>
+        <Th maxW="70px"> Id </Th>
+        <Th maxW="70px">Type</Th>
+        <Th maxW="70px">Descr</Th>
+        <Th>Payload</Th>
+      </Thead>
+      <Tbody>
+        <For
+          each={getMessages({
+            instanceId: props.search().instanceId,
+            type: props.search().type,
+          })}
+        >
+          {(message, index) => (
+            <MessageRow
+              isSelected={messageIndex() === index()}
+              message={message}
+              onSelect={(message) => {
+                setMessageIndex(index());
+                props.onSelectMessage(message);
+              }}
+            />
+          )}
+        </For>
+      </Tbody>
+    </Table>
   );
 };
 

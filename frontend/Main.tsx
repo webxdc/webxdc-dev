@@ -52,11 +52,9 @@ const Main: Component = () => {
               </Flex>
             </Box>
           </Flex>
-          <Box>
-            <Box>
-              <Heading level="1" mb="1">Messages</Heading>
-              <Sidebar search={search} setSearch={setSearchAndOpen} />
-            </Box>
+          <Box overflow="auto">
+            <Heading level="1" mb="1">Messages</Heading>
+            <Sidebar search={search} setSearch={setSearchAndOpen} />
           </Box>
         </SplitView>
 

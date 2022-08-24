@@ -191,6 +191,15 @@ npm run webxdc-dev-dist
 
 ## Development
 
+`webxdc-dev` is developed using [npm](<https://en.wikipedia.org/wiki/Npm_(software)>),
+so run:
+
+```shell
+npm install
+```
+
+in the `webxdc-dev` project directory to install dependencies.
+
 You can run `webxdc-dev` in development mode so that both frontend and backend
 are automatically recompiled when you change code. For frontend and simulator
 changes you need to reload your browser windows to see the effect. When you

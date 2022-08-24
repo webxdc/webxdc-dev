@@ -30,7 +30,9 @@ const InstanceHeader: Component<{
   return (
     <Flex gap="$1" justifyContent="space-between" alignItems="center">
       <Tooltip label="Click to see all messages for this instance">
+
         <Text
+          cursor="pointer"
           color={props.instance.color}
           fontSize="$2xl"
           fontWeight="bold"
@@ -41,6 +43,7 @@ const InstanceHeader: Component<{
       </Tooltip>
       <Tooltip label="Click to see all sent messages for this instance">
         <Badge
+          cursor="pointer"
           onClick={() =>
             props.setSearch({ instanceId: props.instance.id, type: "sent" })
           }
@@ -50,6 +53,7 @@ const InstanceHeader: Component<{
       </Tooltip>
       <Tooltip label="Click to see all received messages for this instance">
         <Badge
+          cursor="pointer"
           onClick={() =>
             props.setSearch({
               instanceId: props.instance.id,

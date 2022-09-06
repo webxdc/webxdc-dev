@@ -54,6 +54,7 @@ export class Instances {
   location: Location;
   appInfo: AppInfo;
   instances: Map<number, Instance>;
+  deletedInstances: Set<number> = new Set();
   basePort: number;
   currentPort: number;
   csp: boolean;
@@ -78,6 +79,17 @@ export class Instances {
       }
       this._onMessage(message);
     });
+  }
+
+  delete(id: number) {
+    let instance = this.instances.get(id)!;
+    this.processor.removeClient(instance.id!);
+    /*@ts-ignore*/
+    delete instance.webXdc;
+    /*@ts-ignore*/
+    delete instance.app;
+    this.instances.delete(id);
+    this.deletedInstances.add(id);
   }
 
   add(): Instance {

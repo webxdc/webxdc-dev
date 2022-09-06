@@ -31,6 +31,7 @@ export type OnMessage = (message: Message) => void;
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;
   clear(): void;
+  removeClient(id: string): void;
 }
 
 class Client implements WebXdcMulti {
@@ -38,7 +39,7 @@ class Client implements WebXdcMulti {
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
 
-  constructor(public processor: Processor, public id: string) {}
+  constructor(public processor: Processor, public id: string) { }
 
   sendUpdate(update: Update<JsonValue>, descr: string): void {
     this.processor.distribute(this.id, update, descr);
@@ -122,12 +123,17 @@ class Processor implements IProcessor {
   updates: UpdateDescr[] = [];
   clearInstanceIds: Set<string> = new Set();
 
-  constructor(public onMessage: OnMessage) {}
+  constructor(public onMessage: OnMessage) { }
 
   createClient(id: string): WebXdcMulti {
     const client = new Client(this, id);
     this.clients.push(client);
     return client;
+  }
+
+  removeClient(id: string) {
+    let client_index = this.clients.findIndex((client) => client.id == id);
+    this.clients.splice(client_index, 1);
   }
 
   distribute(instanceId: string, update: Update<JsonValue>, descr: string) {
@@ -170,6 +176,6 @@ class Processor implements IProcessor {
   }
 }
 
-export function createProcessor(onMessage: OnMessage = () => {}): IProcessor {
+export function createProcessor(onMessage: OnMessage = () => { }): IProcessor {
   return new Processor(onMessage);
 }

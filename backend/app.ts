@@ -69,6 +69,16 @@ export function createFrontend(
       color: instance.color,
     });
   });
+  app.delete("/instances/:id", (req, res) => {
+    instances.delete(parseInt(req.params.id));
+    res.json(
+      Array.from(instances.instances.values()).map((instance) => ({
+        id: instance.id,
+        port: instance.port,
+        url: instance.url,
+        color: instance.color,
+      })))
+  });
   app.post<{}, { status: string }>("/clear", (req, res) => {
     instances.clear();
     res.json({

@@ -33,7 +33,7 @@ export type Transport = {
   address(): string;
   name(): string;
   setInfo(info: Info): void;
-  //  getInfo(): Promise<Info>;
+  // getInfo(): Promise<Info>;
 };
 
 type Log = (...args: any[]) => void;

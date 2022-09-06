@@ -17,7 +17,7 @@ type DeleteListener = () => boolean;
 type Connect = (
   updateListener: UpdateListenerMulti,
   serial: number,
-  deleteListener: DeleteListener,
+  deleteListener?: DeleteListener,
   clearListener?: ClearListener,
 ) => void;
 
@@ -42,7 +42,7 @@ class Client implements WebXdcMulti {
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
 
-  constructor(public processor: Processor, public id: string) { }
+  constructor(public processor: Processor, public id: string) {}
 
   sendUpdate(update: Update<JsonValue>, descr: string): void {
     this.processor.distribute(this.id, update, descr);
@@ -51,7 +51,7 @@ class Client implements WebXdcMulti {
   connect(
     listener: UpdateListenerMulti,
     serial: number,
-    deleteListene: DeleteListener,
+    deleteListener: DeleteListener = () => true,
     clearListener: ClearListener = () => true,
   ): void {
     this.processor.onMessage({
@@ -89,7 +89,7 @@ class Client implements WebXdcMulti {
       return hasReceived;
     };
 
-    this.deleteListener = deleteListene;
+    this.deleteListener = deleteListener;
     this.updateListener = updateListener;
     this.updateSerial = serial;
     this.processor.catchUp(updateListener, serial);
@@ -140,7 +140,7 @@ class Processor implements IProcessor {
   updates: UpdateDescr[] = [];
   clearInstanceIds: Set<string> = new Set();
 
-  constructor(public onMessage: OnMessage) { }
+  constructor(public onMessage: OnMessage) {}
 
   createClient(id: string): WebXdcMulti {
     const client = new Client(this, id);
@@ -194,6 +194,6 @@ class Processor implements IProcessor {
   }
 }
 
-export function createProcessor(onMessage: OnMessage = () => { }): IProcessor {
+export function createProcessor(onMessage: OnMessage = () => {}): IProcessor {
   return new Processor(onMessage);
 }

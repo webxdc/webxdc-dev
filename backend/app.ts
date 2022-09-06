@@ -51,12 +51,7 @@ export function createFrontend(
   });
   app.get<{}, Instance[]>("/instances", (req, res) => {
     res.json(
-      Array.from(instances.instances.values()).map((instance) => ({
-        id: instance.id,
-        port: instance.port,
-        url: instance.url,
-        color: instance.color,
-      }))
+      instances.list()
     );
   });
   app.post<{}, Instance>("/instances", (req, res) => {
@@ -69,16 +64,11 @@ export function createFrontend(
       color: instance.color,
     });
   });
-  app.delete("/instances/:id", (req, res) => {
+  app.delete<{id: string}, Instance[]>("/instances/:id", (req, res) => {
     instances.delete(parseInt(req.params.id));
-    res.json(
-      Array.from(instances.instances.values()).map((instance) => ({
-        id: instance.id,
-        port: instance.port,
-        url: instance.url,
-        color: instance.color,
-      })))
+    res.json(instances.list())
   });
+
   app.post<{}, { status: string }>("/clear", (req, res) => {
     instances.clear();
     res.json({
@@ -183,6 +173,7 @@ function getContentSecurityPolicy(
 
   return policy + `connect-src ${connectSrcUrls.join(" ")} ;`;
 }
+
 
 function wsUrl(httpUrl: string): string {
   return httpUrl.replace("http://", "ws://");

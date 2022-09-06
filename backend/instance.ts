@@ -7,6 +7,7 @@ import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
+import { Instance as FrontendInstance } from '../types/instance';
 
 export type Options = {
   basePort: number;
@@ -54,7 +55,6 @@ export class Instances {
   location: Location;
   appInfo: AppInfo;
   instances: Map<number, Instance>;
-  deletedInstances: Set<number> = new Set();
   basePort: number;
   currentPort: number;
   csp: boolean;
@@ -79,17 +79,6 @@ export class Instances {
       }
       this._onMessage(message);
     });
-  }
-
-  delete(id: number) {
-    let instance = this.instances.get(id)!;
-    this.processor.removeClient(instance.id!);
-    /*@ts-ignore*/
-    delete instance.webXdc;
-    /*@ts-ignore*/
-    delete instance.app;
-    this.instances.delete(id);
-    this.deletedInstances.add(id);
   }
 
   add(): Instance {
@@ -144,11 +133,11 @@ export class Instances {
             },
             parsed.serial,
             () => {
-              return broadcast(wss, JSON.stringify({ type: "delete" }));
+              return broadcast(wss, JSON.stringify({ type: "clear" }));
             },
             () => {
-              return broadcast(wss, JSON.stringify({ type: "clear" }));
-            }
+              return broadcast(wss, JSON.stringify({ type: "delete" }));
+            },
           );
         } else if (isRequestInfoMessage(parsed)) {
           ws.send(
@@ -169,6 +158,15 @@ export class Instances {
     return instance;
   }
 
+  delete(id: number) {
+    let instance = this.instances.get(id);
+    if (instance == null) {
+      throw new Error(`Instance with id ${id} can't be deleted because it does not exist`);
+    }
+    this.processor.removeClient(instance.id);
+    this.instances.delete(id);
+  }
+
   start() {
     for (const instance of this.instances.values()) {
       instance.start();
@@ -181,6 +179,15 @@ export class Instances {
 
   onMessage(onMessage: OnMessage) {
     this._onMessage = onMessage;
+  }
+
+  list(): FrontendInstance[]{
+    return Array.from(this.instances.values()).map((instance) => ({
+      id: instance.id,
+      port: instance.port,
+      url: instance.url,
+      color: instance.color,
+    }))
   }
 }
 

@@ -144,6 +144,9 @@ export class Instances {
             },
             parsed.serial,
             () => {
+              return broadcast(wss, JSON.stringify({ type: "delete" }));
+            },
+            () => {
               return broadcast(wss, JSON.stringify({ type: "clear" }));
             }
           );

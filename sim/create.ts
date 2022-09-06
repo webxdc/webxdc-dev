@@ -19,7 +19,11 @@ type InfoMessage = {
   info: Info;
 };
 
-type Message = UpdatesMessage | ClearMessage | InfoMessage;
+type DeleteMessage = {
+  type: "delete";
+};
+
+type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -66,6 +70,9 @@ export function createWebXdc(
         } else if (isInfoMessage(message)) {
           log("info", message.info);
           transport.setInfo(message.info);
+        } else if (isDeleteMessage(message)) {
+          log("delete");
+          //transport.clear();
         }
       });
       transport.onConnect(() => {
@@ -93,4 +100,8 @@ function isClearMessage(data: Message): data is ClearMessage {
 
 function isInfoMessage(data: Message): data is InfoMessage {
   return data.type === "info";
+}
+
+function isDeleteMessage(data: Message): data is InfoMessage {
+  return data.type === "delete";
 }

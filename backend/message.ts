@@ -12,11 +12,13 @@ type UpdateListenerMulti = (
 ) => boolean;
 
 type ClearListener = () => boolean;
+type DeleteListener = () => boolean;
 
 type Connect = (
   updateListener: UpdateListenerMulti,
   serial: number,
-  clearListener?: ClearListener
+  deleteListener: DeleteListener,
+  clearListener?: ClearListener,
 ) => void;
 
 export type WebXdcMulti = {
@@ -38,6 +40,7 @@ class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
+  deleteListener: DeleteListener | null = null;
 
   constructor(public processor: Processor, public id: string) { }
 
@@ -48,7 +51,8 @@ class Client implements WebXdcMulti {
   connect(
     listener: UpdateListenerMulti,
     serial: number,
-    clearListener: ClearListener = () => true
+    deleteListene: DeleteListener,
+    clearListener: ClearListener = () => true,
   ): void {
     this.processor.onMessage({
       type: "connect",
@@ -84,6 +88,8 @@ class Client implements WebXdcMulti {
       }
       return hasReceived;
     };
+
+    this.deleteListener = deleteListene;
     this.updateListener = updateListener;
     this.updateSerial = serial;
     this.processor.catchUp(updateListener, serial);
@@ -115,6 +121,17 @@ class Client implements WebXdcMulti {
     this.clearListener();
     this.processor.clearInstanceIds.add(this.id);
   }
+
+  // sends a message to the all clients to shut down
+  delete() {
+    if (
+      this.deleteListener == null ||
+      this.processor.clearInstanceIds.has(this.id)
+    ) {
+      return;
+    }
+    this.deleteListener()
+  }
 }
 
 class Processor implements IProcessor {
@@ -133,6 +150,7 @@ class Processor implements IProcessor {
 
   removeClient(id: string) {
     let client_index = this.clients.findIndex((client) => client.id == id);
+    this.clients[client_index].delete();
     this.clients.splice(client_index, 1);
   }
 

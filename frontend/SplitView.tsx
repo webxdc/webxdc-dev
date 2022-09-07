@@ -1,78 +1,94 @@
 
-import { Box } from "@hope-ui/solid";
-import { ParentComponent, onMount } from "solid-js";
+import { Box, IconButton, Tooltip } from "@hope-ui/solid";
+import { Accessor } from "solid-js";
+import { createMemo, ParentComponent, Component, JSX, createSignal, children } from "solid-js";
+import { ResolvedJSXElement } from "solid-js/types/reactive/signal";
 
 
+const SidebarButton: Component<{
+  label: string;
+  onClick: () => void;
+  icon: JSX.Element;
+  top: string;
+  right: string;
+}> = (props) => {
+  return (
+    <Tooltip label={props.label}>
+      <IconButton
+        variant="ghost"
+        size="sm"
+        position="relative"
+        top={props.top}
+        right={props.right}
+        onClick={props.onClick}
+        aria-label={props.label}
+        backgroundColor="white"
+        icon={props.icon}
+      />
+    </Tooltip>
+  );
+};
+
+let x = 0;
+let initialLeftWidth = 0;
 const SplitView: ParentComponent<{
 }> = (props) => {
-    onMount(() => {
-        document.addEventListener('DOMContentLoaded', function () {
-            // Query the element
-            const resizer = document.getElementById('dragMe');
-            const leftSide = resizer.previousElementSibling as HTMLElement;
-            const rightSide = resizer.nextElementSibling as HTMLElement;
 
-            // The current position of mouse
-            let x = 0;
-            let y = 0;
-            let leftWidth = 0;
+    // Somehow using `HtmlElement` here causes a type error
+    let leftSide: any;
+    let rightSide: any;
+    let resizer: any;
 
-            // Handle the mousedown event
-            // that's triggered when user drags the resizer
-            const mouseDownHandler = function (e) {
-                // Get the current mouse position
-                x = e.clientX;
-                y = e.clientY;
-                leftWidth = leftSide.getBoundingClientRect().width;
 
-                // Attach the listeners to `document`
-                document.addEventListener('mousemove', mouseMoveHandler);
-                document.addEventListener('mouseup', mouseUpHandler);
-            };
+    const resolvedChildren = children(() => props.children) as Accessor<ResolvedJSXElement[]>;
 
-            const mouseMoveHandler = function (e) {
-                // How far the mouse has been moved
-                const dx = e.clientX - x;
-                const dy = e.clientY - y;
-
-                const newLeftWidth = ((leftWidth + dx) * 100) / (resizer.parentNode as HTMLElement).getBoundingClientRect().width;
-                leftSide.style.width = `${newLeftWidth}%`;
-
-                resizer.style.cursor = 'col-resize';
-                document.body.style.cursor = 'col-resize';
-
-                leftSide.style.userSelect = 'none';
-                leftSide.style.pointerEvents = 'none';
-
-                rightSide.style.userSelect = 'none';
-                rightSide.style.pointerEvents = 'none';
-            };
-
-            const mouseUpHandler = function () {
-                resizer.style.removeProperty('cursor');
-                document.body.style.removeProperty('cursor');
-
-                leftSide.style.removeProperty('user-select');
-                leftSide.style.removeProperty('pointer-events');
-
-                rightSide.style.removeProperty('user-select');
-                rightSide.style.removeProperty('pointer-events');
-
-                // Remove the handlers of `mousemove` and `mouseup`
-                document.removeEventListener('mousemove', mouseMoveHandler);
-                document.removeEventListener('mouseup', mouseUpHandler);
-            };
-
-            // Attach the handler
-            resizer.addEventListener('mousedown', mouseDownHandler);
-        });
+    let [isResizing, setIsResizing] = createSignal(false);
+    let [leftWidth, setLeftWidth] = createSignal(60);
+    let leftStyleGet = createMemo(() => {
+      return {
+        width: leftWidth() + "%",
+        "user-select": isResizing() ? "none" : "user-select",
+        "pointer-event": isResizing() ? "none" : "pointer-events"
+      }
     })
+    let rightStyleGet = createMemo(() => {
+      return {
+        "user-select": isResizing() ? "none" : "user-select",
+        "pointer-event": isResizing() ? "none" : "pointer-events"
+      }
+    })
+    let resizerStyleGet = createMemo(() => {
+      return isResizing() ? {cursor: 'col-resize'} : undefined
+    })
+
+
+    function mouseMoveHandler(e: MouseEvent) {
+      const dx = e.clientX - x;
+      setLeftWidth(((initialLeftWidth + dx) * 100) / (resizer.parentNode as HTMLElement).getBoundingClientRect().width)
+      document.body.style.cursor = 'col-resize';
+    };
+
+    function mouseUpHandler () {
+      setIsResizing(false);
+      document.body.style.removeProperty('cursor');
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+    };
+
+    function mouseDownHandler(e: MouseEvent) {
+      x = e.clientX;
+      initialLeftWidth = leftSide.getBoundingClientRect().width;
+      setIsResizing(true);
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
+    };
+
     return (
-        <Box h="$full" class="splitview-container">
-            <div class="splitview-container__left">{props.children[0]}</div>
-            <div class="splitview-resizer" id="dragMe"></div>
-            <div class="splitview-container__right">{props.children[1]}</div>
-        </Box>
+      <Box h="$full" class="splitview-container">
+        <div class="splitview-container-left" style={leftStyleGet()} ref={leftSide}>{resolvedChildren()[0]}</div>
+        <div class="splitview-resizer" style={resizerStyleGet()} ref={resizer} onMouseDown={mouseDownHandler}></div>
+        <div class="splitview-container-right" style={rightStyleGet()}  ref={rightSide}>{resolvedChildren()[1]}</div>
+    </Box>
     );
 };
 

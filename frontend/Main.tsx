@@ -1,13 +1,10 @@
-import { Component, For, createSignal, Show, Setter, JSX } from "solid-js";
+import { Component, For, createSignal, Setter } from "solid-js";
 import {
   Flex,
   Box,
-  Tooltip,
-  IconButton,
   createDisclosure,
   Heading,
 } from "@hope-ui/solid";
-import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 
 import { instances } from "./store";
 import InstancesButtons from "./InstancesButtons";
@@ -62,29 +59,4 @@ const Main: Component = () => {
     </>
   );
 };
-
-const SidebarButton: Component<{
-  label: string;
-  onClick: () => void;
-  icon: JSX.Element;
-  top: string;
-  right: string;
-}> = (props) => {
-  return (
-    <Tooltip label={props.label}>
-      <IconButton
-        variant="ghost"
-        size="sm"
-        position="relative"
-        top={props.top}
-        right={props.right}
-        onClick={props.onClick}
-        aria-label={props.label}
-        backgroundColor="white"
-        icon={props.icon}
-      />
-    </Tooltip>
-  );
-};
-
 export default Main;

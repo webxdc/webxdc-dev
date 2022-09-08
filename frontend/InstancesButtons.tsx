@@ -1,4 +1,4 @@
-import type { Component } from "solid-js";
+import { Component, Show } from "solid-js";
 import { Button, notificationService, Flex, Tooltip } from "@hope-ui/solid";
 
 import type { Instance } from "../types/instance";
@@ -10,6 +10,8 @@ This wipes out any localStorage and sessionStorage on each client, and reloads t
 
 const InstancesButtons: Component<{
   onAfterAdd?: (instanceId: string) => void;
+  show_messages_button: boolean;
+  onOpenMessages: () => void;
 }> = (props) => {
   const handleAddInstance = async () => {
     const instanceData: Instance = await (
@@ -44,6 +46,9 @@ const InstancesButtons: Component<{
       <Tooltip label={CLEAR_INFO}>
         <Button colorScheme="neutral" size="xs" onClick={handleClear}>Reset</Button>
       </Tooltip>
+      <Show when={props.show_messages_button} >
+        <Button colorScheme="neutral" size="xs" onClick={props.onOpenMessages}>Open Messages</Button>
+      </Show>
     </Flex>
   );
 };

@@ -1,5 +1,5 @@
 import { Component, createSignal, Show, Accessor, Setter } from "solid-js";
-import { Flex, Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
+import { Flex, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
 
 import { Message } from "../types/message";
 import MessageDetails from "./MessageDetails";
@@ -22,7 +22,7 @@ const Sidebar: Component<{
   return (
     <Flex height="100%" flexDirection="column" overflow="auto">
       <Filters value={props.search()} onChange={props.setSearch} />
-      <Tabs>
+      <Tabs overflow="auto">
         <TabList>
           <Tab>Messages</Tab>
           <Tab>Chat</Tab>

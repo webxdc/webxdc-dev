@@ -54,7 +54,7 @@ const App: Component = () => {
           <Tab>Main</Tab>
           <Tab>Info</Tab>
         </TabList>
-        <TabPanel flexGrow="1" maxHeight="calc(100vh - 40px)">
+        <TabPanel flexGrow="1" display="flex" justifyContent="center" maxHeight="calc(100vh - 40px)">
           <AppRoutes />
         </TabPanel>
         <TabPanel>

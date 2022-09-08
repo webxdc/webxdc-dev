@@ -1,9 +1,10 @@
-import { Component, For, createSignal, Setter } from "solid-js";
+import { Component, For, createSignal, Setter, Show } from "solid-js";
 import {
   Flex,
   Box,
   createDisclosure,
   Heading,
+  Button,
 } from "@hope-ui/solid";
 
 import { instances } from "./store";
@@ -23,38 +24,67 @@ const Main: Component = () => {
     onOpen();
     return setSearch(value);
   };
-
   const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
     <>
       {
-        <SplitView>
-          <Flex flexDirection="column">
-            <Flex mb="$1" justifyContent="space-between">
-              <Heading level="1">Devices</Heading>
-              <InstancesButtons
-                onAfterAdd={(instanceId) => {
-                  scrollToInstance(instanceId);
-                }}
-              />
-            </Flex>
-            <Box overflow="auto" >
-              <Flex flexWrap="wrap" gap="$5" justifyContent="center">
-                <For each={instances()}>
-                  {(instance: InstanceData) => (
-                    <Instance instance={instance} setSearch={setSearchAndOpen} />
-                  )}
-                </For>
+        <Show when={isOpen()} fallback={
+          <Flex>
+            <Flex flexDirection="column">
+                <Flex mb="$1" justifyContent="space-between">
+                  <Heading level="1">Devices</Heading>
+                  <InstancesButtons
+                    onAfterAdd={(instanceId) => {
+                      scrollToInstance(instanceId);
+                    }}
+                    show_messages_button={true}
+                    onOpenMessages={onOpen}
+                  />
+                </Flex>
+                <Box overflow="auto" >
+                  <Flex flexWrap="wrap" gap="$5" justifyContent="center">
+                    <For each={instances()}>
+                      {(instance: InstanceData) => (
+                        <Instance instance={instance} setSearch={setSearchAndOpen} />
+                      )}
+                    </For>
+                  </Flex>
+                </Box>
               </Flex>
-            </Box>
-          </Flex>
-          <Box overflow="auto">
-            <Heading level="1" mb="1">Messages</Heading>
-            <Sidebar search={search} setSearch={setSearchAndOpen} />
-          </Box>
-        </SplitView>
-
+            </Flex>
+          }>
+          <SplitView>
+            <Flex flexDirection="column">
+              <Flex mb="$1" justifyContent="space-between">
+                <Heading level="1">Devices</Heading>
+                <InstancesButtons
+                  onAfterAdd={(instanceId) => {
+                    scrollToInstance(instanceId);
+                  }}
+                  show_messages_button={false}
+                  onOpenMessages={() => {}}
+                />
+              </Flex>
+              <Box overflow="auto" >
+                <Flex flexWrap="wrap" gap="$5" justifyContent="center">
+                  <For each={instances()}>
+                    {(instance: InstanceData) => (
+                      <Instance instance={instance} setSearch={setSearchAndOpen} />
+                    )}
+                  </For>
+                </Flex>
+              </Box>
+            </Flex>
+            <Flex direction="column">
+              <Flex justifyContent="space-between" marginBottom="$1">
+                <Heading display="inline-block" level="1" mb="1">Messages</Heading>
+                <Button colorScheme="neutral" size="xs" onClick={onClose}> Close Messages </Button>
+              </Flex>
+              <Sidebar search={search} setSearch={setSearchAndOpen} />
+            </Flex>
+          </SplitView>
+        </Show>
       }
     </>
   );

@@ -1,33 +1,8 @@
 
-import { Box, IconButton, Tooltip } from "@hope-ui/solid";
+import { Box } from "@hope-ui/solid";
 import { Accessor } from "solid-js";
 import { createMemo, ParentComponent, Component, JSX, createSignal, children } from "solid-js";
 import { ResolvedJSXElement } from "solid-js/types/reactive/signal";
-
-
-const SidebarButton: Component<{
-  label: string;
-  onClick: () => void;
-  icon: JSX.Element;
-  top: string;
-  right: string;
-}> = (props) => {
-  return (
-    <Tooltip label={props.label}>
-      <IconButton
-        variant="ghost"
-        size="sm"
-        position="relative"
-        top={props.top}
-        right={props.right}
-        onClick={props.onClick}
-        aria-label={props.label}
-        backgroundColor="white"
-        icon={props.icon}
-      />
-    </Tooltip>
-  );
-};
 
 let x = 0;
 let initialLeftWidth = 0;
@@ -88,7 +63,7 @@ const SplitView: ParentComponent<{
         <div class="splitview-container-left" style={leftStyleGet()} ref={leftSide}>{resolvedChildren()[0]}</div>
         <div class="splitview-resizer" style={resizerStyleGet()} ref={resizer} onMouseDown={mouseDownHandler}></div>
         <div class="splitview-container-right" style={rightStyleGet()}  ref={rightSide}>{resolvedChildren()[1]}</div>
-    </Box>
+      </Box>
     );
 };
 

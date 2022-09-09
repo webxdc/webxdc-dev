@@ -33,6 +33,7 @@ type RequestInfoMessage = {
 class Instance {
   id: string;
   color: string;
+  server: any;//Server<WebSocket> | undefined;
 
   constructor(
     public app: expressWs.Application,
@@ -45,9 +46,13 @@ class Instance {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.server = this.app.listen(this.port, () => {
       console.log(`Starting webxdc instance at port ${this.port}`);
     });
+  }
+
+  close() {
+    this.server.close()
   }
 }
 
@@ -163,6 +168,7 @@ export class Instances {
     if (instance == null) {
       throw new Error(`Instance with id ${id} can't be deleted because it does not exist`);
     }
+    instance.close();
     this.processor.removeClient(instance.id);
     this.instances.delete(id);
   }

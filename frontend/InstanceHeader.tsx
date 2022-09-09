@@ -1,7 +1,7 @@
 import { Component, Show, createMemo, JSX, Accessor } from "solid-js";
 import { Flex, Text, Badge, Tooltip, IconButton, notificationService } from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
-import { FiDelete, FiExternalLink, FiTrash } from "solid-icons/fi";
+import { FiExternalLink, FiTrash } from "solid-icons/fi";
 
 import type { Instance as InstanceData } from "../types/instance";
 import { sent, received, mutateInstances } from "./store";

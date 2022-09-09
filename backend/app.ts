@@ -174,7 +174,6 @@ function getContentSecurityPolicy(
   return policy + `connect-src ${connectSrcUrls.join(" ")} ;`;
 }
 
-
 function wsUrl(httpUrl: string): string {
   return httpUrl.replace("http://", "ws://");
 }

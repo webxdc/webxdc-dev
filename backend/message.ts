@@ -17,8 +17,8 @@ type DeleteListener = () => boolean;
 type Connect = (
   updateListener: UpdateListenerMulti,
   serial: number,
-  deleteListener?: DeleteListener,
   clearListener?: ClearListener,
+  deleteListener?: DeleteListener,
 ) => void;
 
 export type WebXdcMulti = {

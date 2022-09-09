@@ -72,7 +72,7 @@ export function createWebXdc(
           transport.setInfo(message.info);
         } else if (isDeleteMessage(message)) {
           log("delete");
-          //transport.clear();
+          window.top?.close()
         }
       });
       transport.onConnect(() => {

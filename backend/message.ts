@@ -51,8 +51,8 @@ class Client implements WebXdcMulti {
   connect(
     listener: UpdateListenerMulti,
     serial: number,
-    deleteListener: DeleteListener = () => true,
     clearListener: ClearListener = () => true,
+    deleteListener: DeleteListener = () => true,
   ): void {
     this.processor.onMessage({
       type: "connect",
@@ -124,10 +124,7 @@ class Client implements WebXdcMulti {
 
   // sends a message to the all clients to shut down
   delete() {
-    if (
-      this.deleteListener == null ||
-      this.processor.clearInstanceIds.has(this.id)
-    ) {
+    if ( this.deleteListener == null ) {
       return;
     }
     this.deleteListener()

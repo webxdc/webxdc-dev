@@ -33,7 +33,7 @@ type RequestInfoMessage = {
 class Instance {
   id: string;
   color: string;
-  server: any;//Server<WebSocket> | undefined;
+  server: any;
 
   constructor(
     public app: expressWs.Application,

@@ -17,13 +17,7 @@ This allows you to simulate multiple users using the same application.
 
 You can install the tool globally. This works with any webxdc project:
 
-```shell<SidebarButton
-            label="Close"
-            icon={<IoCaretBackOutline size={22} color="#000000" />}
-            onClick={() => {}}
-            right="15px"
-            bottom="0px"
-          />
+```
 npm install -g webxdc-dev
 ```
 
@@ -47,8 +41,8 @@ to see full information. You can also filter messages. There is also a "chat"
 tab which you can use to see `info` contained in updates as well as any
 `summary` text contained in an update.
 
-The sidebar can be closed with the `x` button within the sidebar and expanded 
-by clicking on the `<` button which is enabled when the sidebar is closed.
+The sidebar can be closed with `Close Messages` button within the sidebar and 
+expanded by clicking on `Open Messages` within the devices tab.
 The sidebars width can also be adjusted by moving the separating line between
 devices and sidebar.
 

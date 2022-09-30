@@ -1,10 +1,10 @@
 import { Component, Show, createMemo, JSX, Accessor } from "solid-js";
-import { Flex, Text, Badge, Tooltip, IconButton } from "@hope-ui/solid";
+import { Flex, Text, Badge, Tooltip, IconButton, notificationService } from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
-import { FiExternalLink } from "solid-icons/fi";
+import { FiExternalLink, FiTrash } from "solid-icons/fi";
 
 import type { Instance as InstanceData } from "../types/instance";
-import { sent, received } from "./store";
+import { sent, received, mutateInstances } from "./store";
 import { Search } from "./Sidebar";
 
 const InstanceHeader: Component<{
@@ -18,6 +18,15 @@ const InstanceHeader: Component<{
   const sentCount = createMemo(() => {
     return sent(props.instance.id);
   });
+
+  const handleRemoveInstance = async (id: string) => {
+    let new_instances = await (await fetch(`/instances/${id}`, { method: "DELETE" })).json()
+    mutateInstances(new_instances);
+    notificationService.show({
+      title: `Deleted instance ${id}`,
+    });
+  };
+
 
   const receivedCount = createMemo(() => {
     return received(props.instance.id);
@@ -91,6 +100,11 @@ const InstanceHeader: Component<{
           onClick={props.onReload}
           disabled={!props.isStarted()}
           icon={<IoRefreshOutline size={22} color="#000000" />}
+        />
+        <InstanceButton
+          label="Delete"
+          onClick={() => handleRemoveInstance(props.instance.id)}
+          icon={<FiTrash size={22} color="#000000" />}
         />
       </Flex>
     </Flex>

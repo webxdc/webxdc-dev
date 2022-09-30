@@ -7,6 +7,7 @@ import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
+import { Instance as FrontendInstance } from '../types/instance';
 
 export type Options = {
   basePort: number;
@@ -32,6 +33,7 @@ type RequestInfoMessage = {
 class Instance {
   id: string;
   color: string;
+  server: any;
 
   constructor(
     public app: expressWs.Application,
@@ -44,9 +46,13 @@ class Instance {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.server = this.app.listen(this.port, () => {
       console.log(`Starting webxdc instance at port ${this.port}`);
     });
+  }
+
+  close() {
+    this.server.close()
   }
 }
 
@@ -133,7 +139,10 @@ export class Instances {
             parsed.serial,
             () => {
               return broadcast(wss, JSON.stringify({ type: "clear" }));
-            }
+            },
+            () => {
+              return broadcast(wss, JSON.stringify({ type: "delete" }));
+            },
           );
         } else if (isRequestInfoMessage(parsed)) {
           ws.send(
@@ -154,6 +163,16 @@ export class Instances {
     return instance;
   }
 
+  delete(id: number) {
+    let instance = this.instances.get(id);
+    if (instance == null) {
+      throw new Error(`Instance with id ${id} can't be deleted because it does not exist`);
+    }
+    instance.close();
+    this.processor.removeClient(instance.id);
+    this.instances.delete(id);
+  }
+
   start() {
     for (const instance of this.instances.values()) {
       instance.start();
@@ -166,6 +185,15 @@ export class Instances {
 
   onMessage(onMessage: OnMessage) {
     this._onMessage = onMessage;
+  }
+
+  list(): FrontendInstance[]{
+    return Array.from(this.instances.values()).map((instance) => ({
+      id: instance.id,
+      port: instance.port,
+      url: instance.url,
+      color: instance.color,
+    }))
   }
 }
 

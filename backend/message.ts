@@ -12,11 +12,13 @@ type UpdateListenerMulti = (
 ) => boolean;
 
 type ClearListener = () => boolean;
+type DeleteListener = () => boolean;
 
 type Connect = (
   updateListener: UpdateListenerMulti,
   serial: number,
-  clearListener?: ClearListener
+  clearListener?: ClearListener,
+  deleteListener?: DeleteListener,
 ) => void;
 
 export type WebXdcMulti = {
@@ -31,12 +33,14 @@ export type OnMessage = (message: Message) => void;
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;
   clear(): void;
+  removeClient(id: string): void;
 }
 
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
+  deleteListener: DeleteListener | null = null;
 
   constructor(public processor: Processor, public id: string) {}
 
@@ -47,7 +51,8 @@ class Client implements WebXdcMulti {
   connect(
     listener: UpdateListenerMulti,
     serial: number,
-    clearListener: ClearListener = () => true
+    clearListener: ClearListener = () => true,
+    deleteListener: DeleteListener = () => true,
   ): void {
     this.processor.onMessage({
       type: "connect",
@@ -83,6 +88,8 @@ class Client implements WebXdcMulti {
       }
       return hasReceived;
     };
+
+    this.deleteListener = deleteListener;
     this.updateListener = updateListener;
     this.updateSerial = serial;
     this.processor.catchUp(updateListener, serial);
@@ -114,6 +121,14 @@ class Client implements WebXdcMulti {
     this.clearListener();
     this.processor.clearInstanceIds.add(this.id);
   }
+
+  // sends a message to the all clients to shut down
+  delete() {
+    if ( this.deleteListener == null ) {
+      return;
+    }
+    this.deleteListener()
+  }
 }
 
 class Processor implements IProcessor {
@@ -128,6 +143,12 @@ class Processor implements IProcessor {
     const client = new Client(this, id);
     this.clients.push(client);
     return client;
+  }
+
+  removeClient(id: string) {
+    let client_index = this.clients.findIndex((client) => client.id == id);
+    this.clients[client_index].delete();
+    this.clients.splice(client_index, 1);
   }
 
   distribute(instanceId: string, update: Update<JsonValue>, descr: string) {

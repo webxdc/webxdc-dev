@@ -17,7 +17,7 @@ This allows you to simulate multiple users using the same application.
 
 You can install the tool globally. This works with any webxdc project:
 
-```shell
+```
 npm install -g webxdc-dev
 ```
 
@@ -41,7 +41,10 @@ to see full information. You can also filter messages. There is also a "chat"
 tab which you can use to see `info` contained in updates as well as any
 `summary` text contained in an update.
 
-You can collapse and expand the sidebar with the arrow.
+The sidebar can be closed with `Close Messages` button within the sidebar and 
+expanded by clicking on `Open Messages` within the devices tab.
+The sidebars width can also be adjusted by moving the separating line between
+devices and sidebar.
 
 Each instance header also contains additional information: the port number on
 which the instance was opened, the amount of updates this instance sent and

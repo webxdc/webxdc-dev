@@ -35,7 +35,7 @@ const Chat: Component<{
       <Show when={summary()}>
         {(summary) => <Badge>Summary: {summary}</Badge>}
       </Show>
-      <Box width="53vw" maxHeight="36vh" overflow="scroll">
+      <Box>
         <Table id="chat" dense css={{ "table-layout": "fixed" }}>
           <Thead>
             <Th width="10%" minWidth="7em">

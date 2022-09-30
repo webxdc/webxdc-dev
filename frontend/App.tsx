@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { JSX, createSignal, createEffect } from "solid-js";
-import { Box, Tabs, TabList, Tab, TabPanel } from "@hope-ui/solid";
+import { Box, Tabs, TabList, Tab, TabPanel, Flex } from "@hope-ui/solid";
 import { Route, Routes, useNavigate, useLocation } from "solid-app-router";
 
 import Main from "./Main";
@@ -48,21 +48,21 @@ const App: Component = () => {
   };
 
   return (
-    <Tabs index={tabIndex()} onChange={handleTabsChange}>
-      <TabList>
-        <Tab>Main</Tab>
-        <Tab>Info</Tab>
-      </TabList>
-      <TabPanel>
-        <Panel>
+    <Tabs h="$screenH" index={tabIndex()} onChange={handleTabsChange}>
+      <Flex direction={"column"} h="$full" maxH="100vh">
+        <TabList>
+          <Tab>Main</Tab>
+          <Tab>Info</Tab>
+        </TabList>
+        <TabPanel flexGrow="1" display="flex" justifyContent="center" maxHeight="calc(100vh - 40px)">
           <AppRoutes />
-        </Panel>
-      </TabPanel>
-      <TabPanel>
-        <Panel>
-          <AppRoutes />
-        </Panel>
-      </TabPanel>
+        </TabPanel>
+        <TabPanel>
+          <Panel>
+            <AppRoutes />
+          </Panel>
+        </TabPanel>
+      </Flex>
     </Tabs>
   );
 };

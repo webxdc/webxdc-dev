@@ -1,12 +1,11 @@
-import { Component, For, createSignal, Show, Setter, JSX } from "solid-js";
+import { Component, For, createSignal, Setter, Show } from "solid-js";
 import {
   Flex,
   Box,
-  Tooltip,
-  IconButton,
   createDisclosure,
+  Heading,
+  Button,
 } from "@hope-ui/solid";
-import { IoCaretBackOutline, IoCaretForwardOutline } from "solid-icons/io";
 
 import { instances } from "./store";
 import InstancesButtons from "./InstancesButtons";
@@ -14,6 +13,7 @@ import { scrollToInstance } from "./Instance";
 import Sidebar, { Search } from "./Sidebar";
 import Instance from "./Instance";
 import type { Instance as InstanceData } from "../types/instance";
+import SplitView from "./SplitView";
 
 const Main: Component = () => {
   const [search, setSearch] = createSignal<Search>({
@@ -24,78 +24,69 @@ const Main: Component = () => {
     onOpen();
     return setSearch(value);
   };
-
   const { isOpen, onOpen, onClose } = createDisclosure({ defaultIsOpen: true });
 
   return (
     <>
-      <Flex justifyContent="space-between">
-        <Flex flexDirection="column">
-          <Box m="$8" ml="$1">
-            <Flex flexWrap="wrap" gap="$5" overflow="scroll" maxHeight="77vh">
-              <For each={instances()}>
-                {(instance: InstanceData) => (
-                  <Instance instance={instance} setSearch={setSearchAndOpen} />
-                )}
-              </For>
+      {
+        <Show when={isOpen()} fallback={
+          <Flex>
+            <Flex flexDirection="column">
+                <Flex mb="$1" justifyContent="space-between">
+                  <Heading level="1">Devices</Heading>
+                  <InstancesButtons
+                    onAfterAdd={(instanceId) => {
+                      scrollToInstance(instanceId);
+                    }}
+                    show_messages_button={true}
+                    onOpenMessages={onOpen}
+                  />
+                </Flex>
+                <Box overflow="auto" >
+                  <Flex flexWrap="wrap" gap="$5" justifyContent="center">
+                    <For each={instances()}>
+                      {(instance: InstanceData) => (
+                        <Instance instance={instance} setSearch={setSearchAndOpen} />
+                      )}
+                    </For>
+                  </Flex>
+                </Box>
+              </Flex>
             </Flex>
-          </Box>
-          <InstancesButtons
-            onAfterAdd={(instanceId) => {
-              scrollToInstance(instanceId);
-            }}
-          />
-        </Flex>
-        <Box height="100wh">
-          <Show
-            when={isOpen()}
-            fallback={
-              <SidebarButton
-                label="Open messages"
-                onClick={onOpen}
-                top="2rem"
-                right="-2rem"
-                icon={<IoCaretBackOutline size={22} color="#000000" />}
-              />
-            }
-          >
-            <SidebarButton
-              label="Close messages"
-              onClick={onClose}
-              top="2rem"
-              right="2rem"
-              icon={<IoCaretForwardOutline size={22} color="#000000" />}
-            />
-            <Sidebar search={search} setSearch={setSearchAndOpen} />
-          </Show>
-        </Box>
-      </Flex>
+          }>
+          <SplitView>
+            <Flex flexDirection="column">
+              <Flex mb="$1" justifyContent="space-between">
+                <Heading level="1">Devices</Heading>
+                <InstancesButtons
+                  onAfterAdd={(instanceId) => {
+                    scrollToInstance(instanceId);
+                  }}
+                  show_messages_button={false}
+                  onOpenMessages={() => {}}
+                />
+              </Flex>
+              <Box overflow="auto" >
+                <Flex flexWrap="wrap" gap="$5" justifyContent="center">
+                  <For each={instances()}>
+                    {(instance: InstanceData) => (
+                      <Instance instance={instance} setSearch={setSearchAndOpen} />
+                    )}
+                  </For>
+                </Flex>
+              </Box>
+            </Flex>
+            <Flex direction="column">
+              <Flex justifyContent="space-between" marginBottom="$1">
+                <Heading display="inline-block" level="1" mb="1">Messages</Heading>
+                <Button colorScheme="neutral" size="xs" onClick={onClose}> Close Messages </Button>
+              </Flex>
+              <Sidebar search={search} setSearch={setSearchAndOpen} />
+            </Flex>
+          </SplitView>
+        </Show>
+      }
     </>
   );
 };
-
-const SidebarButton: Component<{
-  label: string;
-  onClick: () => void;
-  icon: JSX.Element;
-  top: string;
-  right: string;
-}> = (props) => {
-  return (
-    <Tooltip label={props.label}>
-      <IconButton
-        variant="ghost"
-        size="sm"
-        position="relative"
-        top={props.top}
-        right={props.right}
-        onClick={props.onClick}
-        aria-label={props.label}
-        backgroundColor="white"
-        icon={props.icon}
-      />
-    </Tooltip>
-  );
-};
-
 export default Main;

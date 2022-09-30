@@ -24,37 +24,33 @@ const Messages: Component<{
   });
 
   return (
-    <Box width="53vw" maxHeight="36vh" overflow="scroll">
-      <Table id="messages" dense css={{ "table-layout": "fixed" }}>
-        <Thead>
-          <Th width="10%" minWidth="7em">
-            Id
-          </Th>
-          <Th width="10%">Type</Th>
-          <Th width="20%">Descr</Th>
-          <Th minWidth="60%">Payload</Th>
-        </Thead>
-        <Tbody>
-          <For
-            each={getMessages({
-              instanceId: props.search().instanceId,
-              type: props.search().type,
-            })}
-          >
-            {(message, index) => (
-              <MessageRow
-                isSelected={messageIndex() === index()}
-                message={message}
-                onSelect={(message) => {
-                  setMessageIndex(index());
-                  props.onSelectMessage(message);
-                }}
-              />
-            )}
-          </For>
-        </Tbody>
-      </Table>
-    </Box>
+    <Table id="messages" dense css={{ "table-layout": "fixed" }}>
+      <Thead>
+        <Th maxW="70px"> Id </Th>
+        <Th maxW="70px">Type</Th>
+        <Th maxW="70px">Descr</Th>
+        <Th>Payload</Th>
+      </Thead>
+      <Tbody>
+        <For
+          each={getMessages({
+            instanceId: props.search().instanceId,
+            type: props.search().type,
+          })}
+        >
+          {(message, index) => (
+            <MessageRow
+              isSelected={messageIndex() === index()}
+              message={message}
+              onSelect={(message) => {
+                setMessageIndex(index());
+                props.onSelectMessage(message);
+              }}
+            />
+          )}
+        </For>
+      </Tbody>
+    </Table>
   );
 };
 

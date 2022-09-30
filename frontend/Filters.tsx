@@ -15,7 +15,7 @@ const Filters: Component<{
   onChange: (search: Search) => void;
 }> = (props) => {
   return (
-    <Flex justifyContent="flex-start" gap="$5">
+    <Flex justifyContent="flex-start" gap="$5" mb="$1">
       <Filter
         label="instanceId"
         entries={instanceIdEntries()}

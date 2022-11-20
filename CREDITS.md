@@ -6,4 +6,6 @@
 
 - Holger Krekel
 
+- Sebastian Klähn
+
 Thank you too to the webxdc developers and Merlinux.

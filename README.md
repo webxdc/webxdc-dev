@@ -27,6 +27,45 @@ can also install `webxdc-dev` in just your development project as a
 
 ## Usage
 
+### Starting
+
+#### Running a directory
+
+In case you don't use bundling tooling and have a simple webxdc project where
+you have a directory that is zipped directly into a `.xdc` file, you can run it
+directly:
+
+```shell
+webxdc-dev run /path/to/webxdc/project
+```
+
+This may not be convenient or may not even work if you use tools like `vite` or
+`webpack-dev-server` though. For that, see below.
+
+#### Running an .xdc file
+
+You can run an `.xdc` file with the following command:
+
+```shell
+webxdc-dev run /path/to/my.xdc
+```
+
+#### With vite, webpack-dev-server, etc
+
+It can be very useful to use a dev server that supports bundling and hot
+reloading, like `vite` or `webpack-dev-server`. In this case your
+project has a `package.json`.
+
+You can run `webxdc-dev` against such a dev server directly. For instance if
+you have your project under development running on `http://localhost:3000`,
+this is how you can run it:
+
+```shell
+webxdc-dev run http://localhost:3000
+```
+
+### After starting
+
 When you start `webxdc-dev`, it opens a browser window with the webxdc-dev UI.
 Two webxdc application instances are already running. You can start the
 instance in the embedded UI with the start button in each instance header. You
@@ -57,7 +96,7 @@ are running.
 The dev tool console shows messages with the same color prefix as the instance
 UIs.
 
-### Clean state
+#### Clean state
 
 Instances start with a clean slate: empty `localStorage` and `sessionStorage`.
 This means an instance may flash briefly with old state when it is opened for
@@ -65,41 +104,6 @@ the first time after startup.
 
 The UI also lets you clear the state with the `reset` button - this refreshes
 both server and client state, and is as if you restarted `webxdc-dev`.
-
-### Running a directory
-
-In case you don't use bundling tooling and have a simple webxdc project where
-you have a directory that is zipped directly into a `.xdc` file, you can run it
-directly:
-
-```shell
-webxdc-dev run /path/to/webxdc/project
-```
-
-This may not be convenient or may not even work if you use tools like `vite` or
-`webpack-dev-server` though. For that, see below.
-
-### Running an .xdc file
-
-You can run an `.xdc` file with the following command:
-
-```shell
-webxdc-dev run /path/to/my.xdc
-```
-
-### With vite, webpack-dev-server, etc
-
-It can be very useful to use a dev server that supports bundling and hot
-reloading, like `vite` or `webpack-dev-server`. In this case your
-project has a `package.json`.
-
-You can run `webxdc-dev` against such a dev server directly. For instance if
-you have your project under development running on `http://localhost:3000`,
-this is how you can run it:
-
-```shell
-webxdc-dev run http://localhost:3000
-```
 
 ## Command-line options
 

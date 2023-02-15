@@ -1,20 +1,16 @@
 # webxdc-dev
 
-webxdc-dev is a development server for [webxdc apps](https://webxdc.org). It
-allows you to open multiple independent instances of a webxdc application in
-different browser tabs or windows. It simulates how your app will run when
-"shared in a chat" and allows you to test and debug webxdc with very fast
-turn-around times. Each webxdc browser app instance is connected to a different
-port number of the webxdc-dev server so that it gets its own isolated state
-(for example localstorage).
+webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
+Easily test your app's behavior as if it was shared in a real chat with
+multiple people.
 
 ![localhost:8000 open in the browser, showing two embedded pages with chess
 open and a message exchange log aside](./screenshot.png)
 
-Messages sent using the [Webxdc
-API](https://docs.webxdc.org/spec.html#webxdc-api) `sendUpdate` function are
-automatically received via the `setUpdateListener` callback of other instances.
-This allows you to simulate multiple users using the same application.
+
+In contrast to [hello](https://github.com/webxdc/hello), each "user"'s app
+instance gets its own isolated state (e.g. `localStorage`), since each is
+served from a separate port (therefore a separate origin).
 
 ## Installation
 

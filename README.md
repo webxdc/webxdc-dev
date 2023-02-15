@@ -8,6 +8,9 @@ turn-around times. Each webxdc browser app instance is connected to a different
 port number of the webxdc-dev server so that it gets its own isolated state
 (for example localstorage).
 
+![localhost:8000 open in the browser, showing two embedded pages with chess
+open and a message exchange log aside](./screenshot.png)
+
 Messages sent using the [Webxdc
 API](https://docs.webxdc.org/spec.html#webxdc-api) `sendUpdate` function are
 automatically received via the `setUpdateListener` callback of other instances.

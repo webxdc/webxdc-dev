@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.17.0][] - 2023-06-08
+
 ### Added
 
 - support for `webxdc.sendToChat()` API
@@ -393,5 +395,6 @@ release date when you use `npm version` (see `README.md`).
 [0.15.1]: https://github.com/webxdc/webxdc-dev/tree/v0.15.1
 
 
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/webxdc/webxdc-dev/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/webxdc/webxdc-dev/tree/v0.16.0

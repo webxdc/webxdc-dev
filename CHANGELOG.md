@@ -7,6 +7,11 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Added
+
+- support for `webxdc.sendToChat()` API
+- support for `webxdc.importFiles()` API
+
 ## [0.16.0][] - 2023-02-21
 
 ### Added

@@ -10,12 +10,18 @@ import type { Info } from "../types/info";
 import type { Instance } from "../types/instance";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
-const DEFAULT_SRC_VALUES = "'self'";
-const CONTENT_SECURITY_POLICY = `default-src ${DEFAULT_SRC_VALUES};\
+// Real CSP is here. Need to periodically sync it.
+/*
+curl -L https://github.com/deltachat/deltachat-desktop/raw/master/src/main/deltachat/webxdc.ts | grep -i "default-src" -B 2 -A 8
+*/
+const CONTENT_SECURITY_POLICY = `default-src 'self';\
 style-src 'self' 'unsafe-inline' blob: ;\
 font-src 'self' data: blob: ;\
 script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: ;\
-img-src 'self' data: blob: ;`;
+connect-src 'self' data: blob: ;\
+img-src 'self' data: blob: ;\
+media-src 'self' data: blob: ;\
+webrtc 'block'"`;
 
 export type InjectExpress = (app: Express) => void;
 
@@ -172,8 +178,9 @@ function getContentSecurityPolicy(
     return policy;
   }
 
-  return (
-    policy + `connect-src ${DEFAULT_SRC_VALUES} ${connectSrcUrls.join(" ")} ;`
+  return policy.replace(
+    /connect-src (.*?);/,
+    `connect-src $1 ${connectSrcUrls.join(" ")} ;`
   );
 }
 

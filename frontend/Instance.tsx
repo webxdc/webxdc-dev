@@ -29,9 +29,9 @@ const Instance: Component<{
     defaultIsOpen: false,
   });
 
-  const getStyle = () => {
+  const getCommonStyle = () => {
     return {
-      // XXX these dimensions should be configurable somehow
+      // XXX also make the fallback resizeable. Maybe a resizeable wrapper.
       height: "667px",
       width: "375px",
       "border-color": props.instance.color,
@@ -52,12 +52,15 @@ const Instance: Component<{
       />
       <Show
         when={isOpen()}
-        fallback={<InstanceStopped onStart={onOpen} style={getStyle()} />}
+        fallback={<InstanceStopped onStart={onOpen} style={getCommonStyle()} />}
       >
         <InstanceStarted
           instance={props.instance}
           ref={iframeRef}
-          style={getStyle()}
+          style={{
+            ...getCommonStyle(),
+            resize: "both",
+          }}
         />
       </Show>
     </Flex>

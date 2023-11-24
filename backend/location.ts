@@ -28,6 +28,30 @@ export function getLocation(location: string): Location {
   if (location.startsWith("http://") || location.startsWith("https://")) {
     return { type: "url", url: location, dispose: () => {} };
   }
+
+  // Let's go easy on users and treat `localhost:8080` as
+  // `http://localhost:8080`
+  const localhostHostnames = ["localhost", "127.0.0.1", "[::1]"];
+  const startsWithSomeLocalhost = localhostHostnames.some((host) =>
+    location.startsWith(host),
+  );
+  if (startsWithSomeLocalhost) {
+    // Let's make sure that it's actually a localhost URL and it's not something
+    // like `localhost-activities/my-webxdc-app` or `localhost-enjoyers.com`.
+
+    let urlObj: URL | undefined;
+    try {
+      urlObj = new URL("http://" + location);
+    } catch (e) {}
+
+    const urlHostnameIsLocalhost = localhostHostnames.some(
+      (localhostString) => urlObj?.hostname === localhostString,
+    );
+    if (urlObj && urlHostnameIsLocalhost) {
+      return { type: "url", url: urlObj.href, dispose: () => {} };
+    }
+  }
+
   const parts = location.split("/").filter((part) => part !== "");
   const lastPart = parts[parts.length - 1];
 

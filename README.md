@@ -115,6 +115,23 @@ the base port number using `--port`, so for instance:
 webxdc-dev run --port 4000 /path/to/webxdc/project
 ```
 
+### Turning off Content Security Policy (CSP)
+
+By default the tool does best-effort network-isolation
+using Content Security Policy (CSP) in an attempt
+to simulate a real webxdc environment.
+However, some existing apps might depend on third-party services
+(such as CDNs to load fonts from).
+If you're trying to port such an app to webxdc, you will get errors like
+"failed to fetch https://some-cdn.com/app-translation.json".
+
+In this case you can temporarily disable network isolation,
+until you get around to getting rid of such network dependencies.
+
+```shell
+webxdc-dev run --no-csp http://localhost:8080
+```
+
 ### Verbose
 
 By default the dev tool does not log messages. You can change this by using

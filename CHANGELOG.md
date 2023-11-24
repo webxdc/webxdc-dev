@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Fixed
+
+- Apps being unable to `fetch()` anything because of `connect-src` CSP
+
 ## [0.17.0][] - 2023-06-08
 
 ### Added

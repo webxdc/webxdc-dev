@@ -10,7 +10,8 @@ import type { Info } from "../types/info";
 import type { Instance } from "../types/instance";
 
 const SIMULATOR_PATHS = ["/webxdc.js", "/webxdc", "/webxdc/.websocket"];
-const CONTENT_SECURITY_POLICY = `default-src 'self';\
+const DEFAULT_SRC_VALUES = "'self'";
+const CONTENT_SECURITY_POLICY = `default-src ${DEFAULT_SRC_VALUES};\
 style-src 'self' 'unsafe-inline' blob: ;\
 font-src 'self' data: blob: ;\
 script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: ;\
@@ -171,7 +172,9 @@ function getContentSecurityPolicy(
     return policy;
   }
 
-  return policy + `connect-src ${connectSrcUrls.join(" ")} ;`;
+  return (
+    policy + `connect-src ${DEFAULT_SRC_VALUES} ${connectSrcUrls.join(" ")} ;`
+  );
 }
 
 function wsUrl(httpUrl: string): string {

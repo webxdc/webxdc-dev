@@ -1,14 +1,13 @@
 import type {
-  Update,
-  JsonValue,
-  ReceivedUpdate,
-  SendUpdate,
-} from "../types/webxdc";
+  ReceivedStatusUpdate,
+  SendingStatusUpdate,
+  Webxdc,
+} from "webxdc-types";
 import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
 type UpdateListenerMulti = (
-  updates: [ReceivedUpdate<JsonValue>, string][]
+  updates: [ReceivedStatusUpdate<any>, string][]
 ) => boolean;
 
 type ClearListener = () => boolean;
@@ -18,15 +17,15 @@ type Connect = (
   updateListener: UpdateListenerMulti,
   serial: number,
   clearListener?: ClearListener,
-  deleteListener?: DeleteListener,
+  deleteListener?: DeleteListener
 ) => void;
 
 export type WebXdcMulti = {
   connect: Connect;
-  sendUpdate: SendUpdate<JsonValue>;
+  sendUpdate: Webxdc<any>["sendUpdate"];
 };
 
-export type UpdateDescr = [ReceivedUpdate<JsonValue>, string];
+export type UpdateDescr = [ReceivedStatusUpdate<any>, string];
 
 export type OnMessage = (message: Message) => void;
 
@@ -44,7 +43,7 @@ class Client implements WebXdcMulti {
 
   constructor(public processor: Processor, public id: string) {}
 
-  sendUpdate(update: Update<JsonValue>, descr: string): void {
+  sendUpdate(update: SendingStatusUpdate<any>, descr: string): void {
     this.processor.distribute(this.id, update, descr);
   }
 
@@ -52,7 +51,7 @@ class Client implements WebXdcMulti {
     listener: UpdateListenerMulti,
     serial: number,
     clearListener: ClearListener = () => true,
-    deleteListener: DeleteListener = () => true,
+    deleteListener: DeleteListener = () => true
   ): void {
     this.processor.onMessage({
       type: "connect",
@@ -100,7 +99,7 @@ class Client implements WebXdcMulti {
     this.clear();
   }
 
-  receiveUpdate(update: ReceivedUpdate<JsonValue>, descr: string) {
+  receiveUpdate(update: ReceivedStatusUpdate<any>, descr: string) {
     if (this.updateListener == null || this.updateSerial == null) {
       return;
     }
@@ -124,10 +123,10 @@ class Client implements WebXdcMulti {
 
   // sends a message to the all clients to shut down
   delete() {
-    if ( this.deleteListener == null ) {
+    if (this.deleteListener == null) {
       return;
     }
-    this.deleteListener()
+    this.deleteListener();
   }
 }
 
@@ -151,9 +150,13 @@ class Processor implements IProcessor {
     this.clients.splice(client_index, 1);
   }
 
-  distribute(instanceId: string, update: Update<JsonValue>, descr: string) {
+  distribute(
+    instanceId: string,
+    update: SendingStatusUpdate<any>,
+    descr: string
+  ) {
     this.currentSerial++;
-    const receivedUpdate: ReceivedUpdate<JsonValue> = {
+    const receivedUpdate: ReceivedStatusUpdate<any> = {
       ...update,
       serial: this.currentSerial,
       max_serial: this.updates.length + 1,

@@ -7,6 +7,15 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## Added
+
+- Simpler ways to use CLI:
+  - make the only useful `run` comand the default one
+  - default `location` argument to the current directory
+  - treat `localhost:8080` as `http://localhost:8080`
+
+  Example: `webxdc-dev localhost:8080`
+
 ### Fixed
 
 - Apps being unable to `fetch()` anything or use `blob:` and `data:` resource because of `connect-src` CSP

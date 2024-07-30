@@ -60,24 +60,25 @@ export class DevServerTransport implements Transport {
     }
   }
 
-  clear() {
+  async clear() {
     window.localStorage.clear();
     window.sessionStorage.clear();
-    window.indexedDB.databases().then(results => {
-      Promise.all(results.map(result => {
-        return new Promise((resolve, reject) => {
-          const name = result?.name;
-          console.log(`Deleting indexedDB database: ${name}`);
-          const request = window.indexedDB.deleteDatabase(name);
-          request.onsuccess = ev => resolve(ev);
-          request.onerror = ev => reject(ev);
-        });
-      })).then(() => {
-        // we want to reload the window otherwise we won't take the
-        // cleared localstorage into account
-        window.location.reload();
+
+    const databases = await window.indexedDB.databases();
+    
+    await Promise.all(databases.map(result => {
+      return new Promise((resolve, reject) => {
+        const name = result?.name;
+        console.log(`Deleting indexedDB database: ${name}`);
+        const request = window.indexedDB.deleteDatabase(name);
+        request.onsuccess = ev => resolve(ev);
+        request.onerror = ev => reject(ev);
       });
-    });
+    }));
+
+    // we want to reload the window otherwise we won't take the
+    // cleared localstorage into account
+    window.location.reload();
   }
 
   address() {

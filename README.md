@@ -1,5 +1,7 @@
 # webxdc-dev
 
+[![CI](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml/badge.svg)](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml)
+
 webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
 Easily test your app's behavior as if it was shared in a real chat with
 multiple people.

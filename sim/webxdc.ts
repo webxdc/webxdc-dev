@@ -75,7 +75,7 @@ export class DevServerTransport implements Transport {
           request.onsuccess = (ev) => resolve(ev);
           request.onerror = (ev) => reject(ev);
         });
-      })
+      }),
     );
 
     // we want to reload the window otherwise we won't take the

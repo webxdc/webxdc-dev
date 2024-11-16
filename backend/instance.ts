@@ -7,8 +7,8 @@ import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
-import { Instance as FrontendInstance } from '../types/instance';
-import { getInstanceUrl } from './instance_url';
+import { Instance as FrontendInstance } from "../types/instance";
+import { getInstanceUrl } from "./instance_url";
 
 export type Options = {
   basePort: number;

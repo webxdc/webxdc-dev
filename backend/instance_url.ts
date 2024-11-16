@@ -1,4 +1,4 @@
-import { isWebContainer, HostURL } from '@webcontainer/env';
+import { isWebContainer, HostURL } from "@webcontainer/env";
 
 export function getInstanceUrl(port: number) {
   if (isWebContainer()) {

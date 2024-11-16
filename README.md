@@ -4,8 +4,7 @@ webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
 Easily test your app's behavior as if it was shared in a real chat with
 multiple people.
 
-![localhost:8000 open in the browser, showing two embedded pages with chess
-open and a message exchange log aside](./screenshot.png)
+![example screenshot](https://raw.githubusercontent.com/webxdc/webxdc-dev/main/screenshot.png)
 
 
 In contrast to [hello](https://github.com/webxdc/hello), each "user"'s app
@@ -17,7 +16,7 @@ served from a separate port (therefore a separate origin).
 You can install the tool globally. This works with any webxdc project:
 
 ```
-npm install -g webxdc-dev
+npm install -g @webxdc/webxdc-dev
 ```
 
 This makes `webxdc-dev` available on your command line. Alternatively you
@@ -120,13 +119,13 @@ webxdc-dev run --port 4000 /path/to/webxdc/project
 By default the dev tool does not log messages. You can change this by using
 `-v` which logs messages to the console.
 
-## `webxdc` as a `package.json` script
+## `webxdc-dev` as a `package.json` script
 
 If your project has a `package.json`, you can also install `webxdc-dev` locally
 as a dev dependency:
 
 ```shell
-npm install -D webxdc-dev
+npm install -D @webxdc/webxdc-dev
 ```
 
 ### During development

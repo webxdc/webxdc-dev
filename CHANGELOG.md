@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- package renamed to `@webxdc/webxdc-dev`
+
 ### Fixed
 
 - Apps being unable to `fetch()` anything or use `blob:` and `data:` resource because of `connect-src` CSP

@@ -131,9 +131,9 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
   const isAllowed =
-    event.origin.indexOf("localhost:") !== -1 ||
+    event.origin.includes("localhost:") ||
     (location.host.endsWith(".webcontainer.io") &&
-      event.origin.indexOf(".webcontainer.io") !== -1);
+      event.origin.includes(".webcontainer.io"));
   if (!isAllowed) {
     return;
   }

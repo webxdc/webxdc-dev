@@ -19,7 +19,7 @@ class FakeTransport implements Transport {
     public client: WebXdcMulti,
     address: string,
     name: string,
-    public onClear: () => void
+    public onClear: () => void,
   ) {
     this._address = address;
     this._name = name;
@@ -46,7 +46,7 @@ class FakeTransport implements Transport {
             this.messageCallback({ type: "clear" });
           }
           return true;
-        }
+        },
       );
     } else if (data.type === "requestInfo") {
       if (this.messageCallback != null) {

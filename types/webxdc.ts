@@ -59,20 +59,20 @@ export type SendUpdate<T> = (update: Update<T>, descr: string) => void;
 export type SendToChat = (message: SendOptions) => Promise<void>;
 
 export type ImportFiles = (filter: {
-    /**
-     * mimetypes as in https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
-     */
-    mimeTypes?: string[];
-    /** only show files with these extensions.
-     * All extensions need to start with a dot and have the format `.ext`. */
-    extensions?: string[];
-    /** false by default, whether to allow multiple files to be selected */
-    multiple?: boolean;
-  }) => Promise<File[]>;
+  /**
+   * mimetypes as in https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
+   */
+  mimeTypes?: string[];
+  /** only show files with these extensions.
+   * All extensions need to start with a dot and have the format `.ext`. */
+  extensions?: string[];
+  /** false by default, whether to allow multiple files to be selected */
+  multiple?: boolean;
+}) => Promise<File[]>;
 
 export type SetUpdateListener<T> = (
   listener: UpdateListener<T>,
-  serial: number
+  serial: number,
 ) => Promise<void>;
 
 export type WebXdc<T = JsonValue> = {

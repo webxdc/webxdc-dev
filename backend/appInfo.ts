@@ -49,7 +49,7 @@ export async function getAppInfo(location: Location): Promise<AppInfo> {
 
 export async function getAppInfoUrl(
   location: UrlLocation,
-  fetch: typeof nodeFetch
+  fetch: typeof nodeFetch,
 ): Promise<AppInfo> {
   return {
     location,
@@ -65,7 +65,7 @@ export function getToolVersion(): string {
 
 async function getManifestInfoFromUrl(
   url: string,
-  fetch: typeof nodeFetch
+  fetch: typeof nodeFetch,
 ): Promise<ManifestInfo> {
   if (!url.endsWith("/")) {
     url = url + "/";
@@ -89,7 +89,7 @@ async function getManifestInfoFromUrl(
 
 async function getIconInfoFromUrl(
   url: string,
-  fetch: typeof nodeFetch
+  fetch: typeof nodeFetch,
 ): Promise<IconInfo | null> {
   if (!url.endsWith("/")) {
     url = url + "/";
@@ -113,7 +113,7 @@ async function getIconInfoFromUrl(
 
 function getManifestInfoFromDir(
   dir: string,
-  fallbackName: string
+  fallbackName: string,
 ): ManifestInfo {
   const tomlBuffer = readFileBuffer(path.join(dir, "manifest.toml"));
   if (tomlBuffer === null) {
@@ -165,7 +165,7 @@ function readFileBuffer(location: string): Buffer | null {
 
 async function readUrlBuffer(
   url: string,
-  fetch: typeof nodeFetch
+  fetch: typeof nodeFetch,
 ): Promise<Buffer | null> {
   const response = await fetch(url);
   if (!response.ok) {

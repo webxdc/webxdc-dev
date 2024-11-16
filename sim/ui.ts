@@ -3,9 +3,9 @@ import { DevServerTransport } from "./webxdc";
 const consoleFunctionNames = ["debug", "log", "info", "warn", "error"] as const;
 
 function overwriteConsoleFunction(
-  functionName: typeof consoleFunctionNames[number],
+  functionName: (typeof consoleFunctionNames)[number],
   deviceIdentifier: string,
-  logStyle: string
+  logStyle: string,
 ) {
   const original = console[functionName];
   const replacement = original.bind(null, `%c${deviceIdentifier}`, logStyle);
@@ -15,7 +15,7 @@ function overwriteConsoleFunction(
 
 export async function overwriteConsole(
   deviceIdentifier: string,
-  transport: DevServerTransport
+  transport: DevServerTransport,
 ) {
   const info = await transport.getInfo();
   const logStyle = `color:white;font-weight:bold;border-radius:4px;padding:2px;background: ${info.color}`;
@@ -26,7 +26,7 @@ export async function overwriteConsole(
 
 export async function alterUi(
   instanceName: string,
-  transport: DevServerTransport
+  transport: DevServerTransport,
 ): Promise<void> {
   const info = await transport.getInfo();
   let title = document.getElementsByTagName("title")[0];

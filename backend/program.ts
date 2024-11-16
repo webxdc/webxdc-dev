@@ -25,28 +25,28 @@ export function createProgram(inject: Inject): Command {
     .command("run")
     .argument(
       "<location>",
-      "URL with dev server, path to .xdc file, or path to webxdc dist directory"
+      "URL with dev server, path to .xdc file, or path to webxdc dist directory",
     )
     .option(
       "-p, --port <port>",
       "start port for webxdc-dev UI, instance ports are incremented by one each",
       parsePort,
-      7000
+      7000,
     )
     .option("--no-csp", "run instances without CSP applied")
     .option(
       "-v, --verbose",
       "Print all messages sent and received by instances",
-      false
+      false,
     )
     .description(
-      "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory"
+      "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory",
     )
     .action((location, options) => {
       run(
         location,
         { basePort: options.port, csp: options.csp, verbose: options.verbose },
-        inject
+        inject,
       );
     });
   return program;

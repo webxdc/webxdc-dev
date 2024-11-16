@@ -1,13 +1,13 @@
 # webxdc-dev
 
 [![CI](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml/badge.svg)](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
 Easily test your app's behavior as if it was shared in a real chat with
 multiple people.
 
 ![example screenshot](https://raw.githubusercontent.com/webxdc/webxdc-dev/main/screenshot.png)
-
 
 In contrast to [hello](https://github.com/webxdc/hello), each "user"'s app
 instance gets its own isolated state (e.g. `localStorage`), since each is
@@ -80,7 +80,7 @@ to see full information. You can also filter messages. There is also a "chat"
 tab which you can use to see `info` contained in updates as well as any
 `summary` text contained in an update.
 
-The sidebar can be closed with `Close Messages` button within the sidebar and 
+The sidebar can be closed with `Close Messages` button within the sidebar and
 expanded by clicking on `Open Messages` within the devices tab.
 The sidebars width can also be adjusted by moving the separating line between
 devices and sidebar.

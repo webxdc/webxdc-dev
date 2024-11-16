@@ -327,7 +327,7 @@ test("clear single client", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
   // we always clear on first connection with a new processor
   expect(client0Cleared).toMatchObject(["cleared"]);
@@ -343,7 +343,7 @@ test("clear single client", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
   expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
 });
@@ -362,7 +362,7 @@ test("clear multiple clients", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   client1.connect(
@@ -371,7 +371,7 @@ test("clear multiple clients", () => {
     () => {
       client1Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Cleared).toMatchObject(["cleared"]);
@@ -389,7 +389,7 @@ test("clear multiple clients", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
   expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
 });
@@ -407,7 +407,7 @@ test("clear client that is created later", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Cleared).toMatchObject(["cleared"]);
@@ -422,7 +422,7 @@ test("clear client that is created later", () => {
     () => {
       client1Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Cleared).toMatchObject(["cleared", "cleared"]);
@@ -444,7 +444,7 @@ test("clear multiple clients, multiple times", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   client1.connect(
@@ -453,7 +453,7 @@ test("clear multiple clients, multiple times", () => {
     () => {
       client1Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Cleared).toMatchObject(["cleared"]);
@@ -482,7 +482,7 @@ test("connect with clear means we get no catchup if no new updates", () => {
     () => {
       client0Heard.push("cleared");
       return true;
-    }
+    },
   );
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -511,7 +511,7 @@ test("connect with clear means we get no catchup if no new updates", () => {
     () => {
       client1Heard.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Heard).toMatchObject([
@@ -540,7 +540,7 @@ test("connect with clear means catchup only with updates after clear", () => {
     () => {
       client0Heard.push("cleared");
       return true;
-    }
+    },
   );
 
   client0.sendUpdate({ payload: "Hello" }, "update");
@@ -572,7 +572,7 @@ test("connect with clear means catchup only with updates after clear", () => {
     () => {
       client1Heard.push("cleared");
       return true;
-    }
+    },
   );
 
   expect(client0Heard).toMatchObject([
@@ -699,7 +699,7 @@ test("clear other client but was disconnected", () => {
     () => {
       client0Cleared.push("cleared");
       return true;
-    }
+    },
   );
 
   client1.connect(
@@ -708,7 +708,7 @@ test("clear other client but was disconnected", () => {
     () => {
       // we never got the clear
       return false;
-    }
+    },
   );
 
   expect(client0Cleared).toMatchObject(["cleared"]);

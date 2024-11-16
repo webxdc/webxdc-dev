@@ -29,7 +29,7 @@ export function createFrontend(
   appInfo: AppInfo,
   instances: Instances,
   injectFrontend: InjectExpress,
-  getIndexHtml: () => string
+  getIndexHtml: () => string,
 ): expressWs.Application {
   const expressApp = express();
   const wsInstance = expressWs(expressApp);
@@ -57,9 +57,7 @@ export function createFrontend(
     res.send(appInfo.icon.buffer);
   });
   app.get<{}, Instance[]>("/instances", (req, res) => {
-    res.json(
-      instances.list()
-    );
+    res.json(instances.list());
   });
   app.post<{}, Instance>("/instances", (req, res) => {
     const instance = instances.add();
@@ -71,9 +69,9 @@ export function createFrontend(
       color: instance.color,
     });
   });
-  app.delete<{id: string}, Instance[]>("/instances/:id", (req, res) => {
+  app.delete<{ id: string }, Instance[]>("/instances/:id", (req, res) => {
     instances.delete(parseInt(req.params.id));
-    res.json(instances.list())
+    res.json(instances.list());
   });
 
   app.post<{}, { status: string }>("/clear", (req, res) => {
@@ -126,7 +124,7 @@ export function createPeer(options: PeerOptions): expressWs.Instance {
     wsInstance.app.use((req, res, next) => {
       const contentSecurityPolicy = getContentSecurityPolicy(
         location,
-        options.instanceUrl
+        options.instanceUrl,
       );
       res.setHeader("Content-Security-Policy", contentSecurityPolicy);
       next();
@@ -144,7 +142,7 @@ export function createPeer(options: PeerOptions): expressWs.Instance {
       createProxyMiddleware(filter, {
         target: location.url,
         ws: false,
-      })
+      }),
     );
   } else {
     // serve webxdc project from directory
@@ -155,7 +153,7 @@ export function createPeer(options: PeerOptions): expressWs.Instance {
 
 function getContentSecurityPolicy(
   location: Location,
-  instanceUrl: string
+  instanceUrl: string,
 ): string {
   const connectSrcUrls = [];
 
@@ -180,7 +178,7 @@ function getContentSecurityPolicy(
 
   return policy.replace(
     /connect-src (.*?);/,
-    `connect-src $1 ${connectSrcUrls.join(" ")} ;`
+    `connect-src $1 ${connectSrcUrls.join(" ")} ;`,
   );
 }
 

@@ -17,7 +17,7 @@ test("minimal directory app info", async () => {
 
 test("directory app info with manifest", async () => {
   const location = getLocation(
-    path.resolve(__dirname, "fixtures", "withManifest")
+    path.resolve(__dirname, "fixtures", "withManifest"),
   );
   const appInfo = await getAppInfo(location);
   expect(appInfo.location).toEqual(location);
@@ -31,7 +31,7 @@ test("directory app info with manifest", async () => {
 
 test("directory app info with manifest but no name entry", async () => {
   const location = getLocation(
-    path.resolve(__dirname, "fixtures", "withManifestWithoutName")
+    path.resolve(__dirname, "fixtures", "withManifestWithoutName"),
   );
   const appInfo = await getAppInfo(location);
   expect(appInfo.location).toEqual(location);
@@ -64,7 +64,7 @@ test("directory app info with manifest but no name entry", async () => {
 
 test("directory app info with jpg icon", async () => {
   const location = getLocation(
-    path.resolve(__dirname, "fixtures", "withJpgIcon")
+    path.resolve(__dirname, "fixtures", "withJpgIcon"),
   );
   const appInfo = await getAppInfo(location);
   expect(appInfo.location).toEqual(location);
@@ -83,7 +83,7 @@ test("directory app info with jpg icon", async () => {
 
 test("directory app info with png icon", async () => {
   const location = getLocation(
-    path.resolve(__dirname, "fixtures", "withPngIcon")
+    path.resolve(__dirname, "fixtures", "withPngIcon"),
   );
   const appInfo = await getAppInfo(location);
   expect(appInfo.location).toEqual(location);
@@ -210,7 +210,7 @@ test("url app info with broken manifest", async () => {
   } catch (e) {
     if (e instanceof AppInfoError) {
       expect(e.message).toEqual(
-        "Invalid manifest.toml, please check the format"
+        "Invalid manifest.toml, please check the format",
       );
     } else {
       throw e;

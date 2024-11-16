@@ -1,5 +1,12 @@
 import { Component, Show, createMemo, JSX, Accessor } from "solid-js";
-import { Flex, Text, Badge, Tooltip, IconButton, notificationService } from "@hope-ui/solid";
+import {
+  Flex,
+  Text,
+  Badge,
+  Tooltip,
+  IconButton,
+  notificationService,
+} from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
 import { FiExternalLink, FiTrash } from "solid-icons/fi";
 
@@ -20,13 +27,14 @@ const InstanceHeader: Component<{
   });
 
   const handleRemoveInstance = async (id: string) => {
-    let new_instances = await (await fetch(`/instances/${id}`, { method: "DELETE" })).json()
+    let new_instances = await (
+      await fetch(`/instances/${id}`, { method: "DELETE" })
+    ).json();
     mutateInstances(new_instances);
     notificationService.show({
       title: `Deleted instance ${id}`,
     });
   };
-
 
   const receivedCount = createMemo(() => {
     return received(props.instance.id);
@@ -39,7 +47,6 @@ const InstanceHeader: Component<{
   return (
     <Flex gap="$1" justifyContent="space-between" alignItems="center">
       <Tooltip label="Click to see all messages for this instance">
-
         <Text
           cursor="pointer"
           color={props.instance.color}

@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.18.0][] - 2024-11-16
+
 ### Changed
 
 - package renamed to `@webxdc/webxdc-dev`
@@ -404,6 +406,7 @@ release date when you use `npm version` (see `README.md`).
 [0.15.1]: https://github.com/webxdc/webxdc-dev/tree/v0.15.1
 
 
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.18.0...HEAD
+[0.18.0]: https://github.com/webxdc/webxdc-dev/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/webxdc/webxdc-dev/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/webxdc/webxdc-dev/tree/v0.16.0

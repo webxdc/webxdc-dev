@@ -1,6 +1,7 @@
 # webxdc-dev
 
 [![CI](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml/badge.svg)](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 webxdc-dev is a development server for [webxdc apps](https://webxdc.org).
 Easily test your app's behavior as if it was shared in a real chat with

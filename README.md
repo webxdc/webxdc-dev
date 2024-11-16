@@ -1,5 +1,6 @@
 # webxdc-dev
 
+[![npm package](https://img.shields.io/npm/v/@webxdc/webxdc-dev.svg)](https://npmjs.com/package/@webxdc/webxdc-dev)
 [![CI](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml/badge.svg)](https://github.com/webxdc/webxdc-dev/actions/workflows/ci.yml)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 

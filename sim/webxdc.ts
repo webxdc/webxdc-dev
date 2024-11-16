@@ -75,7 +75,7 @@ export class DevServerTransport implements Transport {
           request.onsuccess = (ev) => resolve(ev);
           request.onerror = (ev) => reject(ev);
         });
-      }),
+      })
     );
 
     // we want to reload the window otherwise we won't take the
@@ -130,9 +130,13 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
-  // if (event.origin.indexOf("localhost:") === -1) {
-  //   return;
-  // }
+  const isAllowed =
+    event.origin.indexOf("localhost:") !== -1 ||
+    (location.host.endsWith(".webcontainer.io") &&
+      event.origin.indexOf(".webcontainer.io") !== -1);
+  if (!isAllowed) {
+    return;
+  }
   if (event.data === "reload") {
     window.location.reload();
   }

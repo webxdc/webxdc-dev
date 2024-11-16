@@ -83,11 +83,26 @@ export class DevServerTransport implements Transport {
     window.location.reload();
   }
 
+  static port() {
+    if (location.host.endsWith(".webcontainer.io")) {
+      // stackblitz / webcontainer uses different url to represent different ports.
+      // example: `localhost:7002` becomes `https://xoriwypmnngithub-ltqe--7002--f565b097.local-corp.webcontainer.io/`
+      // in stackblitz environment.
+      // This regex extracts the port from the url.
+      return (
+        /--(\d+)--/.exec(document.location.href)?.[1] ||
+        "error in webxdc simulator"
+      );
+    } else {
+      return document.location.port;
+    }
+  }
+
   address() {
-    return `instance@${document.location.port}`;
+    return `instance@${DevServerTransport.port()}`;
   }
   name() {
-    return `Instance ${document.location.port}`;
+    return `Instance ${DevServerTransport.port()}`;
   }
 
   setInfo(info: Info): void {
@@ -115,9 +130,9 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
-  if (event.origin.indexOf("localhost:") === -1) {
-    return;
-  }
+  // if (event.origin.indexOf("localhost:") === -1) {
+  //   return;
+  // }
   if (event.data === "reload") {
     window.location.reload();
   }

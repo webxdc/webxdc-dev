@@ -6,3 +6,5 @@
 
 # we don't want test fixtures
 backend/fixtures
+
+example_app.xdc

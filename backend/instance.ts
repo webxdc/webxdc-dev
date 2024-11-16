@@ -7,7 +7,8 @@ import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
-import { Instance as FrontendInstance } from "../types/instance";
+import { Instance as FrontendInstance } from '../types/instance';
+import { getInstanceUrl } from './instance_url';
 
 export type Options = {
   basePort: number;
@@ -93,7 +94,7 @@ export class Instances {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
 
-    const instanceUrl = `http://localhost:${port}`;
+    const instanceUrl = getInstanceUrl(port);
 
     const wsInstance = createPeer({
       location: this.location,

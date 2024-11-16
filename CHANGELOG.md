@@ -21,6 +21,7 @@ release date when you use `npm version` (see `README.md`).
 
 - Apps being unable to `fetch()` anything or use `blob:` and `data:` resource because of `connect-src` CSP
 - `indexedDB` not getting cleared on `clear()`
+- fix usage inside of stackblitz.com online IDE
 
 ## [0.17.0][] - 2023-06-08
 

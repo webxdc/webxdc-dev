@@ -45,7 +45,7 @@ export function getLocation(location: string): Location {
     }
     if (!hasIndexHtml(path)) {
       throw new LocationError(
-        `Invalid xdc file (no index.html file inside): ${location}`
+        `Invalid xdc file (no index.html file inside): ${location}`,
       );
     }
     return {
@@ -65,7 +65,7 @@ export function getLocation(location: string): Location {
 
   if (!hasIndexHtml(location)) {
     throw new LocationError(
-      `Invalid xdc dir (no index.html file): ${location}`
+      `Invalid xdc dir (no index.html file): ${location}`,
     );
   }
   return {

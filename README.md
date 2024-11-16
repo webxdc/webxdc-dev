@@ -9,7 +9,6 @@ multiple people.
 
 ![example screenshot](https://raw.githubusercontent.com/webxdc/webxdc-dev/main/screenshot.png)
 
-
 In contrast to [hello](https://github.com/webxdc/hello), each "user"'s app
 instance gets its own isolated state (e.g. `localStorage`), since each is
 served from a separate port (therefore a separate origin).
@@ -81,7 +80,7 @@ to see full information. You can also filter messages. There is also a "chat"
 tab which you can use to see `info` contained in updates as well as any
 `summary` text contained in an update.
 
-The sidebar can be closed with `Close Messages` button within the sidebar and 
+The sidebar can be closed with `Close Messages` button within the sidebar and
 expanded by clicking on `Open Messages` within the devices tab.
 The sidebars width can also be adjusted by moving the separating line between
 devices and sidebar.

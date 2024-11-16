@@ -16,7 +16,7 @@
 ## Node version
 
 - Can I warn when the node version is too old upon installation.
-	
+
 ## Messages
 
 - Perhaps default message filter should see connect & sent at the same time?

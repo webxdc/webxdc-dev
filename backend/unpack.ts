@@ -17,7 +17,7 @@ export function withTempDir(fn: (tmpDir: string) => void) {
       fs.rmSync(tmpDir, { recursive: true });
     } catch (e) {
       console.error(
-        `An error has occurred while removing the temp dir at ${tmpDir}. Error: ${e}`
+        `An error has occurred while removing the temp dir at ${tmpDir}. Error: ${e}`,
       );
     }
   }

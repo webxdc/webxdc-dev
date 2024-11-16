@@ -25,7 +25,7 @@ function actualRun(appInfo: AppInfo, options: Options, inject: Inject): void {
     appInfo,
     instances,
     injectFrontend,
-    getIndexHtml
+    getIndexHtml,
   );
 
   frontend.listen(options.basePort, () => {

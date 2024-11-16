@@ -7,7 +7,7 @@ import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
 import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
-import { Instance as FrontendInstance } from '../types/instance';
+import { Instance as FrontendInstance } from "../types/instance";
 
 export type Options = {
   basePort: number;
@@ -39,7 +39,7 @@ class Instance {
     public app: expressWs.Application,
     public port: number,
     public url: string,
-    public webXdc: WebXdcMulti
+    public webXdc: WebXdcMulti,
   ) {
     this.id = port.toString();
     this.color = getColorForId(this.id);
@@ -52,7 +52,7 @@ class Instance {
   }
 
   close() {
-    this.server.close()
+    this.server.close();
   }
 }
 
@@ -107,7 +107,7 @@ export class Instances {
       app,
       port,
       instanceUrl,
-      this.processor.createClient(port.toString())
+      this.processor.createClient(port.toString()),
     );
 
     const wss = wsInstance.getWss();
@@ -117,7 +117,7 @@ export class Instances {
       ws.on("message", (msg: string) => {
         if (typeof msg !== "string") {
           console.error(
-            "webxdc: Don't know how to handle unexpected non-string data"
+            "webxdc: Don't know how to handle unexpected non-string data",
           );
           return;
         }
@@ -133,7 +133,7 @@ export class Instances {
                 JSON.stringify({
                   type: "updates",
                   updates: updates.map(([update]) => update),
-                })
+                }),
               );
             },
             parsed.serial,
@@ -152,7 +152,7 @@ export class Instances {
                 name: this.appInfo.manifest.name,
                 color: instance.color,
               },
-            })
+            }),
           );
         } else {
           throw new Error(`Unknown message: ${JSON.stringify(parsed)}`);
@@ -166,7 +166,9 @@ export class Instances {
   delete(id: number) {
     let instance = this.instances.get(id);
     if (instance == null) {
-      throw new Error(`Instance with id ${id} can't be deleted because it does not exist`);
+      throw new Error(
+        `Instance with id ${id} can't be deleted because it does not exist`,
+      );
     }
     instance.close();
     this.processor.removeClient(instance.id);
@@ -187,13 +189,13 @@ export class Instances {
     this._onMessage = onMessage;
   }
 
-  list(): FrontendInstance[]{
+  list(): FrontendInstance[] {
     return Array.from(this.instances.values()).map((instance) => ({
       id: instance.id,
       port: instance.port,
       url: instance.url,
       color: instance.color,
-    }))
+    }));
   }
 }
 
@@ -215,7 +217,7 @@ function isSendUpdateMessage(value: any): value is SendUpdateMessage {
 }
 
 function isSetUpdateListenerMessage(
-  value: any
+  value: any,
 ): value is SetUpdateListenerMessage {
   return value.type === "setUpdateListener";
 }

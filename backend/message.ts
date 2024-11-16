@@ -8,7 +8,7 @@ import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
 type UpdateListenerMulti = (
-  updates: [ReceivedUpdate<JsonValue>, string][]
+  updates: [ReceivedUpdate<JsonValue>, string][],
 ) => boolean;
 
 type ClearListener = () => boolean;
@@ -42,7 +42,10 @@ class Client implements WebXdcMulti {
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
 
-  constructor(public processor: Processor, public id: string) {}
+  constructor(
+    public processor: Processor,
+    public id: string,
+  ) {}
 
   sendUpdate(update: Update<JsonValue>, descr: string): void {
     this.processor.distribute(this.id, update, descr);
@@ -124,10 +127,10 @@ class Client implements WebXdcMulti {
 
   // sends a message to the all clients to shut down
   delete() {
-    if ( this.deleteListener == null ) {
+    if (this.deleteListener == null) {
       return;
     }
-    this.deleteListener()
+    this.deleteListener();
   }
 }
 
@@ -186,7 +189,10 @@ class Processor implements IProcessor {
     updateListener(
       this.updates
         .slice(serial)
-        .map(([update, descr]) => [{ ...update, max_serial: maxSerial }, descr])
+        .map(([update, descr]) => [
+          { ...update, max_serial: maxSerial },
+          descr,
+        ]),
     );
   }
 }

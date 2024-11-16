@@ -65,16 +65,18 @@ export class DevServerTransport implements Transport {
     window.sessionStorage.clear();
 
     const databases = await window.indexedDB.databases();
-    
-    await Promise.all(databases.map(result => {
-      return new Promise((resolve, reject) => {
-        const name = result?.name;
-        console.log(`Deleting indexedDB database: ${name}`);
-        const request = window.indexedDB.deleteDatabase(name);
-        request.onsuccess = ev => resolve(ev);
-        request.onerror = ev => reject(ev);
-      });
-    }));
+
+    await Promise.all(
+      databases.map((result) => {
+        return new Promise((resolve, reject) => {
+          const name = result?.name;
+          console.log(`Deleting indexedDB database: ${name}`);
+          const request = window.indexedDB.deleteDatabase(name);
+          request.onsuccess = (ev) => resolve(ev);
+          request.onerror = (ev) => reject(ev);
+        });
+      }),
+    );
 
     // we want to reload the window otherwise we won't take the
     // cleared localstorage into account

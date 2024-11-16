@@ -42,12 +42,18 @@ const InstancesButtons: Component<{
 
   return (
     <Flex direction="row" justifyContent="flex-start" gap="$3">
-      <Button colorScheme="neutral" size="xs" onClick={handleAddInstance}>Add Instance</Button>
+      <Button colorScheme="neutral" size="xs" onClick={handleAddInstance}>
+        Add Instance
+      </Button>
       <Tooltip label={CLEAR_INFO}>
-        <Button colorScheme="neutral" size="xs" onClick={handleClear}>Reset</Button>
+        <Button colorScheme="neutral" size="xs" onClick={handleClear}>
+          Reset
+        </Button>
       </Tooltip>
-      <Show when={props.show_messages_button} >
-        <Button colorScheme="neutral" size="xs" onClick={props.onOpenMessages}>Open Messages</Button>
+      <Show when={props.show_messages_button}>
+        <Button colorScheme="neutral" size="xs" onClick={props.onOpenMessages}>
+          Open Messages
+        </Button>
       </Show>
     </Flex>
   );

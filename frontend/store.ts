@@ -41,7 +41,7 @@ export function addMessage(message: Message): void {
   setState(
     produce((s) => {
       s.push(message);
-    })
+    }),
   );
 }
 
@@ -80,7 +80,7 @@ export function getMessages(search: Search): Message[] {
     (message) =>
       (instanceId == null || message.instanceId === instanceId) &&
       (type == null || message.type === type) &&
-      (!info || (isUpdateMessage(message) && hasText(message.update.info)))
+      (!info || (isUpdateMessage(message) && hasText(message.update.info))),
   );
 }
 

@@ -1,7 +1,7 @@
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
 
-import { JsonValue, ReceivedUpdate } from "../types/webxdc";
+import { ReceivedStatusUpdate } from "@webxdc/types";
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
 import { Location } from "./location";
 import { createPeer, InjectExpress } from "./app";
@@ -17,7 +17,7 @@ export type Options = {
 
 type SendUpdateMessage = {
   type: "sendUpdate";
-  update: ReceivedUpdate<JsonValue>;
+  update: ReceivedStatusUpdate<any>;
   descr: string;
 };
 

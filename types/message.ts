@@ -1,4 +1,4 @@
-import { ReceivedUpdate, JsonValue } from "./webxdc";
+import { ReceivedStatusUpdate } from "@webxdc/types";
 
 export type InstanceMessage = {
   instanceId: string;
@@ -7,7 +7,7 @@ export type InstanceMessage = {
 };
 
 export type BaseUpdateMessage = {
-  update: ReceivedUpdate<JsonValue>;
+  update: ReceivedStatusUpdate<any>;
   descr: string;
 } & InstanceMessage;
 

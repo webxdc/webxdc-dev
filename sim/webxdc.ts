@@ -1,4 +1,4 @@
-import { JsonValue, WebXdc } from "../types/webxdc";
+import { WebXdc } from "@webxdc/types";
 import {
   Transport,
   TransportMessageCallback,
@@ -25,7 +25,7 @@ export class DevServerTransport implements Transport {
     });
   }
 
-  send(data: JsonValue): void {
+  send(data: any): void {
     this.socket.send(JSON.stringify(data));
   }
 
@@ -99,7 +99,7 @@ export class DevServerTransport implements Transport {
   }
 }
 
-function getWebXdc(): WebXdc {
+function getWebXdc(): WebXdc<any> {
   return (window as any).webxdc;
 }
 

@@ -1,8 +1,8 @@
-import { WebXdc, JsonValue, ReceivedUpdate } from "../types/webxdc";
+import { WebXdc, ReceivedStatusUpdate } from "@webxdc/types";
 
 type UpdatesMessage = {
   type: "updates";
-  updates: ReceivedUpdate<JsonValue>[];
+  updates: ReceivedStatusUpdate<any>[];
 };
 
 type ClearMessage = {
@@ -30,7 +30,7 @@ export type TransportMessageCallback = (message: Message) => void;
 export type TransportConnectCallback = () => void;
 
 export type Transport = {
-  send(data: JsonValue): void;
+  send(data: any): void;
   onMessage(callback: TransportMessageCallback): void;
   onConnect(callback: TransportConnectCallback): void;
   clear(): void;
@@ -45,10 +45,10 @@ type Log = (...args: any[]) => void;
 export function createWebXdc(
   transport: Transport,
   log: Log = () => {},
-): WebXdc {
+): WebXdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
-  const webXdc: WebXdc = {
+  const webXdc: WebXdc<any> = {
     sendUpdate: (update, descr) => {
       transport.send({ type: "sendUpdate", update, descr });
       log("send", { update, descr });
@@ -177,7 +177,7 @@ export function createWebXdc(
         ...(filters.mimeTypes || []),
       ].join(",");
       element.multiple = filters.multiple || false;
-      const promise = new Promise((resolve, _reject) => {
+      const promise: Promise<File[]> = new Promise((resolve, _reject) => {
         element.onchange = (_ev) => {
           console.log("element.files", element.files);
           const files = Array.from(element.files || []);

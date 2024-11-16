@@ -59,11 +59,6 @@
   port: for instance, if you open an instance again the server doesn't know to
   clear it first, because it thinks it already been cleared previously.
 
-## Webxdc development
-
-- Make typescript types for webxdc available as a standalone package so that
-  developers can use this in their own projects.
-
 ## Other
 
 - Update webxdc specification based on what I learned about it.

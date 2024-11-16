@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changed
+
+- use `@webxdc/types` instead of own types declaration
+
 ## [0.18.0][] - 2024-11-16
 
 ### Changed

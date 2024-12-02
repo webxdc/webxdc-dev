@@ -17,5 +17,6 @@ export type UpdateMessage =
 
 export type Message =
   | UpdateMessage
+  | ({ type: "realtime-sent", data: Uint8Array} & InstanceMessage)
   | ({ type: "clear" } & InstanceMessage)
   | ({ type: "connect" } & InstanceMessage);

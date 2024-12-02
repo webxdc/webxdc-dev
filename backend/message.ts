@@ -1,4 +1,5 @@
 import type {
+  RealtimeListener,
   ReceivedStatusUpdate,
   SendingStatusUpdate,
   Webxdc,
@@ -21,9 +22,12 @@ type Connect = (
 export type WebXdcMulti = {
   connect: Connect;
   sendUpdate: Webxdc<any>["sendUpdate"];
+  joinRealtimeChannel: Webxdc<any>["joinRealtimeChannel"]
 };
 
 export type OnMessage = (message: Message) => void;
+
+export type OnRealtime = (message: Message) => void;
 
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;
@@ -31,8 +35,13 @@ export interface IProcessor {
   removeClient(id: string): void;
 }
 
+class Realtime {
+  constructor(public listener: (data: Uint8Array) => void = () => {}) {};
+}
+
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
+  realtime: Realtime | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
@@ -44,6 +53,10 @@ class Client implements WebXdcMulti {
 
   sendUpdate(update: SendingStatusUpdate<any>, _descr: ""): void {
     this.processor.distribute(this.id, update);
+  }
+
+  sendRealtimeData(data: Uint8Array): void {
+    this.processor.distributeRealtime(this.id, data);
   }
 
   connect(
@@ -108,6 +121,28 @@ class Client implements WebXdcMulti {
     this.updateListener([update]);
   }
 
+  receiveRealtime(data: Uint8Array) {
+    if (this.updateListener == null || this.updateSerial == null) {
+      return;
+    }
+    if (this.realtime && this.realtime.listener)
+      this.realtime?.listener(data)
+  }
+
+  joinRealtimeChannel(): RealtimeListener {
+    return {
+      setListener: (listener) =>  {
+        this.realtime = new Realtime(listener)
+      },
+      leave: () => {
+        this.realtime = null
+      },
+      send: (data) => {
+        this.sendRealtimeData(data)
+      }
+    }
+  }
+
   clear() {
     if (
       this.clearListener == null ||
@@ -148,7 +183,28 @@ class Processor implements IProcessor {
     this.clients.splice(client_index, 1);
   }
 
-  distribute(instanceId: string, update: SendingStatusUpdate<any>) {
+  distributeRealtime(
+    instanceId: string,
+    data: Uint8Array,
+  ) {
+    this.onMessage({
+      type: "realtime-sent",
+      instanceId: instanceId,
+      instanceColor: getColorForId(instanceId),
+      data,
+      timestamp: Date.now(),
+    });
+    for (const client of this.clients) {
+      client.receiveRealtime(data);
+    }
+  }
+
+
+  distribute(
+    instanceId: string,
+    update: SendingStatusUpdate<any>,
+    descr: string,
+  ) {
     this.currentSerial++;
     const receivedUpdate: ReceivedStatusUpdate<any> = {
       ...update,

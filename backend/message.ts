@@ -122,9 +122,6 @@ class Client implements WebXdcMulti {
   }
 
   receiveRealtime(data: Uint8Array) {
-    if (this.updateListener == null || this.updateSerial == null) {
-      return;
-    }
     if (this.realtime && this.realtime.listener)
       this.realtime?.listener(data)
   }
@@ -195,7 +192,8 @@ class Processor implements IProcessor {
       timestamp: Date.now(),
     });
     for (const client of this.clients) {
-      client.receiveRealtime(data);
+      if (client.id != instanceId)
+        client.receiveRealtime(data);
     }
   }
 

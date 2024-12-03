@@ -1,9 +1,10 @@
-import type {
+import {
   RealtimeListener,
   ReceivedStatusUpdate,
   SendingStatusUpdate,
   Webxdc,
 } from "@webxdc/types";
+import { ReadLine } from "readline";
 import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
@@ -35,13 +36,46 @@ export interface IProcessor {
   removeClient(id: string): void;
 }
 
-class Realtime {
-  constructor(public listener: (data: Uint8Array) => void = () => {}) {};
+class RTL implements RealtimeListener {
+  private trashed = false;
+  private listener: (data: Uint8Array) => void  = (data) => { }
+
+  constructor(private sendHook: (data: Uint8Array) => void) {}
+
+  is_trashed(): boolean {
+    return this.trashed;
+  }
+
+  receive(data: Uint8Array) {
+    if (this.trashed) {
+      throw new Error(
+        "realtime listener is trashed and can no longer be used",
+      );
+    }
+    if (this.listener) {
+      this.listener(data);
+    }
+  }
+
+  setListener(listener: (data: Uint8Array) => void) {
+    this.listener = listener;
+  }
+
+  send(data: Uint8Array) {
+    if (!(data instanceof Uint8Array)) {
+      throw new Error("realtime listener data must be a Uint8Array");
+    }
+    this.sendHook(data)
+  }
+
+  leave() {
+    this.trashed = true;
+  }
 }
 
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
-  realtime: Realtime | null = null;
+  realtime: RTL | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
@@ -49,7 +83,7 @@ class Client implements WebXdcMulti {
   constructor(
     public processor: Processor,
     public id: string,
-  ) {}
+  ) { }
 
   sendUpdate(update: SendingStatusUpdate<any>, _descr: ""): void {
     this.processor.distribute(this.id, update);
@@ -121,23 +155,14 @@ class Client implements WebXdcMulti {
     this.updateListener([update]);
   }
 
-  receiveRealtime(data: Uint8Array) {
-    if (this.realtime && this.realtime.listener)
-      this.realtime?.listener(data)
-  }
-
   joinRealtimeChannel(): RealtimeListener {
-    return {
-      setListener: (listener) =>  {
-        this.realtime = new Realtime(listener)
-      },
-      leave: () => {
-        this.realtime = null
-      },
-      send: (data) => {
-        this.sendRealtimeData(data)
-      }
+    if (this.realtime && !this.realtime.is_trashed) {
+      throw new Error("The old realtime instance has to be trashed first")
     }
+    this.realtime = new RTL((data) => {
+      this.sendRealtimeData(data)
+    })
+    return this.realtime
   }
 
   clear() {
@@ -166,7 +191,7 @@ class Processor implements IProcessor {
   updates: ReceivedStatusUpdate<any>[] = [];
   clearInstanceIds: Set<string> = new Set();
 
-  constructor(public onMessage: OnMessage) {}
+  constructor(public onMessage: OnMessage) { }
 
   createClient(id: string): WebXdcMulti {
     const client = new Client(this, id);
@@ -192,8 +217,8 @@ class Processor implements IProcessor {
       timestamp: Date.now(),
     });
     for (const client of this.clients) {
-      if (client.id != instanceId)
-        client.receiveRealtime(data);
+      if (client.id != instanceId && client.realtime)
+        client.realtime.receive(data);
     }
   }
 
@@ -241,6 +266,6 @@ class Processor implements IProcessor {
   }
 }
 
-export function createProcessor(onMessage: OnMessage = () => {}): IProcessor {
+export function createProcessor(onMessage: OnMessage = () => { }): IProcessor {
   return new Processor(onMessage);
 }

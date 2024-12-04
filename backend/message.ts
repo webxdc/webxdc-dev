@@ -4,7 +4,6 @@ import {
   SendingStatusUpdate,
   Webxdc,
 } from "@webxdc/types";
-import { ReadLine } from "readline";
 import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
@@ -23,6 +22,7 @@ type Connect = (
 export type WebXdcMulti = {
   connect: Connect;
   sendUpdate: Webxdc<any>["sendUpdate"];
+  sendRealtimeData: (data: Uint8Array) => void;
   joinRealtimeChannel: Webxdc<any>["joinRealtimeChannel"]
 };
 
@@ -36,9 +36,9 @@ export interface IProcessor {
   removeClient(id: string): void;
 }
 
-class RTL implements RealtimeListener {
+export class RTL implements RealtimeListener {
   private trashed = false;
-  private listener: (data: Uint8Array) => void  = (data) => { }
+  private listener: (data: Uint8Array) => void  = () => { }
 
   constructor(private sendHook: (data: Uint8Array) => void) {}
 

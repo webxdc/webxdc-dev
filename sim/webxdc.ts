@@ -1,4 +1,4 @@
-import { WebXdc } from "@webxdc/types";
+import { Webxdc } from "@webxdc/types";
 import {
   Transport,
   TransportMessageCallback,

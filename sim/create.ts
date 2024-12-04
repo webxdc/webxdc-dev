@@ -50,8 +50,8 @@ export function createWebXdc(
 
   const webXdc: WebXdc<any> = {
     sendUpdate: (update, descr) => {
-      transport.send({ type: "sendUpdate", update, descr });
-      log("send", { update, descr });
+      transport.send({ type: "sendUpdate", update });
+      log("send", { update });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((message) => {

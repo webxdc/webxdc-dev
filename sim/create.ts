@@ -1,5 +1,5 @@
 import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
-
+import { RTL } from "../backend/message"
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
@@ -44,12 +44,12 @@ type Log = (...args: any[]) => void;
 
 export function createWebXdc(
   transport: Transport,
-  log: Log = () => {},
+  log: Log = () => { },
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
   const webXdc: Webxdc<any> = {
-    sendUpdate: (update: any) => {
+    sendUpdate: (update, descr) => {
       transport.send({ type: "sendUpdate", update });
       log("send", { update });
     },
@@ -92,17 +92,14 @@ export function createWebXdc(
         );
       }
 
-      /** @type {(file: Blob) => Promise<string>} */
-      const blob_to_base64 = (file) => {
+      const blob_to_base64 = (file: Blob) => {
         const data_start = ";base64,";
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = () => {
-            /** @type {string} */
-            //@ts-ignore
-            let data = reader.result;
-            resolve(data.slice(data.indexOf(data_start) + data_start.length));
+            let data: string = reader.result as string;
+            resolve(data!.slice(data!.indexOf(data_start) + data_start.length));
           };
           reader.onerror = () => reject(reader.error);
         });
@@ -143,13 +140,11 @@ export function createWebXdc(
           );
         }
       }
-      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${
-        content.text ? `"${content.text}"` : "No Text"
-      }\nFile: ${
-        content.file
+      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${content.text ? `"${content.text}"` : "No Text"
+        }\nFile: ${content.file
           ? `${content.file.name} - ${base64Content.length} bytes`
           : "No File"
-      }`;
+        }`;
       if (content.file) {
         const confirmed = confirm(
           msg + "\n\nDownload the file in the browser instead?",
@@ -191,6 +186,19 @@ export function createWebXdc(
       console.log(element);
       return promise;
     },
+
+    joinRealtimeChannel: () => {
+      return new RTL((data) => {
+        transport.send({ type: "sendRealtime", data });
+        log("send realtime", { data });
+      });
+    },
+    getAllUpdates: () => {
+      console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
+      return Promise.resolve([]);
+    },
+    sendUpdateInterval: 1000,
+    sendUpdateMaxSize: 999999,
     selfAddr: transport.address(),
     selfName: transport.name(),
   };

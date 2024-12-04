@@ -29,6 +29,8 @@ class FakeTransport implements Transport {
     if (data.type === "sendUpdate") {
       const { update } = data;
       this.client.sendUpdate(update, "");
+    } else if (data.type === "sendRealtime") {
+      this.client.sendRealtimeData(data.data)
     } else if (data.type === "setUpdateListener") {
       this.client.connect(
         (updates) => {

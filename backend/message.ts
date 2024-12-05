@@ -1,5 +1,5 @@
 import {
-  RealtimeListener,
+  RealtimeListener as WebxdcRealtimeListener,
   ReceivedStatusUpdate,
   SendingStatusUpdate,
   Webxdc,
@@ -36,11 +36,14 @@ export interface IProcessor {
   removeClient(id: string): void;
 }
 
-export class RTL implements RealtimeListener {
+export class RealtimeListener implements WebxdcRealtimeListener {
   private trashed = false;
-  private listener: (data: Uint8Array) => void  = () => { }
+  private listener: (data: Uint8Array) => void = () => { }
 
-  constructor(private sendHook: (data: Uint8Array) => void) {}
+  constructor(
+    private sendHook: (data: Uint8Array) => void = () => { },
+    private leaveHook: () => void = () => { }
+  ) { }
 
   is_trashed(): boolean {
     return this.trashed;
@@ -69,13 +72,14 @@ export class RTL implements RealtimeListener {
   }
 
   leave() {
+    this.leaveHook()
     this.trashed = true;
   }
 }
 
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
-  realtime: RTL | null = null;
+  realtime: RealtimeListener | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
@@ -156,10 +160,8 @@ class Client implements WebXdcMulti {
   }
 
   joinRealtimeChannel(): RealtimeListener {
-    if (this.realtime && !this.realtime.is_trashed) {
-      throw new Error("The old realtime instance has to be trashed first")
-    }
-    this.realtime = new RTL((data) => {
+    console.log("joined realtime")
+    this.realtime = new RealtimeListener((data) => {
       this.sendRealtimeData(data)
     })
     return this.realtime
@@ -209,19 +211,24 @@ class Processor implements IProcessor {
     instanceId: string,
     data: Uint8Array,
   ) {
+    console.log("distributing")
     this.onMessage({
-      type: "realtime-sent",
+      type: "sendRealtime",
       instanceId: instanceId,
       instanceColor: getColorForId(instanceId),
       data,
       timestamp: Date.now(),
     });
     for (const client of this.clients) {
-      if (client.id != instanceId && client.realtime)
+      if (client.id != instanceId) {
+        if (!client.realtime) {
+          continue
+          console.warn(`client ${instanceId} has not joined realtime`)
+        }
         client.realtime.receive(data);
+      }
     }
   }
-
 
   distribute(
     instanceId: string,

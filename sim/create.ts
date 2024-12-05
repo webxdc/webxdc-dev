@@ -1,8 +1,13 @@
-import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
-import { RTL } from "../backend/message"
+import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener, RealtimeListener } from "@webxdc/types";
+import { RealtimeListener as RTL } from "../backend/message"
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
+};
+
+type SendRealtimeMessage = {
+  type: "sendRealtime"
+  data: Uint8Array
 };
 
 type ClearMessage = {
@@ -23,7 +28,7 @@ type DeleteMessage = {
   type: "delete";
 };
 
-type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage;
+type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage | SendRealtimeMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -47,7 +52,7 @@ export function createWebXdc(
   log: Log = () => { },
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
-
+  let realtime: RTL | null = null
   const webXdc: Webxdc<any> = {
     sendUpdate: (update, descr) => {
       transport.send({ type: "sendUpdate", update });
@@ -64,6 +69,9 @@ export function createWebXdc(
             resolveUpdateListenerPromise();
             resolveUpdateListenerPromise = null;
           }
+        } else if (isRealtimeMessage(message)) {
+          console.log("received realtime data at frontend")
+          realtime!.receive(message.data)
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();
@@ -73,6 +81,8 @@ export function createWebXdc(
         } else if (isDeleteMessage(message)) {
           log("delete");
           window.top?.close();
+        } else {
+          log("error", `Unhandled message ${message}`)
         }
       });
       transport.onConnect(() => {
@@ -188,10 +198,14 @@ export function createWebXdc(
     },
 
     joinRealtimeChannel: () => {
-      return new RTL((data) => {
-        transport.send({ type: "sendRealtime", data });
+      transport.send({type: "joinRealtime"})
+      realtime = new RTL((data) => {
+        transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
         log("send realtime", { data });
+      }, () => {
+        realtime = null
       });
+      return realtime
     },
     getAllUpdates: () => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
@@ -207,6 +221,10 @@ export function createWebXdc(
 
 function isUpdatesMessage(data: Message): data is UpdatesMessage {
   return data.type === "updates";
+}
+
+function isRealtimeMessage(data: Message): data is SendRealtimeMessage {
+  return data.type === "sendRealtime";
 }
 
 function isClearMessage(data: Message): data is ClearMessage {

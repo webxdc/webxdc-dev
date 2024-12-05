@@ -31,6 +31,8 @@ class FakeTransport implements Transport {
       this.client.sendUpdate(update, "");
     } else if (data.type === "sendRealtime") {
       this.client.sendRealtimeData(data.data)
+    }else if (data.type === "joinRealtime") {
+      this.client.joinRealtimeChannel()
     } else if (data.type === "setUpdateListener") {
       this.client.connect(
         (updates) => {

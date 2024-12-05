@@ -114,7 +114,7 @@ export class DevServerTransport implements Transport {
   }
 }
 
-function getWebXdc(): WebXdc<any> {
+function getWebXdc(): Webxdc<any> {
   return (window as any).webxdc;
 }
 

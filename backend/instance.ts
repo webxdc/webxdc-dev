@@ -22,6 +22,11 @@ type SendUpdateMessage = {
   descr: string;
 };
 
+type SendRealtimeMessage = {
+  type: "sendRealtime";
+  data: Uint8Array
+};
+
 type SetUpdateListenerMessage = {
   type: "setUpdateListener";
   serial: number;
@@ -126,6 +131,10 @@ export class Instances {
         // XXX should validate parsed
         if (isSendUpdateMessage(parsed)) {
           instance.webXdc.sendUpdate(parsed.update, "");
+        } else if (isSendRealtimeMessage(parsed)) {
+          instance.webXdc.sendRealtimeData(parsed.data);          
+        } else if (isJoinRealtimeMessage(parsed)) {
+          instance.webXdc.joinRealtimeChannel();          
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
@@ -215,6 +224,14 @@ function broadcast(wss: Server<WebSocket>, data: string): boolean {
 
 function isSendUpdateMessage(value: any): value is SendUpdateMessage {
   return value.type === "sendUpdate";
+}
+
+function isSendRealtimeMessage(value: any): value is SendRealtimeMessage {
+  return value.type === "sendRealtime";
+}
+
+function isJoinRealtimeMessage(value: any): value is { type: "joinRealtime" } {
+  return value.type === "joinRealtime";
 }
 
 function isSetUpdateListenerMessage(

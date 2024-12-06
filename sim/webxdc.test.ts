@@ -44,6 +44,15 @@ class FakeTransport implements Transport {
           }
           return true;
         },
+        () => {
+          if (this.messageCallback != null) {
+            this.messageCallback({
+              type: "sendRealtime",
+              data,
+            });
+          }
+          return true;
+        },
         data.serial,
         () => {
           if (this.messageCallback != null) {

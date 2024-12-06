@@ -24,9 +24,9 @@ type Connect = (
 
 export type WebXdcMulti = {
   connect: Connect;
+  connectRealtime: (listener: RealtimeListenerListener) => void;
   sendUpdate: Webxdc<any>["sendUpdate"];
   sendRealtimeData: (data: Uint8Array) => void;
-  joinRealtimeChannel: Webxdc<any>["joinRealtimeChannel"]
 };
 
 export type UpdateDescr = [ReceivedStatusUpdate<any>, string];
@@ -46,7 +46,8 @@ export class RealtimeListener implements WebxdcRealtimeListener {
   private listener: (data: Uint8Array) => void = () => { }
 
   constructor(
-    private sendHook: (data: Uint8Array) => void = () => { },
+    public sendHook: (data: Uint8Array) => void = () => { },
+    public setListenerHook: () => void = () => { },
     private leaveHook: () => void = () => { }
   ) { }
 
@@ -66,6 +67,7 @@ export class RealtimeListener implements WebxdcRealtimeListener {
   }
 
   setListener(listener: (data: Uint8Array) => void) {
+    this.setListenerHook()
     this.listener = listener;
   }
 
@@ -95,8 +97,8 @@ class Client implements WebXdcMulti {
     public id: string,
   ) { }
 
-  sendUpdate(update: SendingStatusUpdate<any>, descr: string): void {
-    this.processor.distribute(this.id, update, descr);
+  sendUpdate(update: SendingStatusUpdate<any>, descr: ""): void {
+    this.processor.distribute(this.id, update, "");
   }
 
   sendRealtimeData(data: Uint8Array): void {
@@ -104,6 +106,7 @@ class Client implements WebXdcMulti {
   }
 
   connectRealtime(listener: RealtimeListenerListener) {
+    console.warn("connecting realtime")
     this.processor.onMessage({
       type: "connect-realtime",
       instanceId: this.id,
@@ -111,7 +114,6 @@ class Client implements WebXdcMulti {
       timestamp: Date.now(),
     });
 
-    
     const realtimeListener= (data: Uint8Array) => {
       const hasReceived = listener(data);
       if (hasReceived) {
@@ -196,15 +198,8 @@ class Client implements WebXdcMulti {
     if (this.realtimeListener == null) {
       return;
     }
+    console.warn("hiiiii");
     this.realtimeListener(data);
-  }
-
-  joinRealtimeChannel(): RealtimeListener {
-    console.log("joined realtime")
-    this.realtime = new RealtimeListener((data) => {
-      this.sendRealtimeData(data)
-    })
-    return this.realtime
   }
 
   clear() {
@@ -251,7 +246,6 @@ class Processor implements IProcessor {
     instanceId: string,
     data: Uint8Array,
   ) {
-    console.log("distributing")
     this.onMessage({
       type: "sendRealtime",
       instanceId: instanceId,
@@ -261,10 +255,6 @@ class Processor implements IProcessor {
     });
     for (const client of this.clients) {
       if (client.id != instanceId) {
-        if (!client.realtime) {
-          continue
-          console.warn(`client ${instanceId} has not joined realtime`)
-        }
         client.receiveRealtime(data)
       }
     }

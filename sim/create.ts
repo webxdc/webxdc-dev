@@ -1,8 +1,13 @@
-import { WebXdc, ReceivedStatusUpdate } from "@webxdc/types";
-
+import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener } from "@webxdc/types";
+import { RealtimeListener as RTL } from "../backend/message"
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
+};
+
+type SendRealtimeMessage = {
+  type: "sendRealtime"
+  data: Uint8Array
 };
 
 type ClearMessage = {
@@ -23,7 +28,7 @@ type DeleteMessage = {
   type: "delete";
 };
 
-type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage;
+type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage | SendRealtimeMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -32,7 +37,7 @@ export type TransportConnectCallback = () => void;
 export type Transport = {
   send(data: any): void;
   onMessage(callback: TransportMessageCallback): void;
-  onConnect(callback: TransportConnectCallback): void;
+  onConnect(callback: TransportConnectCallback): void; // Socket connection cb
   clear(): void;
   address(): string;
   name(): string;
@@ -44,14 +49,14 @@ type Log = (...args: any[]) => void;
 
 export function createWebXdc(
   transport: Transport,
-  log: Log = () => {},
-): WebXdc<any> {
+  log: Log = () => { },
+): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
-
-  const webXdc: WebXdc<any> = {
-    sendUpdate: (update, descr) => {
-      transport.send({ type: "sendUpdate", update, descr });
-      log("send", { update, descr });
+  let realtime: RTL | null = null
+  const webXdc: Webxdc<any> = {
+    sendUpdate: (update) => {
+      transport.send({ type: "sendUpdate", update });
+      log("send", { update });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((message) => {
@@ -64,6 +69,11 @@ export function createWebXdc(
             resolveUpdateListenerPromise();
             resolveUpdateListenerPromise = null;
           }
+        } else if (isRealtimeMessage(message)) {
+          // TODO: move this out of setUpdateListener because otherwise 
+          // You have to set an update listener such that realtime works
+          console.log("received realtime data at frontend")
+          realtime!.receive(message.data)
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();
@@ -73,6 +83,8 @@ export function createWebXdc(
         } else if (isDeleteMessage(message)) {
           log("delete");
           window.top?.close();
+        } else {
+          log("error", `Unhandled message ${message}`)
         }
       });
       transport.onConnect(() => {
@@ -92,17 +104,14 @@ export function createWebXdc(
         );
       }
 
-      /** @type {(file: Blob) => Promise<string>} */
-      const blob_to_base64 = (file) => {
+      const blob_to_base64 = (file: Blob) => {
         const data_start = ";base64,";
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = () => {
-            /** @type {string} */
-            //@ts-ignore
-            let data = reader.result;
-            resolve(data.slice(data.indexOf(data_start) + data_start.length));
+            let data: string = reader.result as string;
+            resolve(data!.slice(data!.indexOf(data_start) + data_start.length));
           };
           reader.onerror = () => reject(reader.error);
         });
@@ -143,13 +152,11 @@ export function createWebXdc(
           );
         }
       }
-      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${
-        content.text ? `"${content.text}"` : "No Text"
-      }\nFile: ${
-        content.file
+      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${content.text ? `"${content.text}"` : "No Text"
+        }\nFile: ${content.file
           ? `${content.file.name} - ${base64Content.length} bytes`
           : "No File"
-      }`;
+        }`;
       if (content.file) {
         const confirmed = confirm(
           msg + "\n\nDownload the file in the browser instead?",
@@ -191,6 +198,29 @@ export function createWebXdc(
       console.log(element);
       return promise;
     },
+
+    joinRealtimeChannel: () => {
+      realtime = new RTL(() => { },
+        () => {
+          transport.send({ type: "setRealtimeListener" })   
+        },
+        () => {
+          realtime = null
+        });
+      transport.onConnect(() => {
+        realtime!.sendHook = (data) => {
+          transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
+          log("send realtime", { data });
+        }
+      })
+      return realtime
+    },
+    getAllUpdates: () => {
+      console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
+      return Promise.resolve([]);
+    },
+    sendUpdateInterval: 1000,
+    sendUpdateMaxSize: 999999,
     selfAddr: transport.address(),
     selfName: transport.name(),
   };
@@ -199,6 +229,10 @@ export function createWebXdc(
 
 function isUpdatesMessage(data: Message): data is UpdatesMessage {
   return data.type === "updates";
+}
+
+function isRealtimeMessage(data: Message): data is SendRealtimeMessage {
+  return data.type === "sendRealtime";
 }
 
 function isClearMessage(data: Message): data is ClearMessage {

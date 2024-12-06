@@ -84,7 +84,7 @@ export function createFrontend(
   app.post<any, { status: string }>("/fake-update", (req, res) => {
     const instanceId = Array.from(instances.instances.keys())[0];
     const instance = instances.instances.get(instanceId);
-    instance?.webXdc.sendUpdate({ payload: req.body }, "fake update");
+    instance?.webXdc.sendUpdate({ payload: req.body }, "");
     res.json({
       status: "ok",
     });

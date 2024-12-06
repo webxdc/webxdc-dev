@@ -1,4 +1,4 @@
-import { WebXdc } from "@webxdc/types";
+import { Webxdc } from "@webxdc/types";
 import {
   Transport,
   TransportMessageCallback,
@@ -114,7 +114,7 @@ export class DevServerTransport implements Transport {
   }
 }
 
-function getWebXdc(): WebXdc<any> {
+function getWebXdc(): Webxdc<any> {
   return (window as any).webxdc;
 }
 

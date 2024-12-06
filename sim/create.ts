@@ -1,4 +1,4 @@
-import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener, RealtimeListener } from "@webxdc/types";
+import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener } from "@webxdc/types";
 import { RealtimeListener as RTL } from "../backend/message"
 type UpdatesMessage = {
   type: "updates";
@@ -37,7 +37,7 @@ export type TransportConnectCallback = () => void;
 export type Transport = {
   send(data: any): void;
   onMessage(callback: TransportMessageCallback): void;
-  onConnect(callback: TransportConnectCallback): void;
+  onConnect(callback: TransportConnectCallback): void; // Socket connection cb
   clear(): void;
   address(): string;
   name(): string;
@@ -54,7 +54,7 @@ export function createWebXdc(
   let resolveUpdateListenerPromise: (() => void) | null = null;
   let realtime: RTL | null = null
   const webXdc: Webxdc<any> = {
-    sendUpdate: (update, descr) => {
+    sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
       log("send", { update });
     },
@@ -70,6 +70,8 @@ export function createWebXdc(
             resolveUpdateListenerPromise = null;
           }
         } else if (isRealtimeMessage(message)) {
+          // TODO: move this out of setUpdateListener because otherwise 
+          // You have to set an update listener such that realtime works
           console.log("received realtime data at frontend")
           realtime!.receive(message.data)
         } else if (isClearMessage(message)) {
@@ -198,13 +200,19 @@ export function createWebXdc(
     },
 
     joinRealtimeChannel: () => {
-      transport.send({type: "joinRealtime"})
-      realtime = new RTL((data) => {
-        transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
-        log("send realtime", { data });
-      }, () => {
-        realtime = null
-      });
+      realtime = new RTL(() => { },
+        () => {
+          transport.send({ type: "setRealtimeListener" })   
+        },
+        () => {
+          realtime = null
+        });
+      transport.onConnect(() => {
+        realtime!.sendHook = (data) => {
+          transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
+          log("send realtime", { data });
+        }
+      })
       return realtime
     },
     getAllUpdates: () => {

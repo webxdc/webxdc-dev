@@ -132,8 +132,11 @@ export class Instances {
           instance.webXdc.sendUpdate(parsed.update, "");
         } else if (isSendRealtimeMessage(parsed)) {
           instance.webXdc.sendRealtimeData(parsed.data);          
-        } else if (isJoinRealtimeMessage(parsed)) {
-          instance.webXdc.joinRealtimeChannel();          
+        } else if (isSetRealtimeListenerMessage(parsed)) {
+          instance.webXdc.connectRealtime((data) => {
+            console.warn("broadcasting leeeeeel")
+            return broadcast(wss, JSON.stringify({ type: "sendRealtime", data }));
+          });          
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
@@ -229,8 +232,8 @@ function isSendRealtimeMessage(value: any): value is SendRealtimeMessage {
   return value.type === "sendRealtime";
 }
 
-function isJoinRealtimeMessage(value: any): value is { type: "joinRealtime" } {
-  return value.type === "joinRealtime";
+function isSetRealtimeListenerMessage(value: any): value is { type: "setRealtimeListener" } {
+  return value.type === "setRealtimeListener";
 }
 
 function isSetUpdateListenerMessage(

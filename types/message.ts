@@ -20,4 +20,4 @@ export type Message =
   | ({ type: "clear" } & InstanceMessage)
   | ({ type: "connect" } & InstanceMessage)
   | ({ type: "connect-realtime" } & InstanceMessage)
-  | ({ type: "realtime-received"} & InstanceMessage);
+  | ({ type: "realtime-received", data: Uint8Array} & InstanceMessage);

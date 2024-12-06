@@ -13,6 +13,7 @@ type UpdateListenerMulti = (
 
 type ClearListener = () => boolean;
 type DeleteListener = () => boolean;
+type RealtimeListenerListener = (data: Uint8Array) => boolean
 
 type Connect = (
   updateListener: UpdateListenerMulti,
@@ -83,6 +84,7 @@ export class RealtimeListener implements WebxdcRealtimeListener {
 
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
+  realtimeListener: RealtimeListenerListener | null = null;
   realtime: RealtimeListener | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
@@ -99,6 +101,32 @@ class Client implements WebXdcMulti {
 
   sendRealtimeData(data: Uint8Array): void {
     this.processor.distributeRealtime(this.id, data);
+  }
+
+  connectRealtime(listener: RealtimeListenerListener) {
+    this.processor.onMessage({
+      type: "connect-realtime",
+      instanceId: this.id,
+      instanceColor: getColorForId(this.id),
+      timestamp: Date.now(),
+    });
+
+    
+    const realtimeListener= (data: Uint8Array) => {
+      const hasReceived = listener(data);
+      if (hasReceived) {
+          this.processor.onMessage({
+            type: "realtime-received",
+            data,
+            instanceId: this.id,
+            instanceColor: getColorForId(this.id),
+            timestamp: Date.now(),
+          });
+      }
+      return hasReceived;
+    };
+
+    this.realtimeListener = realtimeListener
   }
 
   connect(
@@ -162,6 +190,13 @@ class Client implements WebXdcMulti {
       return;
     }
     this.updateListener([[update, descr]]);
+  }
+
+  receiveRealtime(data: Uint8Array) {
+    if (this.realtimeListener == null) {
+      return;
+    }
+    this.realtimeListener(data);
   }
 
   joinRealtimeChannel(): RealtimeListener {
@@ -230,7 +265,7 @@ class Processor implements IProcessor {
           continue
           console.warn(`client ${instanceId} has not joined realtime`)
         }
-        client.realtime.receive(data);
+        client.receiveRealtime(data)
       }
     }
   }

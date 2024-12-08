@@ -1,4 +1,4 @@
-import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener } from "@webxdc/types";
+import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
 import { RealtimeListener as RTL } from "../backend/message"
 type UpdatesMessage = {
   type: "updates";
@@ -72,8 +72,9 @@ export function createWebXdc(
         } else if (isRealtimeMessage(message)) {
           // TODO: move this out of setUpdateListener because otherwise 
           // You have to set an update listener such that realtime works
-          console.log("received realtime data at frontend")
-          realtime!.receive(message.data)
+          // Conversion to any because the actual data is a dict representation of Uint8Array
+          // This is due to JSON.stringify conversion.
+          realtime!.receive(new Uint8Array(Object.values(message.data as any)))
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();

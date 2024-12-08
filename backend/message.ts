@@ -102,7 +102,6 @@ class Client implements WebXdcMulti {
   }
 
   connectRealtime(listener: RealtimeListenerListener) {
-    console.warn("connecting realtime")
     this.processor.onMessage({
       type: "connect-realtime",
       instanceId: this.id,
@@ -193,7 +192,6 @@ class Client implements WebXdcMulti {
     if (this.realtimeListener == null) {
       return;
     }
-    console.warn("hiiiii");
     this.realtimeListener(data);
   }
 

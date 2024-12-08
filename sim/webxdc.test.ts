@@ -27,8 +27,12 @@ class FakeTransport implements Transport {
 
   send(data: any) {
     if (data.type === "sendUpdate") {
-      const { update, descr } = data;
-      this.client.sendUpdate(update, descr);
+      const { update} = data;
+      this.client.sendUpdate(update, "");
+    } else if (data.type === "sendRealtime") {
+      this.client.sendRealtimeData(data.data)
+    }else if (data.type === "joinRealtime") {
+      this.client.joinRealtimeChannel()
     } else if (data.type === "setUpdateListener") {
       this.client.connect(
         (updates) => {
@@ -36,6 +40,15 @@ class FakeTransport implements Transport {
             this.messageCallback({
               type: "updates",
               updates: updates.map(([update]) => update),
+            });
+          }
+          return true;
+        },
+        () => {
+          if (this.messageCallback != null) {
+            this.messageCallback({
+              type: "sendRealtime",
+              data,
             });
           }
           return true;
@@ -106,7 +119,7 @@ test("webxdc sends", async () => {
   }, 0);
   fakeTransport.connect();
   await promise;
-  webXdc.sendUpdate({ payload: "hello" }, "sent 1");
+  webXdc.sendUpdate({ payload: "hello" }, "");
   expect(updates).toEqual([
     {
       payload: "hello",
@@ -148,7 +161,7 @@ test("webxdc distributes", async () => {
   fakeTransportB.connect();
   await promiseB;
 
-  webXdcA.sendUpdate({ payload: "hello" }, "sent 1");
+  webXdcA.sendUpdate({ payload: "hello" }, "");
   expect(updatesA).toEqual([
     {
       payload: "hello",

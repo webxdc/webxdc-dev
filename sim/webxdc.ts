@@ -20,7 +20,7 @@ export class DevServerTransport implements Transport {
 
   constructor(url: string) {
     this.socket = new WebSocket(url);
-    this.promise = new Promise((resolve, reject) => {
+    this.promise = new Promise((resolve) => {
       this.resolveInfo = resolve;
     });
   }
@@ -71,7 +71,7 @@ export class DevServerTransport implements Transport {
         return new Promise((resolve, reject) => {
           const name = result?.name;
           console.log(`Deleting indexedDB database: ${name}`);
-          const request = window.indexedDB.deleteDatabase(name);
+          const request = window.indexedDB.deleteDatabase(name!);
           request.onsuccess = (ev) => resolve(ev);
           request.onerror = (ev) => reject(ev);
         });

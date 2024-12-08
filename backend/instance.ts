@@ -135,7 +135,6 @@ export class Instances {
           instance.webXdc.sendRealtimeData(parsed.data);          
         } else if (isSetRealtimeListenerMessage(parsed)) {
           instance.webXdc.connectRealtime((data) => {
-            console.warn("broadcasting leeeeeel")
             return broadcast(wss, JSON.stringify({ type: "sendRealtime", data }));
           });          
         } else if (isSetUpdateListenerMessage(parsed)) {

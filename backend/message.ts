@@ -160,7 +160,7 @@ class Processor implements IProcessor {
       serial: this.currentSerial,
       max_serial: this.updates.length + 1,
     };
-    this.updates.push([receivedUpdate]);
+    this.updates.push(receivedUpdate);
     this.onMessage({
       type: "sent",
       instanceId: instanceId,

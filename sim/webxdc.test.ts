@@ -35,7 +35,7 @@ class FakeTransport implements Transport {
           if (this.messageCallback != null) {
             this.messageCallback({
               type: "updates",
-              updates: updates.map(([update]) => update),
+              updates,
             });
           }
           return true;

@@ -19,7 +19,6 @@ export type Options = {
 type SendUpdateMessage = {
   type: "sendUpdate";
   update: ReceivedStatusUpdate<any>;
-  descr: string;
 };
 
 type SetUpdateListenerMessage = {

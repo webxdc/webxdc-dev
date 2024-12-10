@@ -1,4 +1,4 @@
-import { createProcessor, UpdateDescr } from "./message";
+import { createProcessor } from "./message";
 import type { Message } from "../types/message";
 
 // a little helper to let us track messages for testing purposes
@@ -29,7 +29,7 @@ test("distribute to self", () => {
   client0.sendUpdate({ payload: "Hello" }, "") ;
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
   ]);
 
   expect(prepare(getMessages())).toEqual([
@@ -43,13 +43,11 @@ test("distribute to self", () => {
         serial: 1,
         max_serial: 1,
       },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "",
     },
   ]);
 });
@@ -76,12 +74,12 @@ test("distribute to self and other", () => {
   client0.sendUpdate({ payload: "Hello" }, "");
   client1.sendUpdate({ payload: "Bye" }, "");
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 }
   ]);
 
   expect(prepare(getMessages())).toEqual([
@@ -93,37 +91,31 @@ test("distribute to self and other", () => {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3002",
-      descr: "",
     },
     {
       type: "sent",
       instanceId: "3002",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3001",
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3002",
-      descr: "",
     },
   ]);
 });
@@ -149,11 +141,11 @@ test("setUpdateListener serial should skip older", () => {
   client0.sendUpdate({ payload: "Hello" }, "");
   client0.sendUpdate({ payload: "Bye" }, "");
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 });
 
@@ -175,8 +167,8 @@ test("other starts listening later", () => {
   client0.sendUpdate({ payload: "Bye" }, "");
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   // we only join later, so we haven't heard a thing yet
   expect(client1Heard).toMatchObject([]);
@@ -187,12 +179,12 @@ test("other starts listening later", () => {
   }, 0);
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 2 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 2 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 
   expect(prepare(getMessages())).toEqual([
@@ -202,25 +194,21 @@ test("other starts listening later", () => {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "",
     },
     {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3001",
-      descr: "",
     },
     { type: "connect", instanceId: "3002" },
     { type: "clear", instanceId: "3002" },
@@ -228,13 +216,11 @@ test("other starts listening later", () => {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 2 },
       instanceId: "3002",
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3002",
-      descr: "",
     },
   ]);
 });
@@ -255,8 +241,8 @@ test("client is created later and needs to catch up", () => {
   client0.sendUpdate({ payload: "Bye" }, "");
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 
   // we only join later, so we haven't heard a thing yet
@@ -269,12 +255,12 @@ test("client is created later and needs to catch up", () => {
   }, 0);
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 2 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 2 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 });
 
@@ -294,8 +280,8 @@ test("other starts listening later but is partially caught up", () => {
   client0.sendUpdate({ payload: "Hello" }, "");
   client0.sendUpdate({ payload: "Bye" }, "");
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   // we only join later, so we haven't heard a thing yet
   expect(client1Heard).toMatchObject([]);
@@ -307,11 +293,11 @@ test("other starts listening later but is partially caught up", () => {
   }, 1);
 
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
   expect(client1Heard).toMatchObject([
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 });
 
@@ -493,8 +479,8 @@ test("connect with clear means we get no catchup if no new updates", () => {
 
   expect(client0Heard).toMatchObject([
     "cleared",
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
   ]);
 
@@ -516,8 +502,8 @@ test("connect with clear means we get no catchup if no new updates", () => {
 
   expect(client0Heard).toMatchObject([
     "cleared",
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
   ]);
   expect(client1Heard).toMatchObject(["cleared"]);
@@ -549,14 +535,14 @@ test("connect with clear means catchup only with updates after clear", () => {
   processor.clear();
 
   // the aftermath update, which the newly connecting client should get
-  client0.sendUpdate({ payload: "Aftermath" }, "update 3");
+  client0.sendUpdate({ payload: "Aftermath" }, "");
 
   expect(client0Heard).toMatchObject([
     "cleared",
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
-    [{ payload: "Aftermath", serial: 1, max_serial: 1 }, "update 3"],
+    { payload: "Aftermath", serial: 1, max_serial: 1 },
   ]);
 
   // we only join later, so we haven't heard a thing yet
@@ -577,14 +563,14 @@ test("connect with clear means catchup only with updates after clear", () => {
 
   expect(client0Heard).toMatchObject([
     "cleared",
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
-    [{ payload: "Bye", serial: 2, max_serial: 2 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
+    { payload: "Bye", serial: 2, max_serial: 2 },
     "cleared",
-    [{ payload: "Aftermath", serial: 1, max_serial: 1 }, "update 3"],
+    { payload: "Aftermath", serial: 1, max_serial: 1 },
   ]);
   expect(client1Heard).toMatchObject([
     "cleared",
-    [{ payload: "Aftermath", serial: 1, max_serial: 1 }, "update 3"],
+    { payload: "Aftermath", serial: 1, max_serial: 1 },
   ]);
 
   expect(getMessages()).toMatchObject([
@@ -594,38 +580,32 @@ test("connect with clear means catchup only with updates after clear", () => {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "",
     },
     {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
-      descr: "",
     },
     {
       type: "received",
       update: { payload: "Bye", serial: 2, max_serial: 2 },
       instanceId: "3001",
-      descr: "",
     },
     { type: "clear", instanceId: "3001" },
     {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
-      descr: "update 3",
     },
     {
       type: "received",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "update 3",
     },
     { type: "connect", instanceId: "3002" },
     { type: "clear", instanceId: "3002" },
@@ -633,7 +613,6 @@ test("connect with clear means catchup only with updates after clear", () => {
       type: "received",
       instanceId: "3002",
       update: { payload: "Aftermath", serial: 1, max_serial: 1 },
-      descr: "update 3",
     },
   ]);
 });
@@ -659,7 +638,7 @@ test("distribute to self and other, but other was disconnected", () => {
 
   client0.sendUpdate({ payload: "Hello" }, "");
   expect(client0Heard).toMatchObject([
-    [{ payload: "Hello", serial: 1, max_serial: 1 }, ""],
+    { payload: "Hello", serial: 1, max_serial: 1 },
   ]);
   expect(client1Heard).toMatchObject([]);
 
@@ -672,13 +651,12 @@ test("distribute to self and other, but other was disconnected", () => {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-      descr: "",
+    
     },
     {
       type: "received",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
       instanceId: "3001",
-      descr: "",
     },
   ]);
 });

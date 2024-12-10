@@ -49,7 +49,7 @@ export function createWebXdc(
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
   const webXdc: WebXdc<any> = {
-    sendUpdate: (update, descr) => {
+    sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
       log("send", { update });
     },

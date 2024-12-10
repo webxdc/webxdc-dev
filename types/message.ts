@@ -8,7 +8,6 @@ export type InstanceMessage = {
 
 export type BaseUpdateMessage = {
   update: ReceivedStatusUpdate<any>;
-  descr: string;
 } & InstanceMessage;
 
 export type UpdateMessage =

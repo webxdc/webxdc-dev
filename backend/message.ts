@@ -6,9 +6,7 @@ import type {
 import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
-type UpdateListenerMulti = (
-  updates: ReceivedStatusUpdate<any>[],
-) => boolean;
+type UpdateListenerMulti = (updates: ReceivedStatusUpdate<any>[]) => boolean;
 
 type ClearListener = () => boolean;
 type DeleteListener = () => boolean;
@@ -150,10 +148,7 @@ class Processor implements IProcessor {
     this.clients.splice(client_index, 1);
   }
 
-  distribute(
-    instanceId: string,
-    update: SendingStatusUpdate<any>,
-  ) {
+  distribute(instanceId: string, update: SendingStatusUpdate<any>) {
     this.currentSerial++;
     const receivedUpdate: ReceivedStatusUpdate<any> = {
       ...update,
@@ -187,9 +182,7 @@ class Processor implements IProcessor {
     updateListener(
       this.updates
         .slice(serial)
-        .map((update) => 
-          ({ ...update, max_serial: maxSerial })
-        ),
+        .map((update) => ({ ...update, max_serial: maxSerial })),
     );
   }
 }

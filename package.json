@@ -58,7 +58,7 @@
     "@types/node": "^18.0.0",
     "@types/node-fetch": "^2.6.2",
     "@types/wait-on": "^5.3.1",
-    "@webxdc/types": "^2.0.0",
+    "@webxdc/types": "^2.0.1",
     "babel-loader": "^8.2.5",
     "babel-preset-solid": "~1.5.0",
     "concurrently": "^7.2.2",

@@ -6,9 +6,7 @@ import type {
 import type { Message } from "../types/message";
 import { getColorForId } from "./color";
 
-type UpdateListenerMulti = (
-  updates: [ReceivedStatusUpdate<any>, string][],
-) => boolean;
+type UpdateListenerMulti = (updates: ReceivedStatusUpdate<any>[]) => boolean;
 
 type ClearListener = () => boolean;
 type DeleteListener = () => boolean;
@@ -24,8 +22,6 @@ export type WebXdcMulti = {
   connect: Connect;
   sendUpdate: Webxdc<any>["sendUpdate"];
 };
-
-export type UpdateDescr = [ReceivedStatusUpdate<any>, string];
 
 export type OnMessage = (message: Message) => void;
 
@@ -46,8 +42,8 @@ class Client implements WebXdcMulti {
     public id: string,
   ) {}
 
-  sendUpdate(update: SendingStatusUpdate<any>, descr: string): void {
-    this.processor.distribute(this.id, update, descr);
+  sendUpdate(update: SendingStatusUpdate<any>, _descr: ""): void {
+    this.processor.distribute(this.id, update);
   }
 
   connect(
@@ -74,17 +70,16 @@ class Client implements WebXdcMulti {
       }
       return hasReceived;
     });
-    const updateListener = (updates: UpdateDescr[]) => {
+    const updateListener = (updates: ReceivedStatusUpdate<any>[]) => {
       const hasReceived = listener(updates);
       if (hasReceived) {
-        for (const [update, descr] of updates) {
+        for (const update of updates) {
           this.processor.onMessage({
             type: "received",
             update: update,
             instanceId: this.id,
             instanceColor: getColorForId(this.id),
             timestamp: Date.now(),
-            descr,
           });
         }
       }
@@ -102,7 +97,7 @@ class Client implements WebXdcMulti {
     this.clear();
   }
 
-  receiveUpdate(update: ReceivedStatusUpdate<any>, descr: string) {
+  receiveUpdate(update: ReceivedStatusUpdate<any>) {
     if (this.updateListener == null || this.updateSerial == null) {
       return;
     }
@@ -110,7 +105,7 @@ class Client implements WebXdcMulti {
     if (update.serial <= this.updateSerial) {
       return;
     }
-    this.updateListener([[update, descr]]);
+    this.updateListener([update]);
   }
 
   clear() {
@@ -136,7 +131,7 @@ class Client implements WebXdcMulti {
 class Processor implements IProcessor {
   clients: Client[] = [];
   currentSerial: number = 0;
-  updates: UpdateDescr[] = [];
+  updates: ReceivedStatusUpdate<any>[] = [];
   clearInstanceIds: Set<string> = new Set();
 
   constructor(public onMessage: OnMessage) {}
@@ -153,28 +148,23 @@ class Processor implements IProcessor {
     this.clients.splice(client_index, 1);
   }
 
-  distribute(
-    instanceId: string,
-    update: SendingStatusUpdate<any>,
-    descr: string,
-  ) {
+  distribute(instanceId: string, update: SendingStatusUpdate<any>) {
     this.currentSerial++;
     const receivedUpdate: ReceivedStatusUpdate<any> = {
       ...update,
       serial: this.currentSerial,
       max_serial: this.updates.length + 1,
     };
-    this.updates.push([receivedUpdate, descr]);
+    this.updates.push(receivedUpdate);
     this.onMessage({
       type: "sent",
       instanceId: instanceId,
       instanceColor: getColorForId(instanceId),
       update: receivedUpdate,
       timestamp: Date.now(),
-      descr,
     });
     for (const client of this.clients) {
-      client.receiveUpdate(receivedUpdate, descr);
+      client.receiveUpdate(receivedUpdate);
     }
   }
 
@@ -192,10 +182,7 @@ class Processor implements IProcessor {
     updateListener(
       this.updates
         .slice(serial)
-        .map(([update, descr]) => [
-          { ...update, max_serial: maxSerial },
-          descr,
-        ]),
+        .map((update) => ({ ...update, max_serial: maxSerial })),
     );
   }
 }

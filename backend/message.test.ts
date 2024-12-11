@@ -1,5 +1,6 @@
 import { createProcessor } from "./message";
 import type { Message } from "../types/message";
+import { ReceivedStatusUpdate } from "@webxdc/types";
 
 // a little helper to let us track messages for testing purposes
 function track(): [() => Message[], (message: Message) => void] {
@@ -19,7 +20,7 @@ test("distribute to self", () => {
   const processor = createProcessor(onMessage);
   const client0 = processor.createClient("3001");
 
-  const client0Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -58,8 +59,8 @@ test("distribute to self and other", () => {
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -125,8 +126,8 @@ test("setUpdateListener serial should skip older", () => {
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -155,8 +156,8 @@ test("other starts listening later", () => {
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -229,8 +230,8 @@ test("client is created later and needs to catch up", () => {
   const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -269,8 +270,8 @@ test("other starts listening later but is partially caught up", () => {
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);
@@ -456,8 +457,8 @@ test("connect with clear means we get no catchup if no new updates", () => {
   const processor = createProcessor();
   const client0 = processor.createClient("3001");
 
-  const client0Heard: (UpdateDescr | string)[] = [];
-  const client1Heard: (UpdateDescr | string)[] = [];
+  const client0Heard: (ReceivedStatusUpdate<any> | string)[] = [];
+  const client1Heard: (ReceivedStatusUpdate<any> | string)[] = [];
 
   client0.connect(
     (updates) => {
@@ -514,8 +515,8 @@ test("connect with clear means catchup only with updates after clear", () => {
   const processor = createProcessor(onMessage);
   const client0 = processor.createClient("3001");
 
-  const client0Heard: (UpdateDescr | string)[] = [];
-  const client1Heard: (UpdateDescr | string)[] = [];
+  const client0Heard: (ReceivedStatusUpdate<any> | string)[] = [];
+  const client1Heard: (ReceivedStatusUpdate<any> | string)[] = [];
 
   client0.connect(
     (updates) => {
@@ -623,8 +624,8 @@ test("distribute to self and other, but other was disconnected", () => {
   const client0 = processor.createClient("3001");
   const client1 = processor.createClient("3002");
 
-  const client0Heard: UpdateDescr[] = [];
-  const client1Heard: UpdateDescr[] = [];
+  const client0Heard: ReceivedStatusUpdate<any>[] = [];
+  const client1Heard: ReceivedStatusUpdate<any>[] = [];
 
   client0.connect((updates) => {
     client0Heard.push(...updates);

@@ -1,4 +1,4 @@
-import { WebXdc, ReceivedStatusUpdate } from "@webxdc/types";
+import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
 
 type UpdatesMessage = {
   type: "updates";
@@ -45,11 +45,11 @@ type Log = (...args: any[]) => void;
 export function createWebXdc(
   transport: Transport,
   log: Log = () => {},
-): WebXdc<any> {
+): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
 
-  const webXdc: WebXdc<any> = {
-    sendUpdate: (update) => {
+  const webXdc: Webxdc<any> = {
+    sendUpdate: (update: any) => {
       transport.send({ type: "sendUpdate", update });
       log("send", { update });
     },

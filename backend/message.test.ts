@@ -27,7 +27,7 @@ test("distribute to self", () => {
     return true;
   }, 0);
 
-  client0.sendUpdate({ payload: "Hello" }, "") ;
+  client0.sendUpdate({ payload: "Hello" }, "");
 
   expect(client0Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
@@ -80,7 +80,7 @@ test("distribute to self and other", () => {
   ]);
   expect(client1Heard).toMatchObject([
     { payload: "Hello", serial: 1, max_serial: 1 },
-    { payload: "Bye", serial: 2, max_serial: 2 }
+    { payload: "Bye", serial: 2, max_serial: 2 },
   ]);
 
   expect(prepare(getMessages())).toEqual([
@@ -652,7 +652,6 @@ test("distribute to self and other, but other was disconnected", () => {
       type: "sent",
       instanceId: "3001",
       update: { payload: "Hello", serial: 1, max_serial: 1 },
-    
     },
     {
       type: "received",

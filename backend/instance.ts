@@ -132,7 +132,7 @@ export class Instances {
                 wss,
                 JSON.stringify({
                   type: "updates",
-                  updates: updates.map(([update]) => update),
+                  updates: updates.map((update) => update),
                 }),
               );
             },

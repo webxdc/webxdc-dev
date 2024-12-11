@@ -256,8 +256,7 @@ class Processor implements IProcessor {
   distribute(
     instanceId: string,
     update: SendingStatusUpdate<any>,
-    descr: string,
-  ) {
+   ) {
     this.currentSerial++;
     const receivedUpdate: ReceivedStatusUpdate<any> = {
       ...update,

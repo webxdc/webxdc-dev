@@ -31,8 +31,17 @@ class FakeTransport implements Transport {
       this.client.sendUpdate(update, "");
     } else if (data.type === "sendRealtime") {
       this.client.sendRealtimeData(data.data);
-    } else if (data.type === "joinRealtime") {
-      this.client.joinRealtimeChannel();
+    } else if (data.type === "setRealtimeListener") {
+      this.client.connectRealtime((data) => {
+          if (this.messageCallback != null) {
+            this.messageCallback({
+              type: "realtime",
+              data
+            });
+          }
+          return true;
+      })    
+  
     } else if (data.type === "setUpdateListener") {
       this.client.connect(
         (updates) => {
@@ -40,15 +49,6 @@ class FakeTransport implements Transport {
             this.messageCallback({
               type: "updates",
               updates,
-            });
-          }
-          return true;
-        },
-        () => {
-          if (this.messageCallback != null) {
-            this.messageCallback({
-              type: "sendRealtime",
-              data,
             });
           }
           return true;

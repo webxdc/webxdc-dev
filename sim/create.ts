@@ -41,6 +41,7 @@ export type TransportConnectCallback = () => void;
 export type Transport = {
   send(data: any): void;
   onMessage(callback: TransportMessageCallback): void;
+  hasMessageListener(): boolean;
   onConnect(callback: TransportConnectCallback): void; // Socket connection cb
   clear(): void;
   address(): string;
@@ -53,13 +54,13 @@ type Log = (...args: any[]) => void;
 
 export class RealtimeListener implements WebxdcRealtimeListener {
   private trashed = false;
-  private listener: (data: Uint8Array) => void = () => {};
+  private listener: (data: Uint8Array) => void = () => { };
 
   constructor(
-    public sendHook: (data: Uint8Array) => void = () => {},
-    public setListenerHook: () => void = () => {},
-    private leaveHook: () => void = () => {},
-  ) {}
+    public sendHook: (data: Uint8Array) => void = () => { },
+    public setListenerHook: () => void = () => { },
+    private leaveHook: () => void = () => { },
+  ) { }
 
   is_trashed(): boolean {
     return this.trashed;
@@ -94,11 +95,11 @@ export class RealtimeListener implements WebxdcRealtimeListener {
 
 export function createWebXdc(
   transport: Transport,
-  log: Log = () => {},
+  log: Log = () => { },
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
   let realtime: RealtimeListener | null = null;
-  
+
   const webXdc: Webxdc<any> = {
     sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
@@ -116,10 +117,11 @@ export function createWebXdc(
             resolveUpdateListenerPromise = null;
           }
         } else if (isRealtimeMessage(message)) {
-          // TODO: move this out of setUpdateListener because otherwise
-          // You have to set an update listener such that realtime works
           // Conversion to any because the actual data is a dict representation of Uint8Array
           // This is due to JSON.stringify conversion.
+          if (realtime === null) {
+            return
+          }
           realtime!.receive(new Uint8Array(Object.values(message.data as any)));
         } else if (isClearMessage(message)) {
           log("clear");
@@ -199,13 +201,11 @@ export function createWebXdc(
           );
         }
       }
-      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${
-        content.text ? `"${content.text}"` : "No Text"
-      }\nFile: ${
-        content.file
+      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${content.text ? `"${content.text}"` : "No Text"
+        }\nFile: ${content.file
           ? `${content.file.name} - ${base64Content.length} bytes`
           : "No File"
-      }`;
+        }`;
       if (content.file) {
         const confirmed = confirm(
           msg + "\n\nDownload the file in the browser instead?",
@@ -249,8 +249,22 @@ export function createWebXdc(
     },
 
     joinRealtimeChannel: () => {
+      if (!transport.hasMessageListener()) {
+        // we can only have one message listener with the current implementation, 
+        // so we need to set it here to receive realtime data. When `setUpdateListener`
+        // is called, the callback is overwritten but the new value also looks for 
+        // realtime data.
+        transport.onMessage((message) => {
+          if (isRealtimeMessage(message)) {
+            if (realtime === null) {
+              return
+            }
+            realtime!.receive(new Uint8Array(Object.values(message.data as any)));
+          }
+        })
+      }
       realtime = new RealtimeListener(
-        () => {},
+        () => { },
         () => {
           transport.send({ type: "setRealtimeListener" });
         },

@@ -40,6 +40,10 @@ export class DevServerTransport implements Transport {
 
     this.socket.addEventListener("message", listener);
   }
+  
+  hasMessageListener(){
+    return this.messageListener !== null
+  }
 
   onConnect(callback: TransportConnectCallback): void {
     const readyState = this.socket.readyState;

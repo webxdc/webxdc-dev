@@ -23,7 +23,7 @@ type SendUpdateMessage = {
 
 type SendRealtimeMessage = {
   type: "sendRealtime";
-  data: Uint8Array
+  data: Uint8Array;
 };
 
 type SetUpdateListenerMessage = {
@@ -131,11 +131,14 @@ export class Instances {
         if (isSendUpdateMessage(parsed)) {
           instance.webXdc.sendUpdate(parsed.update, "");
         } else if (isSendRealtimeMessage(parsed)) {
-          instance.webXdc.sendRealtimeData(parsed.data);          
+          instance.webXdc.sendRealtimeData(parsed.data);
         } else if (isSetRealtimeListenerMessage(parsed)) {
           instance.webXdc.connectRealtime((data) => {
-            return broadcast(wss, JSON.stringify({ type: "sendRealtime", data }));
-          });          
+            return broadcast(
+              wss,
+              JSON.stringify({ type: "sendRealtime", data }),
+            );
+          });
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
@@ -231,7 +234,9 @@ function isSendRealtimeMessage(value: any): value is SendRealtimeMessage {
   return value.type === "sendRealtime";
 }
 
-function isSetRealtimeListenerMessage(value: any): value is { type: "setRealtimeListener" } {
+function isSetRealtimeListenerMessage(
+  value: any,
+): value is { type: "setRealtimeListener" } {
   return value.type === "setRealtimeListener";
 }
 

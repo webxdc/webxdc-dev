@@ -1,13 +1,13 @@
 import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
-import { RealtimeListener as RTL } from "../backend/message"
+import { RealtimeListener as RTL } from "../backend/message";
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
 };
 
 type SendRealtimeMessage = {
-  type: "sendRealtime"
-  data: Uint8Array
+  type: "sendRealtime";
+  data: Uint8Array;
 };
 
 type ClearMessage = {
@@ -28,7 +28,12 @@ type DeleteMessage = {
   type: "delete";
 };
 
-type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage | SendRealtimeMessage;
+type Message =
+  | UpdatesMessage
+  | ClearMessage
+  | InfoMessage
+  | DeleteMessage
+  | SendRealtimeMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -49,10 +54,10 @@ type Log = (...args: any[]) => void;
 
 export function createWebXdc(
   transport: Transport,
-  log: Log = () => { },
+  log: Log = () => {},
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
-  let realtime: RTL | null = null
+  let realtime: RTL | null = null;
   const webXdc: Webxdc<any> = {
     sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
@@ -70,11 +75,11 @@ export function createWebXdc(
             resolveUpdateListenerPromise = null;
           }
         } else if (isRealtimeMessage(message)) {
-          // TODO: move this out of setUpdateListener because otherwise 
+          // TODO: move this out of setUpdateListener because otherwise
           // You have to set an update listener such that realtime works
           // Conversion to any because the actual data is a dict representation of Uint8Array
           // This is due to JSON.stringify conversion.
-          realtime!.receive(new Uint8Array(Object.values(message.data as any)))
+          realtime!.receive(new Uint8Array(Object.values(message.data as any)));
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();
@@ -85,7 +90,7 @@ export function createWebXdc(
           log("delete");
           window.top?.close();
         } else {
-          log("error", `Unhandled message ${message}`)
+          log("error", `Unhandled message ${message}`);
         }
       });
       transport.onConnect(() => {
@@ -153,11 +158,13 @@ export function createWebXdc(
           );
         }
       }
-      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${content.text ? `"${content.text}"` : "No Text"
-        }\nFile: ${content.file
+      const msg = `The app would now close and the user would select a chat to send this message:\nText: ${
+        content.text ? `"${content.text}"` : "No Text"
+      }\nFile: ${
+        content.file
           ? `${content.file.name} - ${base64Content.length} bytes`
           : "No File"
-        }`;
+      }`;
       if (content.file) {
         const confirmed = confirm(
           msg + "\n\nDownload the file in the browser instead?",
@@ -201,20 +208,22 @@ export function createWebXdc(
     },
 
     joinRealtimeChannel: () => {
-      realtime = new RTL(() => { },
+      realtime = new RTL(
+        () => {},
         () => {
-          transport.send({ type: "setRealtimeListener" })   
+          transport.send({ type: "setRealtimeListener" });
         },
         () => {
-          realtime = null
-        });
+          realtime = null;
+        },
+      );
       transport.onConnect(() => {
         realtime!.sendHook = (data) => {
           transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
           log("send realtime", { data });
-        }
-      })
-      return realtime
+        };
+      });
+      return realtime;
     },
     getAllUpdates: () => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");

@@ -53,7 +53,6 @@ test("distribute to self", () => {
   ]);
 });
 
-
 test("Send realtime", () => {
   const [getMessages, onMessage] = track();
   const processor = createProcessor(onMessage);

@@ -16,8 +16,8 @@ export type UpdateMessage =
 
 export type Message =
   | UpdateMessage
-  | ({ type: "sendRealtime", data: Uint8Array } & InstanceMessage)
+  | ({ type: "sendRealtime"; data: Uint8Array } & InstanceMessage)
   | ({ type: "clear" } & InstanceMessage)
   | ({ type: "connect" } & InstanceMessage)
   | ({ type: "connect-realtime" } & InstanceMessage)
-  | ({ type: "realtime-received", data: Uint8Array} & InstanceMessage);
+  | ({ type: "realtime-received"; data: Uint8Array } & InstanceMessage);

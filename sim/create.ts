@@ -1,12 +1,11 @@
-import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
-import { RealtimeListener as RTL } from "../backend/message";
+import { Webxdc, ReceivedStatusUpdate, RealtimeListener as WebxdcRealtimeListener } from "@webxdc/types";
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
 };
 
-type SendRealtimeMessage = {
-  type: "sendRealtime";
+type RealtimeMessage = {
+  type: "realtime";
   data: Uint8Array;
 };
 
@@ -33,7 +32,7 @@ type Message =
   | ClearMessage
   | InfoMessage
   | DeleteMessage
-  | SendRealtimeMessage;
+  | RealtimeMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -52,12 +51,54 @@ export type Transport = {
 
 type Log = (...args: any[]) => void;
 
+export class RealtimeListener implements WebxdcRealtimeListener {
+  private trashed = false;
+  private listener: (data: Uint8Array) => void = () => {};
+
+  constructor(
+    public sendHook: (data: Uint8Array) => void = () => {},
+    public setListenerHook: () => void = () => {},
+    private leaveHook: () => void = () => {},
+  ) {}
+
+  is_trashed(): boolean {
+    return this.trashed;
+  }
+
+  receive(data: Uint8Array) {
+    if (this.trashed) {
+      throw new Error("realtime listener is trashed and can no longer be used");
+    }
+    if (this.listener) {
+      this.listener(data);
+    }
+  }
+
+  setListener(listener: (data: Uint8Array) => void) {
+    this.setListenerHook();
+    this.listener = listener;
+  }
+
+  send(data: Uint8Array) {
+    if (!(data instanceof Uint8Array)) {
+      throw new Error("realtime listener data must be a Uint8Array");
+    }
+    this.sendHook(data);
+  }
+
+  leave() {
+    this.leaveHook();
+    this.trashed = true;
+  }
+}
+
 export function createWebXdc(
   transport: Transport,
   log: Log = () => {},
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
-  let realtime: RTL | null = null;
+  let realtime: RealtimeListener | null = null;
+  
   const webXdc: Webxdc<any> = {
     sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
@@ -208,7 +249,7 @@ export function createWebXdc(
     },
 
     joinRealtimeChannel: () => {
-      realtime = new RTL(
+      realtime = new RealtimeListener(
         () => {},
         () => {
           transport.send({ type: "setRealtimeListener" });
@@ -219,7 +260,7 @@ export function createWebXdc(
       );
       transport.onConnect(() => {
         realtime!.sendHook = (data) => {
-          transport.send({ type: "sendRealtime", data } as SendRealtimeMessage);
+          transport.send({ type: "realtime", data } as RealtimeMessage);
           log("send realtime", { data });
         };
       });
@@ -241,8 +282,8 @@ function isUpdatesMessage(data: Message): data is UpdatesMessage {
   return data.type === "updates";
 }
 
-function isRealtimeMessage(data: Message): data is SendRealtimeMessage {
-  return data.type === "sendRealtime";
+function isRealtimeMessage(data: Message): data is RealtimeMessage {
+  return data.type === "realtime";
 }
 
 function isClearMessage(data: Message): data is ClearMessage {

@@ -11,7 +11,7 @@ type UpdateListenerMulti = (updates: ReceivedStatusUpdate<any>[]) => boolean;
 
 type ClearListener = () => boolean;
 type DeleteListener = () => boolean;
-type RealtimeListenerListener = (data: Uint8Array) => boolean;
+type RTListener = (data: Uint8Array) => boolean;
 
 type Connect = (
   updateListener: UpdateListenerMulti,
@@ -22,7 +22,7 @@ type Connect = (
 
 export type WebXdcMulti = {
   connect: Connect;
-  connectRealtime: (listener: RealtimeListenerListener) => void;
+  connectRealtime: (listener: RTListener) => void;
   sendUpdate: Webxdc<any>["sendUpdate"];
   sendRealtimeData: (data: Uint8Array) => void;
 };
@@ -37,51 +37,9 @@ export interface IProcessor {
   removeClient(id: string): void;
 }
 
-export class RealtimeListener implements WebxdcRealtimeListener {
-  private trashed = false;
-  private listener: (data: Uint8Array) => void = () => {};
-
-  constructor(
-    public sendHook: (data: Uint8Array) => void = () => {},
-    public setListenerHook: () => void = () => {},
-    private leaveHook: () => void = () => {},
-  ) {}
-
-  is_trashed(): boolean {
-    return this.trashed;
-  }
-
-  receive(data: Uint8Array) {
-    if (this.trashed) {
-      throw new Error("realtime listener is trashed and can no longer be used");
-    }
-    if (this.listener) {
-      this.listener(data);
-    }
-  }
-
-  setListener(listener: (data: Uint8Array) => void) {
-    this.setListenerHook();
-    this.listener = listener;
-  }
-
-  send(data: Uint8Array) {
-    if (!(data instanceof Uint8Array)) {
-      throw new Error("realtime listener data must be a Uint8Array");
-    }
-    this.sendHook(data);
-  }
-
-  leave() {
-    this.leaveHook();
-    this.trashed = true;
-  }
-}
-
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
-  realtimeListener: RealtimeListenerListener | null = null;
-  realtime: RealtimeListener | null = null;
+  realtimeListener: RTListener | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
@@ -95,11 +53,11 @@ class Client implements WebXdcMulti {
     this.processor.distribute(this.id, update);
   }
 
-  sendRealtimeData(data: Uint8Array): void {
+  sendRealtimeData(data: Uint8Array){
     this.processor.distributeRealtime(this.id, data);
   }
 
-  connectRealtime(listener: RealtimeListenerListener) {
+  connectRealtime(listener: RTListener) {
     this.processor.onMessage({
       type: "connect-realtime",
       instanceId: this.id,

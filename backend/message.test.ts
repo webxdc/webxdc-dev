@@ -62,22 +62,20 @@ test("Send realtime", () => {
   const client0Heard: string[] = [];
   const client1Heard: string[] = [];
 
-  /* const rt0 = client0.joinRealtimeChannel()
-  const rt1 = client1.joinRealtimeChannel()
-
   const decoder = new TextDecoder()
-  rt0.setListener((data) => { client0Heard.push(decoder.decode(data)) })
-  rt1.setListener((data) => { client1Heard.push(decoder.decode(data)) })
+  client0.connectRealtime((data) => { client0Heard.push(decoder.decode(data)); return true })
+  client1.connectRealtime((data) => { client1Heard.push(decoder.decode(data)); return true })
 
   const encoder = new TextEncoder()
 
-  rt0.send(new Uint8Array(encoder.encode("hi")))
+  client0.sendRealtimeData(new Uint8Array(encoder.encode("hi")))
 
   expect(client1Heard).toMatchObject([
     "hi"
   ])
-  expect(client0Heard).toMatchObject([]) */
+  expect(client0Heard).toMatchObject([])
 });
+
 test("distribute to self and other", () => {
   const [getMessages, onMessage] = track();
   const processor = createProcessor(onMessage);

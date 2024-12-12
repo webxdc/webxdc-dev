@@ -193,7 +193,7 @@ class Processor implements IProcessor {
 
   distributeRealtime(instanceId: string, data: Uint8Array) {
     this.onMessage({
-      type: "sendRealtime",
+      type: "realtime-sent",
       instanceId: instanceId,
       instanceColor: getColorForId(instanceId),
       data,

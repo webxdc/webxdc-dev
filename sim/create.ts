@@ -260,7 +260,7 @@ export function createWebXdc(
       );
       transport.onConnect(() => {
         realtime!.sendHook = (data) => {
-          transport.send({ type: "realtime", data } as RealtimeMessage);
+          transport.send({ type: "sendRealtime", data });
           log("send realtime", { data });
         };
       });

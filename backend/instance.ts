@@ -136,7 +136,7 @@ export class Instances {
           instance.webXdc.connectRealtime((data) => {
             return broadcast(
               wss,
-              JSON.stringify({ type: "sendRealtime", data }),
+              JSON.stringify({ type: "realtime", data }),
             );
           });
         } else if (isSetUpdateListenerMessage(parsed)) {

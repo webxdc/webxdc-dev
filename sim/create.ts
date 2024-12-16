@@ -103,12 +103,12 @@ export function createWebXdc(
   const webXdc: Webxdc<any> = {
     sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
-      log("send", { update });
+      log("send update", { update });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((message) => {
         if (isUpdatesMessage(message)) {
-          log("recv", message.updates);
+          log("recv update", message.updates);
           for (const update of message.updates) {
             listener(update);
           }
@@ -263,20 +263,33 @@ export function createWebXdc(
           }
         })
       }
+      let should_create = false
       realtime = new RealtimeListener(
         () => { },
         () => {
-          transport.send({ type: "setRealtimeListener" });
+          should_create = true
         },
         () => {
-          realtime = null;
+          should_create = false
+          realtime = null
         },
       );
       transport.onConnect(() => {
-        realtime!.sendHook = (data) => {
+        if (!realtime) {
+          return
+        }
+        
+        if (should_create) {
+          transport.send({ type: "setRealtimeListener" });
+        }
+        
+        realtime.sendHook = (data) => {
           transport.send({ type: "sendRealtime", data });
           log("send realtime", { data });
         };
+        realtime.setListenerHook = () => {
+          transport.send({ type: "setRealtimeListener" });
+        }
       });
       return realtime;
     },

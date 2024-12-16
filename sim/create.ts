@@ -117,11 +117,11 @@ export function createWebXdc(
             resolveUpdateListenerPromise = null;
           }
         } else if (isRealtimeMessage(message)) {
-          // Conversion to any because the actual data is a dict representation of Uint8Array
-          // This is due to JSON.stringify conversion.
           if (realtime === null) {
             return
           }
+          // Conversion to any because the actual data is a dict representation of Uint8Array
+          // This is due to JSON.stringify conversion.
           realtime!.receive(new Uint8Array(Object.values(message.data as any)));
         } else if (isClearMessage(message)) {
           log("clear");

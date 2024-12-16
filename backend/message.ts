@@ -29,8 +29,6 @@ export type WebXdcMulti = {
 
 export type OnMessage = (message: Message) => void;
 
-export type OnRealtime = (message: Message) => void;
-
 export interface IProcessor {
   createClient(id: string): WebXdcMulti;
   clear(): void;

@@ -19,7 +19,6 @@ export type Options = {
 type SendUpdateMessage = {
   type: "sendUpdate";
   update: ReceivedStatusUpdate<any>;
-  descr: string;
 };
 
 type SetUpdateListenerMessage = {
@@ -125,7 +124,7 @@ export class Instances {
         const parsed = JSON.parse(msg);
         // XXX should validate parsed
         if (isSendUpdateMessage(parsed)) {
-          instance.webXdc.sendUpdate(parsed.update, parsed.descr);
+          instance.webXdc.sendUpdate(parsed.update, "");
         } else if (isSetUpdateListenerMessage(parsed)) {
           instance.webXdc.connect(
             (updates) => {
@@ -133,7 +132,7 @@ export class Instances {
                 wss,
                 JSON.stringify({
                   type: "updates",
-                  updates: updates.map(([update]) => update),
+                  updates: updates.map((update) => update),
                 }),
               );
             },

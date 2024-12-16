@@ -40,9 +40,9 @@ export class DevServerTransport implements Transport {
 
     this.socket.addEventListener("message", listener);
   }
-  
-  hasMessageListener(){
-    return this.messageListener !== null
+
+  hasMessageListener() {
+    return this.messageListener !== null;
   }
 
   onConnect(callback: TransportConnectCallback): void {

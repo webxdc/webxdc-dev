@@ -51,7 +51,7 @@ class Client implements WebXdcMulti {
     this.processor.distribute(this.id, update);
   }
 
-  sendRealtimeData(data: Uint8Array){
+  sendRealtimeData(data: Uint8Array) {
     this.processor.distributeRealtime(this.id, data);
   }
 

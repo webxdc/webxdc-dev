@@ -22,10 +22,11 @@ export function createProgram(inject: Inject): Command {
     .version(getToolVersion());
 
   program
-    .command("run")
+    .command("run", { isDefault: true })
     .argument(
-      "<location>",
+      "[location]",
       "URL with dev server, path to .xdc file, or path to webxdc dist directory",
+      ".", // current directory
     )
     .option(
       "-p, --port <port>",

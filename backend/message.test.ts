@@ -53,6 +53,33 @@ test("distribute to self", () => {
   ]);
 });
 
+test("Send realtime", () => {
+  const [getMessages, onMessage] = track();
+  const processor = createProcessor(onMessage);
+  const client0 = processor.createClient("3001");
+  const client1 = processor.createClient("3002");
+
+  const client0Heard: string[] = [];
+  const client1Heard: string[] = [];
+
+  const decoder = new TextDecoder();
+  client0.connectRealtime((data) => {
+    client0Heard.push(decoder.decode(data));
+    return true;
+  });
+  client1.connectRealtime((data) => {
+    client1Heard.push(decoder.decode(data));
+    return true;
+  });
+
+  const encoder = new TextEncoder();
+
+  client0.sendRealtimeData(new Uint8Array(encoder.encode("hi")));
+
+  expect(client1Heard).toMatchObject(["hi"]);
+  expect(client0Heard).toMatchObject([]);
+});
+
 test("distribute to self and other", () => {
   const [getMessages, onMessage] = track();
   const processor = createProcessor(onMessage);

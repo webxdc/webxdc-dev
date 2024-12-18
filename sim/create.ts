@@ -1,8 +1,16 @@
-import { Webxdc, ReceivedStatusUpdate } from "@webxdc/types";
-
+import {
+  Webxdc,
+  ReceivedStatusUpdate,
+  RealtimeListener as WebxdcRealtimeListener,
+} from "@webxdc/types";
 type UpdatesMessage = {
   type: "updates";
   updates: ReceivedStatusUpdate<any>[];
+};
+
+type RealtimeMessage = {
+  type: "realtime";
+  data: Uint8Array;
 };
 
 type ClearMessage = {
@@ -23,7 +31,12 @@ type DeleteMessage = {
   type: "delete";
 };
 
-type Message = UpdatesMessage | ClearMessage | InfoMessage | DeleteMessage;
+type Message =
+  | UpdatesMessage
+  | ClearMessage
+  | InfoMessage
+  | DeleteMessage
+  | RealtimeMessage;
 
 export type TransportMessageCallback = (message: Message) => void;
 
@@ -32,7 +45,8 @@ export type TransportConnectCallback = () => void;
 export type Transport = {
   send(data: any): void;
   onMessage(callback: TransportMessageCallback): void;
-  onConnect(callback: TransportConnectCallback): void;
+  hasMessageListener(): boolean;
+  onConnect(callback: TransportConnectCallback): void; // Socket connection cb
   clear(): void;
   address(): string;
   name(): string;
@@ -42,21 +56,63 @@ export type Transport = {
 
 type Log = (...args: any[]) => void;
 
+export class RealtimeListener implements WebxdcRealtimeListener {
+  private trashed = false;
+  private listener: (data: Uint8Array) => void = () => {};
+
+  constructor(
+    public sendHook: (data: Uint8Array) => void = () => {},
+    public setListenerHook: () => void = () => {},
+    private leaveHook: () => void = () => {},
+  ) {}
+
+  is_trashed(): boolean {
+    return this.trashed;
+  }
+
+  receive(data: Uint8Array) {
+    if (this.trashed) {
+      throw new Error("realtime listener is trashed and can no longer be used");
+    }
+    if (this.listener) {
+      this.listener(data);
+    }
+  }
+
+  setListener(listener: (data: Uint8Array) => void) {
+    this.setListenerHook();
+    this.listener = listener;
+  }
+
+  send(data: Uint8Array) {
+    if (!(data instanceof Uint8Array)) {
+      throw new Error("realtime listener data must be a Uint8Array");
+    }
+    this.sendHook(data);
+  }
+
+  leave() {
+    this.leaveHook();
+    this.trashed = true;
+  }
+}
+
 export function createWebXdc(
   transport: Transport,
   log: Log = () => {},
 ): Webxdc<any> {
   let resolveUpdateListenerPromise: (() => void) | null = null;
+  let realtime: RealtimeListener | null = null;
 
   const webXdc: Webxdc<any> = {
-    sendUpdate: (update: any) => {
+    sendUpdate: (update) => {
       transport.send({ type: "sendUpdate", update });
-      log("send", { update });
+      log("send update", { update });
     },
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((message) => {
         if (isUpdatesMessage(message)) {
-          log("recv", message.updates);
+          log("recv update", message.updates);
           for (const update of message.updates) {
             listener(update);
           }
@@ -64,6 +120,13 @@ export function createWebXdc(
             resolveUpdateListenerPromise();
             resolveUpdateListenerPromise = null;
           }
+        } else if (isRealtimeMessage(message)) {
+          if (realtime === null) {
+            return;
+          }
+          // Conversion to any because the actual data is a dict representation of Uint8Array
+          // This is due to JSON.stringify conversion.
+          realtime!.receive(new Uint8Array(Object.values(message.data as any)));
         } else if (isClearMessage(message)) {
           log("clear");
           transport.clear();
@@ -73,6 +136,8 @@ export function createWebXdc(
         } else if (isDeleteMessage(message)) {
           log("delete");
           window.top?.close();
+        } else {
+          log("error", `Unhandled message ${message}`);
         }
       });
       transport.onConnect(() => {
@@ -92,17 +157,14 @@ export function createWebXdc(
         );
       }
 
-      /** @type {(file: Blob) => Promise<string>} */
-      const blob_to_base64 = (file) => {
+      const blob_to_base64 = (file: Blob) => {
         const data_start = ";base64,";
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = () => {
-            /** @type {string} */
-            //@ts-ignore
-            let data = reader.result;
-            resolve(data.slice(data.indexOf(data_start) + data_start.length));
+            let data: string = reader.result as string;
+            resolve(data!.slice(data!.indexOf(data_start) + data_start.length));
           };
           reader.onerror = () => reject(reader.error);
         });
@@ -191,6 +253,60 @@ export function createWebXdc(
       console.log(element);
       return promise;
     },
+
+    joinRealtimeChannel: () => {
+      if (!transport.hasMessageListener()) {
+        // we can only have one message listener with the current implementation,
+        // so we need to set it here to receive realtime data. When `setUpdateListener`
+        // is called, the callback is overwritten but the new value also looks for
+        // realtime data.
+        transport.onMessage((message) => {
+          if (isRealtimeMessage(message)) {
+            if (realtime === null) {
+              return;
+            }
+            realtime!.receive(
+              new Uint8Array(Object.values(message.data as any)),
+            );
+          }
+        });
+      }
+      let should_create = false;
+      realtime = new RealtimeListener(
+        () => {},
+        () => {
+          should_create = true;
+        },
+        () => {
+          should_create = false;
+          realtime = null;
+        },
+      );
+      transport.onConnect(() => {
+        if (!realtime) {
+          return;
+        }
+
+        if (should_create) {
+          transport.send({ type: "setRealtimeListener" });
+        }
+
+        realtime.sendHook = (data) => {
+          transport.send({ type: "sendRealtime", data });
+          log("send realtime", { data });
+        };
+        realtime.setListenerHook = () => {
+          transport.send({ type: "setRealtimeListener" });
+        };
+      });
+      return realtime;
+    },
+    getAllUpdates: () => {
+      console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
+      return Promise.resolve([]);
+    },
+    sendUpdateInterval: 1000,
+    sendUpdateMaxSize: 999999,
     selfAddr: transport.address(),
     selfName: transport.name(),
   };
@@ -199,6 +315,10 @@ export function createWebXdc(
 
 function isUpdatesMessage(data: Message): data is UpdatesMessage {
   return data.type === "updates";
+}
+
+function isRealtimeMessage(data: Message): data is RealtimeMessage {
+  return data.type === "realtime";
 }
 
 function isClearMessage(data: Message): data is ClearMessage {

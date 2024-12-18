@@ -1,4 +1,5 @@
-import type {
+import {
+  RealtimeListener as WebxdcRealtimeListener,
   ReceivedStatusUpdate,
   SendingStatusUpdate,
   Webxdc,
@@ -10,6 +11,7 @@ type UpdateListenerMulti = (updates: ReceivedStatusUpdate<any>[]) => boolean;
 
 type ClearListener = () => boolean;
 type DeleteListener = () => boolean;
+type RTListener = (data: Uint8Array) => boolean;
 
 type Connect = (
   updateListener: UpdateListenerMulti,
@@ -20,7 +22,9 @@ type Connect = (
 
 export type WebXdcMulti = {
   connect: Connect;
+  connectRealtime: (listener: RTListener) => void;
   sendUpdate: Webxdc<any>["sendUpdate"];
+  sendRealtimeData: (data: Uint8Array) => void;
 };
 
 export type OnMessage = (message: Message) => void;
@@ -33,6 +37,7 @@ export interface IProcessor {
 
 class Client implements WebXdcMulti {
   updateListener: UpdateListenerMulti | null = null;
+  realtimeListener: RTListener | null = null;
   clearListener: ClearListener | null = null;
   updateSerial: number | null = null;
   deleteListener: DeleteListener | null = null;
@@ -44,6 +49,35 @@ class Client implements WebXdcMulti {
 
   sendUpdate(update: SendingStatusUpdate<any>, _descr: ""): void {
     this.processor.distribute(this.id, update);
+  }
+
+  sendRealtimeData(data: Uint8Array) {
+    this.processor.distributeRealtime(this.id, data);
+  }
+
+  connectRealtime(listener: RTListener) {
+    this.processor.onMessage({
+      type: "connect-realtime",
+      instanceId: this.id,
+      instanceColor: getColorForId(this.id),
+      timestamp: Date.now(),
+    });
+
+    const realtimeListener = (data: Uint8Array) => {
+      const hasReceived = listener(data);
+      if (hasReceived) {
+        this.processor.onMessage({
+          type: "realtime-received",
+          data,
+          instanceId: this.id,
+          instanceColor: getColorForId(this.id),
+          timestamp: Date.now(),
+        });
+      }
+      return hasReceived;
+    };
+
+    this.realtimeListener = realtimeListener;
   }
 
   connect(
@@ -108,6 +142,13 @@ class Client implements WebXdcMulti {
     this.updateListener([update]);
   }
 
+  receiveRealtime(data: Uint8Array) {
+    if (this.realtimeListener == null) {
+      return;
+    }
+    this.realtimeListener(data);
+  }
+
   clear() {
     if (
       this.clearListener == null ||
@@ -146,6 +187,21 @@ class Processor implements IProcessor {
     let client_index = this.clients.findIndex((client) => client.id == id);
     this.clients[client_index].delete();
     this.clients.splice(client_index, 1);
+  }
+
+  distributeRealtime(instanceId: string, data: Uint8Array) {
+    this.onMessage({
+      type: "realtime-sent",
+      instanceId: instanceId,
+      instanceColor: getColorForId(instanceId),
+      data,
+      timestamp: Date.now(),
+    });
+    for (const client of this.clients) {
+      if (client.id != instanceId) {
+        client.receiveRealtime(data);
+      }
+    }
   }
 
   distribute(instanceId: string, update: SendingStatusUpdate<any>) {

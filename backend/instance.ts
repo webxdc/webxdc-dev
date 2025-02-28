@@ -92,7 +92,7 @@ export class Instances {
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
-    this.currentPort = port
+    this.currentPort = port;
 
     const instanceUrl = getInstanceUrl(port);
 

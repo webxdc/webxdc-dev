@@ -13,7 +13,11 @@ export type Inject = {
   getIndexHtml: () => string;
 };
 
-async function actualRun(appInfo: AppInfo, options: Options, inject: Inject): Promise<void> {
+async function actualRun(
+  appInfo: AppInfo,
+  options: Options,
+  inject: Inject,
+): Promise<void> {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
   options.basePort = await detectPort(options.basePort);
   const instances = new Instances(appInfo, injectSim, options);
@@ -39,7 +43,11 @@ async function actualRun(appInfo: AppInfo, options: Options, inject: Inject): Pr
   open("http://localhost:" + options.basePort);
 }
 
-export async function run(locationStr: string, options: Options, inject: Inject): Promise<void> {
+export async function run(
+  locationStr: string,
+  options: Options,
+  inject: Inject,
+): Promise<void> {
   let location: Location;
   try {
     location = getLocation(locationStr);
@@ -60,7 +68,7 @@ export async function run(locationStr: string, options: Options, inject: Inject)
   console.log("Starting webxdc project in:", locationStr);
 
   try {
-    const appInfo = await getAppInfo(location)
+    const appInfo = await getAppInfo(location);
     await actualRun(appInfo, options, inject);
   } catch (e) {
     if (e instanceof AppInfoError) {

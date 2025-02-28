@@ -1,5 +1,6 @@
 import expressWs from "express-ws";
 import { WebSocket, Server } from "ws";
+import detectPort from "detect-port";
 
 import { ReceivedStatusUpdate } from "@webxdc/types";
 import { createProcessor, IProcessor, WebXdcMulti, OnMessage } from "./message";
@@ -86,12 +87,12 @@ export class Instances {
     });
   }
 
-  add(): Instance {
-    this.currentPort++;
-    const port = this.currentPort;
+  async add(): Promise<Instance> {
+    const port = await detectPort(this.currentPort + 1);
     if (this.instances.has(port)) {
       throw new Error(`Already have Webxdc instance at port: ${port}`);
     }
+    this.currentPort = port
 
     const instanceUrl = getInstanceUrl(port);
 

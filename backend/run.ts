@@ -1,3 +1,4 @@
+import detectPort from "detect-port";
 import process from "process";
 import open from "open";
 
@@ -14,11 +15,12 @@ export type Inject = {
 
 async function actualRun(appInfo: AppInfo, options: Options, inject: Inject): Promise<void> {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
+  options.basePort = await detectPort(options.basePort);
   const instances = new Instances(appInfo, injectSim, options);
 
   const numberOfInstances = 2;
   for (let i = 0; i < numberOfInstances; i++) {
-    instances.add();
+    await instances.add();
   }
 
   const frontend = createFrontend(

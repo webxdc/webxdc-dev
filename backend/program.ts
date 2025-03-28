@@ -43,8 +43,8 @@ export function createProgram(inject: Inject): Command {
     .description(
       "Run webxdc-dev simulator with webxdc from dev server URL, .xdc file or dist directory",
     )
-    .action((location, options) => {
-      run(
+    .action(async (location, options) => {
+      await run(
         location,
         { basePort: options.port, csp: options.csp, verbose: options.verbose },
         inject,

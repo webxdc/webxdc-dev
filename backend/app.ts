@@ -59,8 +59,8 @@ export function createFrontend(
   app.get<{}, Instance[]>("/instances", (req, res) => {
     res.json(instances.list());
   });
-  app.post<{}, Instance>("/instances", (req, res) => {
-    const instance = instances.add();
+  app.post<{}, Instance>("/instances", async (req, res) => {
+    const instance = await instances.add();
     instance.start();
     res.json({
       id: instance.id,

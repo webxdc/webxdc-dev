@@ -1,3 +1,4 @@
+import detectPort from "detect-port";
 import process from "process";
 import open from "open";
 
@@ -12,13 +13,18 @@ export type Inject = {
   getIndexHtml: () => string;
 };
 
-function actualRun(appInfo: AppInfo, options: Options, inject: Inject): void {
+async function actualRun(
+  appInfo: AppInfo,
+  options: Options,
+  inject: Inject,
+): Promise<void> {
   const { injectFrontend, injectSim, getIndexHtml } = inject;
+  options.basePort = await detectPort(options.basePort);
   const instances = new Instances(appInfo, injectSim, options);
 
   const numberOfInstances = 2;
   for (let i = 0; i < numberOfInstances; i++) {
-    instances.add();
+    await instances.add();
   }
 
   const frontend = createFrontend(
@@ -37,7 +43,11 @@ function actualRun(appInfo: AppInfo, options: Options, inject: Inject): void {
   open("http://localhost:" + options.basePort);
 }
 
-export function run(locationStr: string, options: Options, inject: Inject) {
+export async function run(
+  locationStr: string,
+  options: Options,
+  inject: Inject,
+): Promise<void> {
   let location: Location;
   try {
     location = getLocation(locationStr);
@@ -57,15 +67,14 @@ export function run(locationStr: string, options: Options, inject: Inject) {
 
   console.log("Starting webxdc project in:", locationStr);
 
-  getAppInfo(location)
-    .then((appInfo) => {
-      actualRun(appInfo, options, inject);
-    })
-    .catch((e) => {
-      if (e instanceof AppInfoError) {
-        console.error(e.message);
-        return;
-      }
-      throw e;
-    });
+  try {
+    const appInfo = await getAppInfo(location);
+    await actualRun(appInfo, options, inject);
+  } catch (e) {
+    if (e instanceof AppInfoError) {
+      console.error(e.message);
+      return;
+    }
+    throw e;
+  }
 }

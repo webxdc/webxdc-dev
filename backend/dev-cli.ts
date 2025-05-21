@@ -24,4 +24,4 @@ const program = createProgram({
   },
 });
 
-program.parse();
+program.parseAsync();

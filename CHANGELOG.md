@@ -11,6 +11,8 @@ release date when you use `npm version` (see `README.md`).
 
 ### Added
 
+- Realtime API support.
+- Use next available port if wanted one is already in use.
 - Simpler ways to use CLI:
 
   - make the only useful `run` comand the default one

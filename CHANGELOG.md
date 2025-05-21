@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.19.0][] - 2025-05-22
+
 ### Added
 
 - Simpler ways to use CLI:
@@ -419,7 +421,8 @@ release date when you use `npm version` (see `README.md`).
 [0.15.0]: https://github.com/webxdc/webxdc-dev/tree/v0.15.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.1...HEAD
 [0.15.1]: https://github.com/webxdc/webxdc-dev/tree/v0.15.1
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/webxdc/webxdc-dev/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/webxdc/webxdc-dev/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/webxdc/webxdc-dev/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/webxdc/webxdc-dev/tree/v0.16.0

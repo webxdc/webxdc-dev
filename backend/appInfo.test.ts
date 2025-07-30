@@ -181,7 +181,7 @@ test("url app info with manifest without name", async () => {
 
   expect(appInfo.location).toEqual(location);
   expect(appInfo.manifest).toEqual({
-    name: "No entry in manifest.toml (running from URL)",
+    name: "Missing name entry in manifest.toml",
     sourceCodeUrl: "http://example.com",
     manifestFound: true,
   });
@@ -205,18 +205,12 @@ test("url app info with broken manifest", async () => {
   fetch.isRedirect = () => false;
 
   const location = getLocation("http://localhost:3000") as UrlLocation;
-  try {
-    await getAppInfoUrl(location, fetch);
-  } catch (e) {
-    if (e instanceof AppInfoError) {
-      expect(e.message).toEqual(
-        "Invalid manifest.toml, please check the format",
-      );
-    } else {
-      throw e;
-    }
-  }
-  expect.assertions(1);
+  const appInfo = await getAppInfoUrl(location, fetch);
+  expect(appInfo.manifest).toEqual({
+    name: "",
+    sourceCodeUrl: undefined,
+    manifestFound: false,
+  });
 });
 
 test("url app info with manifest and source code URL", async () => {

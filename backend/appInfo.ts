@@ -30,6 +30,12 @@ export type AppInfo = {
 
 export class AppInfoError extends Error {}
 
+const MISSING_MANIFEST = {
+  name: undefined,
+  sourceCodeUrl: undefined,
+  manifestFound: false,
+};
+
 export async function getAppInfo(location: Location): Promise<AppInfo> {
   if (location.type === "url") {
     try {
@@ -72,19 +78,10 @@ async function getManifestInfoFromUrl(
   }
   const response = await fetch(url + "manifest.toml");
   if (!response.ok) {
-    return {
-      name: "Unknown (running from URL)",
-      sourceCodeUrl: undefined,
-      manifestFound: false,
-    };
+    console.error("Missing manifest.toml (from URL)");
+    return { ...MISSING_MANIFEST, name: "Unknown (running from URL)" };
   }
-  const body = await response.text();
-  const parsed = tomlParse(body);
-  return {
-    name: parsed.name || "No entry in manifest.toml (running from URL)",
-    sourceCodeUrl: parsed.source_code_url,
-    manifestFound: true,
-  };
+  return tomlParse(await response.text());
 }
 
 async function getIconInfoFromUrl(
@@ -117,26 +114,24 @@ function getManifestInfoFromDir(
 ): ManifestInfo {
   const tomlBuffer = readFileBuffer(path.join(dir, "manifest.toml"));
   if (tomlBuffer === null) {
-    return {
-      name: fallbackName,
-      sourceCodeUrl: undefined,
-      manifestFound: false,
-    };
+    console.error("Missing manifest.toml (from DIR)");
+    return { ...MISSING_MANIFEST, name: fallbackName };
   }
-  const parsed = tomlParse(tomlBuffer.toString());
-  const name = parsed.name || fallbackName;
-  return {
-    name,
-    sourceCodeUrl: parsed.source_code_url,
-    manifestFound: true,
-  };
+  return tomlParse(tomlBuffer.toString(), fallbackName);
 }
 
-function tomlParse(s: string): any {
+function tomlParse(s: string, fallbackName: string): any {
   try {
-    return toml.parse(s);
+    const parsed = toml.parse(s);
+    return {
+      name:
+        parsed.name || fallbackName || "Missing name entry in manifest.toml",
+      sourceCodeUrl: parsed.source_code_url || undefined,
+      manifestFound: true,
+    };
   } catch (e) {
-    throw new AppInfoError("Invalid manifest.toml, please check the format");
+    console.error("Failed to parse manifest.toml, please check the format!");
+    return { ...MISSING_MANIFEST, name: fallbackName };
   }
 }
 

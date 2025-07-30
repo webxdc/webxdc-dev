@@ -31,7 +31,7 @@
     "fix": "prettier --write .",
     "check": "prettier --check .",
     "cli": "node dist/backend/cli.js",
-    "test": "jest",
+    "test": "jest --silent",
     "typecheck": "tsc --noEmit",
     "build-backend": "tsc --project tsconfig-backend.json",
     "build-frontend": "webpack --config webpack.prod.js",

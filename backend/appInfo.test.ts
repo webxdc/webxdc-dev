@@ -207,7 +207,7 @@ test("url app info with broken manifest", async () => {
   const location = getLocation("http://localhost:3000") as UrlLocation;
   const appInfo = await getAppInfoUrl(location, fetch);
   expect(appInfo.manifest).toEqual({
-    name: undefined,
+    name: "",
     sourceCodeUrl: undefined,
     manifestFound: false,
   });

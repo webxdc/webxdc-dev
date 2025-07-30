@@ -120,7 +120,7 @@ function getManifestInfoFromDir(
   return tomlParse(tomlBuffer.toString(), fallbackName);
 }
 
-function tomlParse(s: string, fallbackName: string): any {
+function tomlParse(s: string, fallbackName: string = ""): any {
   try {
     const parsed = toml.parse(s);
     return {

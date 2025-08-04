@@ -22,7 +22,6 @@ const MessageDetails: Component<{ message: Message }> = (props) => {
           {(message) => {
             return (
               <>
-                <RecordRow label="descr">{message.descr}</RecordRow>
                 <RecordRow label="serial">{message.update.serial}</RecordRow>
                 <Show when={message.type === "received"}>
                   <RecordRow label="max serial">

@@ -54,9 +54,7 @@ const App: Component = () => {
           <Tab>Main</Tab>
           <Tab>Info</Tab>
         </TabList>
-        <TabPanel
-          maxHeight="calc(100vh - 40px)"
-        >
+        <TabPanel maxHeight="calc(100vh - 40px)">
           <AppRoutes />
         </TabPanel>
         <TabPanel>

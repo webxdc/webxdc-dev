@@ -10,6 +10,7 @@ import { AppInfo } from "./appInfo";
 import { getColorForId } from "./color";
 import { Instance as FrontendInstance } from "../types/instance";
 import { getInstanceUrl } from "./instance_url";
+import { env } from "process";
 
 export type Options = {
   basePort: number;
@@ -53,7 +54,9 @@ class Instance {
 
   start() {
     this.server = this.app.listen(this.port, () => {
-      console.log(`Starting webxdc instance at port ${this.port}`);
+      if (env['NODE_DEBUG']) {
+        console.debug(`Starting webxdc instance at port ${this.port}`);
+      }
     });
   }
 

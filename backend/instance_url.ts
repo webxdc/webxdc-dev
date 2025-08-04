@@ -1,4 +1,5 @@
 import { isWebContainer, HostURL } from "@webcontainer/env";
+import { env } from "process";
 
 export function getInstanceUrl(port: number) {
   if (isWebContainer()) {
@@ -6,5 +7,9 @@ export function getInstanceUrl(port: number) {
     // This is why we need to convert it here.
     return HostURL.parse(`https://localhost:${port}`).href;
   }
+  if (env["CODESPACE_NAME"]) {
+    return `${env["CODESPACE_NAME"]}-${port}.app.github.dev`
+  }
+
   return `http://localhost:${port}`;
 }

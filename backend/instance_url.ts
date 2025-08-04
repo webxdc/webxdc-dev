@@ -8,7 +8,7 @@ export function getInstanceUrl(port: number) {
     return HostURL.parse(`https://localhost:${port}`).href;
   }
   if (env["CODESPACE_NAME"]) {
-    return `${env["CODESPACE_NAME"]}-${port}.app.github.dev`
+    return `${env["CODESPACE_NAME"]}-${port}.app.github.dev`;
   }
 
   return `http://localhost:${port}`;

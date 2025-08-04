@@ -98,8 +98,10 @@ export class DevServerTransport implements Transport {
         "error in webxdc simulator"
       );
     } else if (location.host.endsWith(".app.github.dev")) {
-      return /-(\d+)\.app\.github\.dev/.exec(document.location.href)?.[1] ||
+      return (
+        /-(\d+)\.app\.github\.dev/.exec(document.location.href)?.[1] ||
         "error in webxdc simulator"
+      );
     } else {
       return document.location.port;
     }

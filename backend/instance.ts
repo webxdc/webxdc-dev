@@ -54,7 +54,7 @@ class Instance {
 
   start() {
     this.server = this.app.listen(this.port, () => {
-      if (env['NODE_DEBUG']) {
+      if (env["NODE_DEBUG"]) {
         console.debug(`Starting webxdc instance at port ${this.port}`);
       }
     });

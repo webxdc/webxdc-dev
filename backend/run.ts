@@ -36,12 +36,15 @@ async function actualRun(
   );
 
   frontend.listen(options.basePort, () => {
-    console.info(`\n=> Started webxdc-dev frontend on ${getInstanceUrl(options.basePort)}`);
+    console.info(
+      `\n=> Started webxdc-dev frontend on ${getInstanceUrl(options.basePort)}`,
+    );
   });
 
   instances.start();
 
-  if (!env["CODESPACE_NAME"]) { // do not auto open on gh codespace
+  if (!env["CODESPACE_NAME"]) {
+    // do not auto open on gh codespace
     open("http://localhost:" + options.basePort);
   }
 }

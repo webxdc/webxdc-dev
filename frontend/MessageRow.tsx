@@ -20,7 +20,6 @@ const MessageRow: Component<{
       <Show when={isUpdateMessage(props.message) && props.message}>
         {(message) => (
           <>
-            <TdTooltip>{message.descr}</TdTooltip>
             <TdTooltip
               tooltip={
                 <pre>

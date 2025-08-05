@@ -28,7 +28,6 @@ const Messages: Component<{
       <Thead>
         <Th maxW="70px"> Id </Th>
         <Th maxW="70px">Type</Th>
-        <Th maxW="70px">Descr</Th>
         <Th>Payload</Th>
       </Thead>
       <Tbody>

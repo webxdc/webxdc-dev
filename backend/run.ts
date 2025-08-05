@@ -1,11 +1,12 @@
 import detectPort from "detect-port";
-import process from "process";
+import process, { env } from "process";
 import open from "open";
 
 import { createFrontend, InjectExpress } from "./app";
 import { Instances, Options } from "./instance";
 import { getLocation, Location, LocationError } from "./location";
 import { getAppInfo, AppInfo, AppInfoError } from "./appInfo";
+import { getInstanceUrl } from "./instance_url";
 
 export type Inject = {
   injectFrontend: InjectExpress;
@@ -35,12 +36,17 @@ async function actualRun(
   );
 
   frontend.listen(options.basePort, () => {
-    console.log("Starting webxdc-dev frontend");
+    console.info(
+      `\n=> Started webxdc-dev frontend on ${getInstanceUrl(options.basePort)}`,
+    );
   });
 
   instances.start();
 
-  open("http://localhost:" + options.basePort);
+  if (!env["CODESPACE_NAME"]) {
+    // do not auto open on gh codespace
+    open("http://localhost:" + options.basePort);
+  }
 }
 
 export async function run(
@@ -65,7 +71,7 @@ export async function run(
     });
   }
 
-  console.log("Starting webxdc project in:", locationStr);
+  console.debug("Starting webxdc project in:", locationStr);
 
   try {
     const appInfo = await getAppInfo(location);

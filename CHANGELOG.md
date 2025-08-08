@@ -9,8 +9,6 @@ release date when you use `npm version` (see `README.md`).
 
 ## [0.20.0][] - 2025-08-08
 
-## [0.20.0][] - 2025-08-08
-
 ### Changed
 - remove deprecated descr column fom message table
 - hide "instance started" messages unless `NODE_DEBUG` is set

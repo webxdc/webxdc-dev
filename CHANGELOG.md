@@ -7,6 +7,18 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.20.0][] - 2025-08-08
+
+### Changed
+- remove deprecated descr column fom message table
+- hide "instance started" messages unless `NODE_DEBUG` is set
+
+### Fixed
+- Give better error message when manifest.toml does not exist
+- remove empty space in info panel
+- clearer startup message
+
+
 ## [0.19.0][] - 2025-05-22
 
 ### Added

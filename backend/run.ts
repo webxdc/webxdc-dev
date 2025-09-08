@@ -43,8 +43,7 @@ async function actualRun(
 
   instances.start();
 
-  if (!env["CODESPACE_NAME"]) {
-    // do not auto open on gh codespace
+  if (options.open) {
     open("http://localhost:" + options.basePort);
   }
 }

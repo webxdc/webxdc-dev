@@ -14,6 +14,7 @@ import { env } from "process";
 
 export type Options = {
   basePort: number;
+  open: boolean;
   csp: boolean;
   verbose: boolean;
 };

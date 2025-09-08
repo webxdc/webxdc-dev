@@ -34,6 +34,7 @@ export function createProgram(inject: Inject): Command {
       parsePort,
       7000,
     )
+    .option("-o, --open", "automatically open webxdc-dev UI in the browser")
     .option("--no-csp", "run instances without CSP applied")
     .option(
       "-v, --verbose",
@@ -46,7 +47,12 @@ export function createProgram(inject: Inject): Command {
     .action(async (location, options) => {
       await run(
         location,
-        { basePort: options.port, csp: options.csp, verbose: options.verbose },
+        {
+          basePort: options.port,
+          open: options.open,
+          csp: options.csp,
+          verbose: options.verbose,
+        },
         inject,
       );
     });

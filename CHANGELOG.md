@@ -7,6 +7,10 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+### Changes
+
+- Don't open browser automatically anymore, you can now open the browser with -o, --open like in vite
+
 ## [0.20.0][] - 2025-08-08
 
 ### Changed

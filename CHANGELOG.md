@@ -7,6 +7,8 @@ release date when you use `npm version` (see `README.md`).
 
 ## [Unreleased]
 
+## [0.21.0][] - 2025-11-23
+
 ### Changes
 
 - Don't open browser automatically anymore, you can now open the browser with -o, --open like in vite
@@ -440,7 +442,8 @@ release date when you use `npm version` (see `README.md`).
 [0.15.0]: https://github.com/webxdc/webxdc-dev/tree/v0.15.0
 [unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.15.1...HEAD
 [0.15.1]: https://github.com/webxdc/webxdc-dev/tree/v0.15.1
-[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/webxdc/webxdc-dev/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/webxdc/webxdc-dev/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/webxdc/webxdc-dev/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/webxdc/webxdc-dev/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/webxdc/webxdc-dev/compare/v0.17.0...v0.18.0

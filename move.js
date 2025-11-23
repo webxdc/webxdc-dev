@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const newName = "@webxdc/webxdc-dev"
 
 console.log(`

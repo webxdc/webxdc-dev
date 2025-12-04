@@ -8,7 +8,7 @@ import {
   notificationService,
 } from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
-import { FiExternalLink, FiTrash } from "solid-icons/fi";
+import { FiExternalLink, FiMail, FiTrash } from "solid-icons/fi";
 
 import type { Instance as InstanceData } from "../types/instance";
 import { sent, received, mutateInstances } from "./store";
@@ -21,6 +21,8 @@ const InstanceHeader: Component<{
   onStart: () => void;
   onStop: () => void;
   isStarted: Accessor<boolean>;
+  dropUpdates: boolean;
+  onToggleDropUpdates: () => void;
 }> = (props) => {
   const sentCount = createMemo(() => {
     return sent(props.instance.id);
@@ -112,6 +114,11 @@ const InstanceHeader: Component<{
           label="Delete"
           onClick={() => handleRemoveInstance(props.instance.id)}
           icon={<FiTrash size={22} color="#000000" />}
+        />
+        <InstanceButton
+          label="Drop Updates"
+          onClick={props.onToggleDropUpdates}
+          icon={<FiMail size={22} color={props.dropUpdates ? "#FF0000": "#000000"} />}
         />
       </Flex>
     </Flex>

@@ -8,7 +8,8 @@ import {
   notificationService,
 } from "@hope-ui/solid";
 import { IoRefreshOutline, IoStop, IoPlay } from "solid-icons/io";
-import { FiExternalLink, FiMail, FiTrash } from "solid-icons/fi";
+import { FiExternalLink, FiTrash } from "solid-icons/fi";
+import { RiDeviceWifiLine, RiDeviceWifiOffLine } from 'solid-icons/ri'
 
 import type { Instance as InstanceData } from "../types/instance";
 import { sent, received, mutateInstances } from "./store";
@@ -118,7 +119,7 @@ const InstanceHeader: Component<{
         <InstanceButton
           label="Drop Updates"
           onClick={props.onToggleDropUpdates}
-          icon={<FiMail size={22} color={props.dropUpdates ? "#FF0000": "#000000"} />}
+          icon={props.dropUpdates ? <RiDeviceWifiOffLine size={22} color={"#FF0000"} /> : <RiDeviceWifiLine size={22} color={"#000000"} /> }
         />
       </Flex>
     </Flex>

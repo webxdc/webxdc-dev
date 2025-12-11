@@ -97,6 +97,10 @@ are running.
 The dev tool console shows messages with the same color prefix as the instance
 UIs.
 
+You can simulate the host losing messages by toggling the "Drop Updates" button
+on a specific instance. While enabled the instance will not recieve any updates
+as if the transport has failed to deliver them.
+
 #### Clean state
 
 Instances start with a clean slate: empty `localStorage` and `sessionStorage`.

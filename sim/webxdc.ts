@@ -25,12 +25,8 @@ export class DevServerTransport implements Transport {
       this.resolveInfo = resolve;
     });
     window.addEventListener("message", (event) => {
-      const isAllowed =
-        event.origin.includes("localhost:") ||
-        (location.host.endsWith(".webcontainer.io") &&
-          event.origin.includes(".webcontainer.io"));
-      if (!isAllowed) {
-        return;
+      if (!eventIsAllowed(event)) {
+        return
       }
       if (typeof event.data === 'object') {
         if (event.data.name === 'dropUpdates') {
@@ -152,14 +148,16 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
-  const isAllowed =
-    event.origin.includes("localhost:") ||
-    (location.host.endsWith(".webcontainer.io") &&
-      event.origin.includes(".webcontainer.io"));
-  if (!isAllowed) {
-    return;
+  if (!eventIsAllowed(event)) {
+    return
   }
   if (event.data === "reload") {
     window.location.reload();
   }
 });
+
+function eventIsAllowed(event: MessageEvent<any>) {
+  return event.origin.includes("localhost:") ||
+    (location.host.endsWith(".webcontainer.io") &&
+      event.origin.includes(".webcontainer.io"));
+}

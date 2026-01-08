@@ -98,10 +98,10 @@ The dev tool console shows messages with the same color prefix as the instance
 UIs.
 
 You can simulate the host losing messages by toggling the `Drop Updates` button
-on a specific instance. While enabled the instance will not recieve any updates
-as if the transport has failed to deliver them. On
-later reloads of the page the instance will load all updates as this state is 
-shared identically between all insances.
+on a specific instance. While enabled the instance will not receive any updates
+as if the transport has failed to deliver them. Note: on later reloads of the
+page the instance will load all updates again because the state is shared between
+all instances in the webxdc-dev backend.
 
 #### Clean state
 

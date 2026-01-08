@@ -26,11 +26,11 @@ export class DevServerTransport implements Transport {
     });
     window.addEventListener("message", (event) => {
       if (!eventIsAllowed(event)) {
-        return
+        return;
       }
-      if (typeof event.data === 'object') {
-        if (event.data.name === 'dropUpdates') {
-          this.dropUpdates = event.data.value
+      if (typeof event.data === "object") {
+        if (event.data.name === "dropUpdates") {
+          this.dropUpdates = event.data.value;
         }
       }
     });
@@ -46,7 +46,7 @@ export class DevServerTransport implements Transport {
     }
     const listener = (event: Event): void => {
       if (this.dropUpdates) {
-        return
+        return;
       }
       callback(JSON.parse((event as any).data));
     };
@@ -149,7 +149,7 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
   if (!eventIsAllowed(event)) {
-    return
+    return;
   }
   if (event.data === "reload") {
     window.location.reload();
@@ -157,7 +157,9 @@ window.addEventListener("message", (event) => {
 });
 
 function eventIsAllowed(event: MessageEvent<any>) {
-  return event.origin.includes("localhost:") ||
+  return (
+    event.origin.includes("localhost:") ||
     (location.host.endsWith(".webcontainer.io") &&
-      event.origin.includes(".webcontainer.io"));
+      event.origin.includes(".webcontainer.io"))
+  );
 }

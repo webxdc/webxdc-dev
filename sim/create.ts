@@ -112,7 +112,6 @@ export function createWebXdc(
     setUpdateListener: (listener, serial = 0): Promise<void> => {
       transport.onMessage((message) => {
         if (isUpdatesMessage(message)) {
-          log("recv update", message.updates);
           for (const update of message.updates) {
             listener(update);
           }

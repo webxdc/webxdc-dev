@@ -17,11 +17,22 @@ export class DevServerTransport implements Transport {
   messageListener: SocketMessageListener | null = null;
   promise: Promise<Info>;
   resolveInfo!: (info: Info) => void;
+  dropUpdates: boolean = false;
 
   constructor(url: string) {
     this.socket = new WebSocket(url);
     this.promise = new Promise((resolve) => {
       this.resolveInfo = resolve;
+    });
+    window.addEventListener("message", (event) => {
+      if (!eventIsAllowed(event)) {
+        return;
+      }
+      if (typeof event.data === "object") {
+        if (event.data.name === "dropUpdates") {
+          this.dropUpdates = event.data.value;
+        }
+      }
     });
   }
 
@@ -34,6 +45,9 @@ export class DevServerTransport implements Transport {
       this.socket.removeEventListener("message", this.messageListener);
     }
     const listener = (event: Event): void => {
+      if (this.dropUpdates) {
+        return;
+      }
       callback(JSON.parse((event as any).data));
     };
     this.messageListener = listener;
@@ -134,14 +148,18 @@ window.addEventListener("load", () => alterUi(getWebXdc().selfName, transport));
 
 // listen to messages coming into iframe
 window.addEventListener("message", (event) => {
-  const isAllowed =
-    event.origin.includes("localhost:") ||
-    (location.host.endsWith(".webcontainer.io") &&
-      event.origin.includes(".webcontainer.io"));
-  if (!isAllowed) {
+  if (!eventIsAllowed(event)) {
     return;
   }
   if (event.data === "reload") {
     window.location.reload();
   }
 });
+
+function eventIsAllowed(event: MessageEvent<any>) {
+  return (
+    event.origin.includes("localhost:") ||
+    (location.host.endsWith(".webcontainer.io") &&
+      event.origin.includes(".webcontainer.io"))
+  );
+}

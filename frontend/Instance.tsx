@@ -1,4 +1,4 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createSignal } from "solid-js";
 import { Flex, createDisclosure, notificationService } from "@hope-ui/solid";
 
 import { Instance as InstanceData } from "../types/instance";
@@ -12,12 +12,13 @@ const Instance: Component<{
   setSearch: (search: Search) => void;
 }> = (props) => {
   let iframeRef: HTMLIFrameElement | undefined = undefined;
+  let [dropUpdates, setDropUpdates] = createSignal(false);
 
   const handleReload = () => {
     if (iframeRef == null) {
       return;
     }
-
+    setDropUpdates(false) // reset our state because inner sim/webxdc state is reset in reload
     iframeRef.contentWindow?.postMessage("reload", props.instance.url);
 
     notificationService.show({
@@ -28,6 +29,14 @@ const Instance: Component<{
   const { isOpen, onOpen, onClose } = createDisclosure({
     defaultIsOpen: false,
   });
+
+  const toggleDropUpdates = () => {
+    if (iframeRef == null) {
+      return;
+    }
+    setDropUpdates(!dropUpdates())
+    iframeRef.contentWindow?.postMessage({ name: "dropUpdates", value: dropUpdates()}, props.instance.url)
+  }
 
   const getStyle = () => {
     return {
@@ -49,6 +58,8 @@ const Instance: Component<{
         onStart={onOpen}
         onStop={onClose}
         isStarted={isOpen}
+        dropUpdates={dropUpdates()}
+        onToggleDropUpdates={toggleDropUpdates}
       />
       <Show
         when={isOpen()}

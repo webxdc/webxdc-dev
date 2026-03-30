@@ -18,7 +18,7 @@ const Instance: Component<{
     if (iframeRef == null) {
       return;
     }
-    setDropUpdates(false) // reset our state because inner sim/webxdc state is reset in reload
+    setDropUpdates(false); // reset our state because inner sim/webxdc state is reset in reload
     iframeRef.contentWindow?.postMessage("reload", props.instance.url);
 
     notificationService.show({
@@ -34,9 +34,12 @@ const Instance: Component<{
     if (iframeRef == null) {
       return;
     }
-    setDropUpdates(!dropUpdates())
-    iframeRef.contentWindow?.postMessage({ name: "dropUpdates", value: dropUpdates()}, props.instance.url)
-  }
+    setDropUpdates(!dropUpdates());
+    iframeRef.contentWindow?.postMessage(
+      { name: "dropUpdates", value: dropUpdates() },
+      props.instance.url,
+    );
+  };
 
   const getStyle = () => {
     return {

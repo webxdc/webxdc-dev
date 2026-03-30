@@ -260,13 +260,17 @@ npm run cli -- run /path/to/xdc
 You can create a new npm release automatically by doing the following on the
 `main` branch:
 
+1. Update `CHANGELOG.md`: rename the `[Unreleased]` section to the new version
+   and date, and add a fresh `[Unreleased]` section on top.
+2. Run:
+
 ```shell
 npm version patch  # or minor, major, etc
 git push --follow-tags
 ```
 
 [`npm version`](https://docs.npmjs.com/cli/v8/commands/npm-version) updates the
-version number automatically and also puts the latest date in `CHANGELOG.md`.
+version number in `package.json` and creates a git tag.
 You then need to push using `--follow-tags` (**NOT** `--tags`).
 
 The release process is done through a github action defined in

@@ -94,7 +94,7 @@
     "solid-js": "~1.5.0",
     "solid-transition-group": "^0.0.10",
     "toml": "^3.0.0",
-    "wait-on": "^6.0.1",
+    "wait-on": "^9.0.4",
     "ws": "^8.8.0"
   }
 }
